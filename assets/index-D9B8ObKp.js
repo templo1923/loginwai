@@ -28228,7 +28228,7 @@ const HO = {
 }
   , S0 = "/assets/tutorial-pXl94fiD.mp4"
   , FO = () => {
-    const s = "https://api.artechclick.com"
+    const s = "https://crm.jhllegalgroup.com"
       , {usuario: e} = ls()
       , [i,r] = N.useState(null)
       , [o,c] = N.useState(!0)
@@ -28723,7 +28723,7 @@ const HO = {
     })
 }
   , XO = () => {
-    const s = "https://api.artechclick.com"
+    const s = "https://crm.jhllegalgroup.com"
       , {usuario: e} = ls()
       , [i,r] = N.useState(null)
       , [o,c] = N.useState(!0)
@@ -29106,7 +29106,7 @@ const HO = {
         })]
     })
 }
-  , Td = "https://api.artechclick.com";
+  , Td = "https://crm.jhllegalgroup.com";
 console.log("La url: " + Td);
 const Yv = {
     CO: {
@@ -29386,7 +29386,7 @@ const Yv = {
       , [e,i] = N.useState("inicio")
       , [r,o] = N.useState(!1)
       , [c,d] = N.useState(!1)
-      , h = "https://api.artechclick.com"
+      , h = "https://crm.jhllegalgroup.com"
       , p = async () => {
         if (!s)
             throw new Error("No hay usuario autenticado");
