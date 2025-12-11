@@ -28225,7 +28225,7 @@ const XO = {
         })
     })
 }
-  , Rf = "https://api.artechclick.com";
+  , Rf = "https://crm.jhllegalgroup.com";
 console.log("La url: " + Rf);
 const Xv = {
     CO: {
@@ -28607,7 +28607,7 @@ const Xv = {
 }
   , aI = "/assets/tutorial-pXl94fiD.mp4"
   , rI = () => {
-    const s = "https://api.artechclick.com"
+    const s = "https://crm.jhllegalgroup.com"
       , {usuario: e} = Ea()
       , [i,r] = N.useState(null)
       , [o,c] = N.useState(!0)
@@ -29303,7 +29303,7 @@ const UI = [["path", {
     key: "1xq2db"
 }]]
   , ey = gt("zap", UI)
-  , PI = "https://api.artechclick.com"
+  , PI = "https://crm.jhllegalgroup.com"
   , zI = ({isOpen: s, onClose: e, usuario: i, saldoDisponible: r, historialPrevio: o, onRetiroExitoso: c}) => {
     const [f,h] = N.useState(1)
       , [p,m] = N.useState(!1)
@@ -29668,7 +29668,7 @@ const UI = [["path", {
         d: "M17.472 14.382C17.117 14.382 16.595 14.35 15.158 13.682C14.739 13.486 14.451 13.565 14.163 13.931C13.875 14.297 13.299 15.003 13.064 15.265C12.828 15.527 12.592 15.553 11.964 15.265C11.336 14.978 10.375 14.593 9.49799 13.805C8.79099 13.172 8.31399 12.389 8.13099 12.075C7.94799 11.761 8.15699 11.621 8.39799 11.332C8.61899 11.065 8.76699 10.865 8.94999 10.603C9.13299 10.342 9.07999 10.106 8.94999 9.845C8.81999 9.583 8.16499 7.974 7.85099 7.242C7.56299 6.568 7.24899 6.639 6.98699 6.639C6.75199 6.639 6.48999 6.639 6.22799 6.639C5.96599 6.639 5.54699 6.744 5.18099 7.137C4.81499 7.529 3.79399 8.497 3.79399 10.46C3.79399 12.423 5.23399 14.307 5.44299 14.595C5.65199 14.883 8.32499 19.049 12.492 20.724C15.113 21.782 15.821 21.69 16.554 21.585C17.366 21.468 18.78 20.706 19.094 19.894C19.408 19.083 19.408 18.376 19.303 18.219C19.199 18.062 18.832 17.957 18.204 17.643L17.472 14.382ZM12.041 24C9.92099 24 7.84699 23.456 6.01299 22.408L5.61799 22.185L1.33899 23.364L2.55999 19.167L2.30299 18.735C1.16499 16.805 0.565988 14.621 0.565988 12.333C0.565988 5.862 5.71499 0.596 12.046 0.596C15.114 0.596 17.996 1.801 20.165 3.987C22.334 6.173 23.529 9.081 23.529 12.175C23.529 18.647 18.375 24 12.041 24Z"
     })
 })
-  , BI = "https://api.artechclick.com"
+  , BI = "https://crm.jhllegalgroup.com"
   , tf = "https://artechclick.com/ref/"
   , nf = {
     CO: {
@@ -30379,7 +30379,7 @@ const UI = [["path", {
     const {usuario: s} = Ea()
       , [e,i] = N.useState("inicio")
       , [r,o] = N.useState(!1)
-      , c = "https://api.artechclick.com"
+      , c = "https://crm.jhllegalgroup.com"
       , f = async () => {
         try {
             if (!s)
