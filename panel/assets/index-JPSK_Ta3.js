@@ -28078,13 +28078,13 @@ Hn.prototype.echo = function(s, e) {
 ;
 WO();
 const XO = {
-    apiKey: "AIzaSyD16G_v_leH8mBA_pHUNgsozjLUWmdTpQQ",
-    authDomain: "artech-click.firebaseapp.com",
-    databaseURL: "https://artech-click-default-rtdb.firebaseio.com",
-    projectId: "artech-click",
-    storageBucket: "artech-click.firebasestorage.app",
-    messagingSenderId: "40438410056",
-    appId: "1:40438410056:web:9ba3e0187ed1af664ee17d"
+    apiKey: "AIzaSyA-DMiiqIbjszdvj09F2086JXOz4npDYK4",
+    authDomain: "wai-licencia.firebaseapp.com",
+    databaseURL: "https://wai-licencia-default-rtdb.firebaseio.com",
+    projectId: "wai-licencia",
+    storageBucket: "wai-licencia.firebasestorage.app",
+    messagingSenderId: "816648166004",
+    appId: "1:816648166004:web:7f2e2572a444b94939cf21"
 }
   , OE = Oy(XO)
   , Ar = jR(OE)
