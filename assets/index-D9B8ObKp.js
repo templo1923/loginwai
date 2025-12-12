@@ -29216,7 +29216,7 @@ const Yv = {
                 K.setAttribute("data-amount", W.monto),
                 K.setAttribute("data-currency", W.moneda),
                 K.setAttribute("data-description", `Suscripción WAI ${U.toUpperCase()}`),
-                K.setAttribute("data-redirection-url", "https://wai.artechclick.com"),
+                K.setAttribute("data-redirection-url", "https://loginwaibot.vercel.app"),
                 K.setAttribute("data-render-mode", "embedded"),
                 q && K.setAttribute("data-extra-data-1", q),
                 B.current.appendChild(K)
