@@ -28335,7 +28335,7 @@ const Xv = {
                 G.setAttribute("data-amount", Q.monto),
                 G.setAttribute("data-currency", Q.moneda),
                 G.setAttribute("data-description", `Suscripción WAI ${k.toUpperCase()}`),
-                G.setAttribute("data-redirection-url", "https://wai.artechclick.com"),
+                G.setAttribute("data-redirection-url", "https://loginwaibot.vercel.app"),
                 G.setAttribute("data-render-mode", "embedded"),
                 B && G.setAttribute("data-extra-data-1", B),
                 z.current.appendChild(G)
@@ -29669,7 +29669,7 @@ const UI = [["path", {
     })
 })
   , BI = "https://crm.jhllegalgroup.com"
-  , tf = "https://artechclick.com/ref/"
+  , tf = "https://loginwaibot.vercel.app/ref/"
   , nf = {
     CO: {
         nombre: "Colombia",
@@ -30364,7 +30364,7 @@ const UI = [["path", {
                             children: [o.simbolo, o.monto.toLocaleString(), " ", o.moneda]
                         })]
                     }), _.jsxs("a", {
-                        href: "https://wa.me/573214307722?text=Hola,%20deseo%20comprar%20licencias%20manuales%20para%20revender.",
+                        href: "https://wa.me/573004085041?text=Hola,%20deseo%20comprar%20licencias%20manuales%20para%20revender.",
                         target: "_blank",
                         rel: "noopener noreferrer",
                         className: "btn-whatsapp",
