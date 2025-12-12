@@ -28116,7 +28116,7 @@ const HO = {
             v ? (i(v),
             await d(v.uid, v.email),
             console.log("Redirigiendo a /panel desde onAuthStateChanged."),
-            window.location.href = "/panel/index.html") : (i(null),
+            window.location.href = "/panel") : (i(null),
             console.log("Usuario desautenticado, redirigiendo a /."),
             window.location.pathname !== "/" && c("/")),
             o(!1)
