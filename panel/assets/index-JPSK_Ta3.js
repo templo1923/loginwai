@@ -28239,7 +28239,7 @@ const Xv = {
         nombre: "Resto del Mundo",
         moneda: "USD",
         simbolo: "$",
-        mensual: 5.5,
+        mensual: 10,
         vitalicio: 18
     }
 }
