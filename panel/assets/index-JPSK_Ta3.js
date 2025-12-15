@@ -30367,7 +30367,7 @@ const UI = [["path", {
         case "reventa":
             return _.jsx("div", {
                 className: "single-content",
-                children: _.jsx(VI, {})
+                children: _.jsx(NuevoPanelPartner, {})
             });
         case "facturacion":
             return _.jsx("div", {
@@ -30442,6 +30442,87 @@ function FI() {
             })
         })
     })
+    // === NUEVO PANEL DE PARTNER (PEGAR AL FINAL DEL ARCHIVO) ===
+const NuevoPanelPartner = () => {
+    const { usuario: s } = Ea(),
+        [saldo, setSaldo] = N.useState(0),
+        [referidos, setReferidos] = N.useState(0),
+        [emailCliente, setEmail] = N.useState(""),
+        [cargando, setCargando] = N.useState(false),
+        [mensaje, setMensaje] = N.useState(null),
+        [link, setLink] = N.useState("");
+
+    // 1. Cargar datos
+    N.useEffect(() => {
+        if (s && s.email) {
+            fetch(`${Rf}/api/revendedor/info?id=${s.email}`)
+                .then(r => r.json())
+                .then(d => {
+                    if (d.ok) {
+                        setSaldo(d.saldo);
+                        setReferidos(d.referidos);
+                        setLink(`https://loginwaibot.vercel.app/ref/${d.slug}`);
+                    }
+                })
+                .catch(err => console.error(err));
+        }
+    }, [s]);
+
+    // 2. Función Activar
+    const activar = async (tipoPlan, costo) => {
+        if (!emailCliente.includes("@")) return alert("Correo inválido");
+        if (!confirm(`¿Activar ${tipoPlan.toUpperCase()} por ${costo} créditos?`)) return;
+
+        setCargando(true);
+        try {
+            const req = await fetch(`${Rf}/api/revendedor/activar-licencia`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ revendedorId: s.email, clienteCorreo: emailCliente, tipoPlan: tipoPlan })
+            });
+            const res = await req.json();
+            if (res.ok) {
+                setSaldo(res.nuevoSaldo);
+                setMensaje({ tipo: "exito", texto: `✅ ${res.mensaje}` });
+                setEmail(""); 
+            } else {
+                setMensaje({ tipo: "error", texto: `❌ ${res.mensaje}` });
+            }
+        } catch (e) { setMensaje({ tipo: "error", texto: "Error de conexión" }); }
+        setCargando(false);
+    };
+
+    const copiar = () => { navigator.clipboard.writeText(link); alert("Copiado!"); };
+    const btnStyle = (bg) => ({ flex: 1, padding: "12px", border: "none", borderRadius: "8px", background: bg, color: "white", fontWeight: "bold", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center" });
+
+    return _.jsxs("div", { className: "main-card", style: { maxWidth: "900px", margin: "20px auto", padding: "20px", background: "white", borderRadius: "15px" }, children: [
+        _.jsxs("div", { style: { textAlign: "center", marginBottom: "30px" }, children: [
+            _.jsx("h2", { style: { fontSize: "2rem", color: "#1e293b" }, children: "💼 Panel de Partner" }),
+            _.jsxs("p", { children: ["Tu Link: ", _.jsx("strong", { style: { color: "#3b82f6" }, children: link }), " ", _.jsx("button", { onClick: copiar, children: "📋" })] })
+        ]}),
+        _.jsxs("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "30px" }, children: [
+            _.jsxs("div", { style: { background: "#f8fafc", padding: "20px", borderRadius: "12px", textAlign: "center", border: "1px solid #e2e8f0" }, children: [
+                _.jsx("div", { style: { fontSize: "2.5rem", fontWeight: "bold", color: "#3b82f6" }, children: saldo }),
+                _.jsx("div", { children: "Licencias Disponibles" }),
+                _.jsx("button", { onClick: () => window.open(`https://wa.me/573004085041?text=Recarga%20${s.email}`, '_blank'), style: { marginTop: "10px", padding: "5px 10px", background: "#dbeafe", color: "#1e40af", border: "none", borderRadius: "5px", cursor: "pointer" }, children: "+ Recargar" })
+            ]}),
+            _.jsxs("div", { style: { background: "#f8fafc", padding: "20px", borderRadius: "12px", textAlign: "center", border: "1px solid #e2e8f0" }, children: [
+                _.jsx("div", { style: { fontSize: "2.5rem", fontWeight: "bold", color: "#10b981" }, children: referidos }),
+                _.jsx("div", { children: "Referidos Totales" })
+            ]})
+        ]}),
+        _.jsxs("div", { style: { background: "#fff", padding: "25px", borderRadius: "16px", border: "2px solid #e2e8f0" }, children: [
+            _.jsx("h3", { children: "⚡ Activar Cliente" }),
+            _.jsx("input", { type: "email", placeholder: "Correo del cliente", value: emailCliente, onChange: (e) => setEmail(e.target.value), style: { width: "100%", padding: "12px", marginBottom: "20px", border: "1px solid #ccc", borderRadius: "8px" } }),
+            _.jsxs("div", { style: { display: "flex", gap: "10px" }, children: [
+                _.jsxs("button", { onClick: () => activar("mensual", 1), disabled: cargando || saldo < 1, style: { ...btnStyle("#3b82f6"), opacity: saldo < 1 ? 0.5 : 1 }, children: ["MENSUAL", "(1 Crédito)"] }),
+                _.jsxs("button", { onClick: () => activar("semestral", 4), disabled: cargando || saldo < 4, style: { ...btnStyle("#8b5cf6"), opacity: saldo < 4 ? 0.5 : 1 }, children: ["SEMESTRAL", "(4 Créditos)"] }),
+                _.jsxs("button", { onClick: () => activar("anual", 7), disabled: cargando || saldo < 7, style: { ...btnStyle("#f59e0b"), opacity: saldo < 7 ? 0.5 : 1 }, children: ["ANUAL", "(7 Créditos)"] })
+            ]}),
+            mensaje && _.jsx("div", { style: { marginTop: "15px", padding: "10px", background: mensaje.tipo === "exito" ? "#dcfce7" : "#fee2e2", textAlign: "center", borderRadius: "5px" }, children: mensaje.texto })
+        ]})
+    ]});
+};
 }
 h1.createRoot(document.getElementById("root")).render(_.jsx(a1.StrictMode, {
     children: _.jsx(FI, {})
