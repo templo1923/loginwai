@@ -28228,19 +28228,39 @@ const XO = {
   , Rf = "https://crm.jhllegalgroup.com";
 console.log("La url: " + Rf);
 const Xv = {
-    CO: {
+CO: {
         nombre: "Colombia",
         moneda: "COP",
         simbolo: "$",
-        mensual: 2e4,
-        vitalicio: 65e3
+        // PLAN 1: PERSONAL
+        p_mes: 20000,
+        p_sem: 80000,
+        p_anual: 140000,
+        // PLAN 2: REVENDEDOR (Membresía)
+        r_mes: 80000,
+        r_sem: 400000,
+        r_anual: 1000000,
+        // PLAN 3: SOCIO VIP (Ilimitado)
+        v_mes: 600000,
+        v_sem: 2800000,
+        v_anual: 4800000
     },
     WORLD: {
         nombre: "Resto del Mundo",
         moneda: "USD",
         simbolo: "$",
-        mensual: 10,
-        vitalicio: 18
+        // PLAN 1: PERSONAL
+        p_mes: 5,
+        p_sem: 20,
+        p_anual: 35,
+        // PLAN 2: REVENDEDOR
+        r_mes: 20,
+        r_sem: 100,
+        r_anual: 250,
+        // PLAN 3: SOCIO VIP
+        v_mes: 150,
+        v_sem: 700,
+        v_anual: 1200
     }
 }
   , nI = () => {
@@ -28301,203 +28321,119 @@ const Xv = {
         )()
     }
     , [s]);
-    const E = async (y, A, T, k, z, H, B) => {
-        if (!(!z.current || !m.current))
-            try {
-                const F = await fetch(`${Rf}/api/firma-bold`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${H}`,
-                        "ngrok-skip-browser-warning": "true"
-                    },
-                    body: JSON.stringify({
-                        userId: y,
-                        monto: A,
-                        moneda: T,
-                        plan: k
-                    })
-                });
-                if (!F.ok)
-                    throw new Error("Error al obtener firma");
-                const Q = await F.json();
-                if (Q.error)
-                    throw new Error(Q.error);
-                if (!z.current)
-                    return;
-                z.current.innerHTML = "";
-                const G = document.createElement("script");
-                G.src = "https://checkout.bold.co/library/boldPaymentButton.js",
-                G.setAttribute("data-bold-button", "dark"),
-                G.setAttribute("data-api-key", "0BigvJ6pNtu453u9sAMorop5dreZEtzEZF2ia-_w1W4"),
-                G.setAttribute("data-order-id", Q.idOrden),
-                G.setAttribute("data-integrity-signature", Q.firma),
-                G.setAttribute("data-amount", Q.monto),
-                G.setAttribute("data-currency", Q.moneda),
-                G.setAttribute("data-description", `Suscripción WAI ${k.toUpperCase()}`),
-                G.setAttribute("data-redirection-url", "https://loginwaibot.vercel.app"),
-                G.setAttribute("data-render-mode", "embedded"),
-                B && G.setAttribute("data-extra-data-1", B),
-                z.current.appendChild(G)
-            } catch (F) {
-                console.error(`Error botón ${k}:`, F),
-                z.current && (z.current.innerHTML = '<span style="color:red; font-size:12px;">Error cargando pago</span>')
-            }
-    }
-      , b = y => typeof y != "number" ? "N/A" : y % 1 !== 0 ? y.toFixed(2) : y.toLocaleString("es-ES");
+// --- NUEVA FUNCIÓN: PAGO POR WHATSAPP ---
+    const y = (userId, precio, moneda, plan) => {
+        // TU NÚMERO DE WHATSAPP
+        const telefono = "573004085041"; 
+        
+        // Formato bonito del precio
+        const precioF = typeof precio === 'number' ? precio.toLocaleString('es-CO') : precio;
+        
+        // Limpiamos el nombre del plan (ej: "PERSONAL_MENSUAL" -> "PERSONAL MENUAL")
+        const nombrePlan = plan.replace(/_/g, ' ');
+
+        const mensaje = `Hola 👋, quiero adquirir una suscripción WAI:
+
+📦 *Plan:* ${nombrePlan}
+💰 *Valor:* ${moneda} ${precioF}
+🆔 *Mi ID:* ${userId}
+
+¿Me indicas los medios de pago?`;
+
+        window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`, '_blank');
+    };
+
+    // Formateador de números
+    const b = y => typeof y != "number" ? "N/A" : y % 1 !== 0 ? y.toFixed(2) : y.toLocaleString("es-ES");
+
+    // --- NUEVA INTERFAZ: 3 PLANES ---
     return _.jsxs("div", {
         className: "planes-suscripcion-container",
-        children: [_.jsx("h2", {
-            className: "planes-titulo",
-            children: "Elige tu Plan WAI"
-        }), _.jsxs("p", {
-            className: "planes-subtitulo",
-            children: ["Precio exclusivo para ", e.nombre]
-        }), _.jsxs("div", {
-            className: "planes-grid",
-            children: [_.jsxs("div", {
-                className: "plan-card",
-                children: [_.jsx("h3", {
-                    className: "plan-nombre",
-                    children: "Plan Mensual"
-                }), _.jsxs("div", {
-                    className: "plan-precio",
-                    children: [_.jsx("span", {
-                        className: "simbolo-moneda",
-                        children: e.simbolo
-                    }), _.jsx("span", {
-                        className: "cantidad",
-                        children: b(e.mensual)
-                    }), _.jsx("span", {
-                        className: "codigo-moneda",
-                        children: e.moneda
-                    })]
-                }), _.jsx("div", {
-                    className: "precio-mensual-info",
-                    children: "Pago recurrente cada mes"
-                }), _.jsxs("ul", {
-                    className: "plan-caracteristicas",
-                    children: [_.jsx("li", {
-                        children: "✅ 5 WhatsApps en local"
-                    }), _.jsx("li", {
-                        children: "✅ Plan prepago"
-                    }), _.jsx("li", {
-                        children: "✅ Soporte de instalación"
-                    }), _.jsx("li", {
-                        children: "✅ Respuestas automáticas"
-                    }), _.jsx("li", {
-                        children: "✅ Opciones de IA (ChatGPT, Llama, Gemini)"
-                    })]
-                }), _.jsxs("div", {
-                    style: {
-                        minHeight: "60px",
-                        marginTop: "20px",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        position: "relative"
-                    },
-                    children: [r && _.jsx("div", {
-                        className: "breathing",
-                        children: "Cargando..."
-                    }), !r && c && _.jsxs("div", {
-                        className: "bold-overlay",
-                        children: [_.jsx("div", {
-                            className: "spinner-bold"
-                        }), _.jsx("span", {
-                            className: "texto-bold-loading",
-                            children: "Cargando pago seguro de Bold..."
-                        })]
-                    }), _.jsx("div", {
-                        ref: h,
-                        style: {
-                            display: r ? "none" : "flex",
-                            width: "100%",
-                            justifyContent: "center"
-                        }
-                    })]
-                })]
-            }), _.jsxs("div", {
-                className: "plan-card plan-destacado",
-                children: [_.jsx("div", {
-                    className: "etiqueta-popular",
-                    children: "ACCESO VITALICIO"
-                }), _.jsx("div", {
-                    className: "banda-descuento",
-                    children: "MEJOR OPCIÓN"
-                }), _.jsx("h3", {
-                    className: "plan-nombre",
-                    children: "Plan Ilimitado"
-                }), _.jsxs("div", {
-                    className: "plan-precio",
-                    children: [_.jsx("span", {
-                        className: "simbolo-moneda",
-                        children: e.simbolo
-                    }), _.jsx("span", {
-                        className: "cantidad",
-                        children: b(e.vitalicio)
-                    }), _.jsx("span", {
-                        className: "codigo-moneda",
-                        children: e.moneda
-                    })]
-                }), _.jsx("div", {
-                    className: "precio-mensual-info",
-                    children: _.jsx("strong", {
-                        children: "Un único pago para siempre"
+        children: [
+            _.jsx("h2", { className: "planes-titulo", children: "Elige tu Nivel de Socio" }),
+            _.jsxs("p", { className: "planes-subtitulo", children: ["Precios ajustados para ", e.nombre] }),
+            
+            _.jsxs("div", {
+                className: "planes-grid",
+                style: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px" },
+                children: [
+                    
+                    // === PLAN 1: PERSONAL (Usuario Final) ===
+                    _.jsxs("div", {
+                        className: "plan-card",
+                        children: [
+                            _.jsx("h3", { className: "plan-nombre", children: "Uso Personal" }),
+                            _.jsx("div", { className: "precio-mensual-info", children: "Ideal para tu negocio" }),
+                            _.jsxs("div", { className: "plan-precio", children: [_.jsx("span", { className: "simbolo-moneda", children: e.simbolo }), _.jsx("span", { className: "cantidad", children: b(e.p_mes) }), _.jsx("span", { className: "codigo-moneda", children: "/mes" })] }),
+                            
+                            _.jsxs("ul", { className: "plan-caracteristicas", children: [
+                                _.jsx("li", { children: "✅ 1 Licencia PC" }),
+                                _.jsx("li", { children: "✅ 5 WhatsApps Locales" }),
+                                _.jsx("li", { children: "✅ Respuestas con IA" }),
+                                _.jsx("li", { children: "✅ Soporte Instalación" })
+                            ]}),
+
+                            _.jsxs("div", { style: { marginTop: "15px", display: "flex", flexDirection: "column", gap: "10px" }, children: [
+                                _.jsx("button", { onClick: () => y(F, e.p_mes, e.moneda, "PERSONAL_MENSUAL"), className: "btn-plan", children: "Mensual" }),
+                                _.jsx("button", { onClick: () => y(F, e.p_sem, e.moneda, "PERSONAL_SEMESTRAL"), className: "btn-plan-outline", children: `Semestral (${e.simbolo}${b(e.p_sem)})` }),
+                                _.jsx("button", { onClick: () => y(F, e.p_anual, e.moneda, "PERSONAL_ANUAL"), className: "btn-plan-outline", children: `Anual (${e.simbolo}${b(e.p_anual)})` })
+                            ]})
+                        ]
+                    }),
+
+                    // === PLAN 2: REVENDEDOR (Emprendedor) ===
+                    _.jsxs("div", {
+                        className: "plan-card plan-destacado",
+                        style: { border: "2px solid #3b82f6" },
+                        children: [
+                            _.jsx("div", { className: "etiqueta-popular", style: { background: "#3b82f6" }, children: "EMPRENDEDOR" }),
+                            _.jsx("h3", { className: "plan-nombre", children: "Revendedor" }),
+                            _.jsx("div", { className: "precio-mensual-info", children: "Inicia tu negocio SaaS" }),
+                            _.jsxs("div", { className: "plan-precio", children: [_.jsx("span", { className: "simbolo-moneda", children: e.simbolo }), _.jsx("span", { className: "cantidad", children: b(e.r_mes) }), _.jsx("span", { className: "codigo-moneda", children: "/mes" })] }),
+
+                            _.jsxs("ul", { className: "plan-caracteristicas", children: [
+                                _.jsx("li", { children: "💼 Membresía Distribuidor" }),
+                                _.jsx("li", { children: "📉 Licencias al -50% OFF" }),
+                                _.jsx("li", { children: "✅ Panel de Reventa Activo" }),
+                                _.jsx("li", { children: "✅ Material de Ventas" })
+                            ]}),
+
+                            _.jsxs("div", { style: { marginTop: "15px", display: "flex", flexDirection: "column", gap: "10px" }, children: [
+                                _.jsx("button", { onClick: () => y(F, e.r_mes, e.moneda, "REVENDEDOR_MENSUAL"), className: "btn-plan", style: {background: "#3b82f6"}, children: "Suscripción Mensual" }),
+                                _.jsx("button", { onClick: () => y(F, e.r_sem, e.moneda, "REVENDEDOR_SEMESTRAL"), className: "btn-plan-outline", children: `Semestral (${e.simbolo}${b(e.r_sem)})` }),
+                                _.jsx("button", { onClick: () => y(F, e.r_anual, e.moneda, "REVENDEDOR_ANUAL"), className: "btn-plan-outline", children: `Anual (${e.simbolo}${b(e.r_anual)})` })
+                            ]})
+                        ]
+                    }),
+
+                    // === PLAN 3: SOCIO VIP (Mayorista) ===
+                    _.jsxs("div", {
+                        className: "plan-card",
+                        style: { border: "2px solid #D4AF37", background: "linear-gradient(to bottom, #fff, #fffde7)" },
+                        children: [
+                            _.jsx("div", { className: "etiqueta-popular", style: { background: "#D4AF37", color: "black" }, children: "MAYORISTA" }),
+                            _.jsx("h3", { className: "plan-nombre", style: { color: "#b4860b" }, children: "Socio VIP" }),
+                            _.jsx("div", { className: "precio-mensual-info", children: "Rentabilidad Máxima" }),
+                            _.jsxs("div", { className: "plan-precio", children: [_.jsx("span", { className: "simbolo-moneda", children: e.simbolo }), _.jsx("span", { className: "cantidad", children: b(e.v_mes) }), _.jsx("span", { className: "codigo-moneda", children: "/mes" })] }),
+
+                            _.jsxs("ul", { className: "plan-caracteristicas", children: [
+                                _.jsx("li", { children: "👑 Status Socio VIP" }),
+                                _.jsx("li", { children: "🚀 Licencias ILIMITADAS ($0/u)" }),
+                                _.jsx("li", { children: "✅ Soporte Línea Roja" }),
+                                _.jsx("li", { children: "✅ Acceso a Betas" })
+                            ]}),
+
+                            _.jsxs("div", { style: { marginTop: "15px", display: "flex", flexDirection: "column", gap: "10px" }, children: [
+                                _.jsx("button", { onClick: () => y(F, e.v_mes, e.moneda, "VIP_MENSUAL"), className: "btn-plan", style: { background: "#D4AF37", color: "black" }, children: "Suscripción Mensual" }),
+                                _.jsx("button", { onClick: () => y(F, e.v_sem, e.moneda, "VIP_SEMESTRAL"), className: "btn-plan-outline", children: `Semestral (${e.simbolo}${b(e.v_sem)})` }),
+                                _.jsx("button", { onClick: () => y(F, e.v_anual, e.moneda, "VIP_ANUAL"), className: "btn-plan-outline", children: `Anual (${e.simbolo}${b(e.v_anual)})` })
+                            ]})
+                        ]
                     })
-                }), _.jsxs("ul", {
-                    className: "plan-caracteristicas",
-                    children: [_.jsxs("li", {
-                        children: ["💎 ", _.jsx("strong", {
-                            children: "Acceso al programa de reventa"
-                        })]
-                    }), _.jsx("li", {
-                        children: "✅ 5 WhatsApps en local"
-                    }), _.jsxs("li", {
-                        children: ["✅ ", _.jsx("strong", {
-                            children: "Acceso de por vida"
-                        })]
-                    }), _.jsx("li", {
-                        children: "✅ 6 meses de Actualizaciones incluidas"
-                    }), _.jsx("li", {
-                        children: "✅ Soporte de instalación"
-                    }), _.jsx("li", {
-                        children: "✅ IA gratuita o paga (ChatGPT, Llama, Gemini)"
-                    })]
-                }), _.jsxs("div", {
-                    style: {
-                        minHeight: "60px",
-                        marginTop: "20px",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        position: "relative"
-                    },
-                    children: [r && _.jsx("div", {
-                        className: "breathing",
-                        children: "Cargando..."
-                    }), !r && c && _.jsxs("div", {
-                        className: "bold-overlay",
-                        children: [_.jsx("div", {
-                            className: "spinner-bold"
-                        }), _.jsx("span", {
-                            className: "texto-bold-loading",
-                            children: "Cargando pago seguro de Bold..."
-                        })]
-                    }), _.jsx("div", {
-                        ref: p,
-                        style: {
-                            display: r ? "none" : "flex",
-                            width: "100%",
-                            justifyContent: "center"
-                        }
-                    })]
-                })]
-            })]
-        }), _.jsx("p", {
-            className: "garantia-texto",
-            children: "💚 7 días de garantía de devolución • Sin compromisos • Pagos seguros vía Bold"
-        })]
+                ]
+            }),
+            _.jsx("p", { className: "garantia-texto", children: "🔒 Pagos seguros y activación inmediata vía soporte" })
+        ]
     })
 }
   , iI = "/assets/logo-BSWxvb2b.png"
