@@ -28228,211 +28228,177 @@ const XO = {
   , Rf = "https://crm.jhllegalgroup.com";
 console.log("La url: " + Rf);
 const Xv = {
-CO: {
+    CO: {
         nombre: "Colombia",
         moneda: "COP",
         simbolo: "$",
-        // PLAN 1: PERSONAL
-        p_mes: 20000,
-        p_sem: 80000,
-        p_anual: 140000,
-        // PLAN 2: REVENDEDOR (Membresía)
-        r_mes: 80000,
-        r_sem: 400000,
-        r_anual: 1000000,
-        // PLAN 3: SOCIO VIP (Ilimitado)
-        v_mes: 600000,
-        v_sem: 2800000,
-        v_anual: 4800000
+        // PERSONAL (Aprox 4k x 1 USD)
+        p_mes: 20000, p_sem: 80000, p_anual: 140000,
+        // REVENDEDOR
+        r_mes: 80000, r_sem: 400000, r_anual: 1000000,
+        // VIP
+        v_mes: 200000, v_sem: 1000000, v_anual: 2000000
     },
     WORLD: {
         nombre: "Resto del Mundo",
         moneda: "USD",
         simbolo: "$",
-        // PLAN 1: PERSONAL
-        p_mes: 5,
-        p_sem: 20,
-        p_anual: 35,
-        // PLAN 2: REVENDEDOR
-        r_mes: 20,
-        r_sem: 100,
-        r_anual: 250,
-        // PLAN 3: SOCIO VIP
-        v_mes: 150,
-        v_sem: 700,
-        v_anual: 1200
+        // PERSONAL
+        p_mes: 5, p_sem: 20, p_anual: 30, // Ajustado a tu imagen ($30 anual)
+        // REVENDEDOR
+        r_mes: 20, r_sem: 100, r_anual: 250,
+        // VIP
+        v_mes: 50, v_sem: 250, v_anual: 500
     }
 }
   , nI = () => {
     const {usuario: s} = Ea()
       , [e,i] = N.useState(Xv.WORLD)
-      , [r,o] = N.useState(!0)
-      , [c,f] = N.useState(!1)
-      , h = N.useRef(null)
-      , p = N.useRef(null)
+      , [activeTab, setActiveTab] = N.useState("personal") // Estado para las pestañas
       , m = N.useRef(!0);
-    N.useEffect( () => (m.current = !0,
-    () => {
-        m.current = !1
-    }
-    ), []),
-    N.useEffect( () => {
+
+    // Detección de País
+    N.useEffect(() => {
+        m.current = !0;
         (async () => {
-            if (s)
+            if (s) try {
+                let A = "WORLD";
                 try {
-                    m.current && o(!0);
-                    let A = "WORLD";
-                    try {
-                        (await (await fetch("https://ipapi.co/json/")).json()).country_code === "CO" && (A = "CO")
-                    } catch {
-                        console.warn("No se pudo detectar país, usando defecto WORLD")
-                    }
-                    if (!m.current)
-                        return;
-                    const T = Xv[A];
-                    i(T);
-                    const k = await s.getIdToken(!0)
-                      , z = s == null ? void 0 : s.email
-                      , H = await fetch(`${Rf}/api/clave`, {
-                        method: "GET",
-                        headers: {
-                            Authorization: `Bearer ${k}`,
-                            "Content-Type": "application/json",
-                            "ngrok-skip-browser-warning": "true"
-                        }
-                    });
-                    if (!H.ok) {
-                        const Q = await H.text();
-                        throw new Error(`Error clave: ${H.status} - ${Q}`)
-                    }
-                    const F = (await H.json()).clave;
-                    await Promise.all([E(F, T.mensual, T.moneda, "mensual", h, k, z), E(F, T.vitalicio, T.moneda, "vitalicio", p, k, z)])
-                } catch (A) {
-                    console.error("Error en el proceso de carga:", A)
-                } finally {
-                    m.current && (f(!0),
-                    o(!1),
-                    setTimeout( () => {
-                        m.current && f(!1)
-                    }
-                    , 2500))
-                }
-        }
-        )()
-    }
-    , [s]);
-// --- NUEVA FUNCIÓN: PAGO POR WHATSAPP ---
-    const y = (userId, precio, moneda, plan) => {
-        // TU NÚMERO DE WHATSAPP
-        const telefono = "573004085041"; 
-        
-        // Formato bonito del precio
+                    const resp = await (await fetch("https://ipwho.is/")).json();
+                    if (resp.success && resp.country_code === "CO") A = "CO";
+                } catch { }
+                if (m.current) i(Xv[A]);
+            } catch (A) { }
+        })();
+        return () => { m.current = !1 };
+    }, [s]);
+
+    // Función WhatsApp
+    const y = (precio, moneda, plan) => {
+        const telefono = "573004085041";
         const precioF = typeof precio === 'number' ? precio.toLocaleString('es-CO') : precio;
-        
-        // Limpiamos el nombre del plan (ej: "PERSONAL_MENSUAL" -> "PERSONAL MENUAL")
         const nombrePlan = plan.replace(/_/g, ' ');
+        const userId = s ? s.email : "Invitado";
+        
+        const mensaje = `Hola 👋, estoy interesado en el plan:
+📦 *${nombrePlan}*
+💰 *Precio:* ${moneda} ${precioF}
+🆔 *ID:* ${userId}
 
-        const mensaje = `Hola 👋, quiero adquirir una suscripción WAI:
-
-📦 *Plan:* ${nombrePlan}
-💰 *Valor:* ${moneda} ${precioF}
-🆔 *Mi ID:* ${userId}
-
-¿Me indicas los medios de pago?`;
+¿Me envías el link de pago?`;
 
         window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`, '_blank');
     };
 
-    // Formateador de números
-    const b = y => typeof y != "number" ? "N/A" : y % 1 !== 0 ? y.toFixed(2) : y.toLocaleString("es-ES");
+    const b = val => typeof val != "number" ? "N/A" : val.toLocaleString("es-ES");
 
-    // --- NUEVA INTERFAZ: 3 PLANES ---
+    // Datos de las tarjetas según la pestaña activa
+    const getCards = () => {
+        const p = e; // Precios actuales
+        if (activeTab === "personal") return [
+            { id: "p_m", title: "Mensual", price: p.p_mes, old: p.p_mes * 3, save: null, period: "/mes", popular: false, features: ["1 Número de WhatsApp", "Uso en múltiples PCs", "Respuestas Automáticas"] },
+            { id: "p_a", title: "ANUAL", price: p.p_anual, old: p.p_mes * 12, save: `Ahorras ${p.simbolo}${b(p.p_mes * 12 - p.p_anual)}`, period: "/año", popular: true, features: ["1 Número de WhatsApp", "Soporte Prioritario", "Todas las funciones PRO"] },
+            { id: "p_s", title: "Semestral", price: p.p_sem, old: p.p_mes * 6, save: `Ahorras ${p.simbolo}${b(p.p_mes * 6 - p.p_sem)}`, period: "/sem", popular: false, features: ["1 Número de WhatsApp", "Uso en múltiples PCs", "Actualizaciones"] }
+        ];
+        if (activeTab === "pro") return [
+            { id: "r_m", title: "Mensual", price: p.r_mes, old: p.r_mes * 2, save: null, period: "/mes", popular: false, features: ["Panel Revendedor", "Licencias al -50%", "Soporte Prioritario"] },
+            { id: "r_a", title: "ANUAL", price: p.r_anual, old: p.r_mes * 12, save: "Margen Alto", period: "/año", popular: true, features: ["Panel Revendedor", "Licencias al -50%", "Material Marketing"] },
+            { id: "r_s", title: "Semestral", price: p.r_sem, old: p.r_mes * 6, save: "Ahorro", period: "/sem", popular: false, features: ["Panel Revendedor", "Licencias al -50%", "Soporte Prioritario"] }
+        ];
+        // VIP
+        return [
+            { id: "v_m", title: "Mensual", price: p.v_mes, old: p.v_mes * 2, save: null, period: "/mes", popular: false, features: ["Panel Super Vendedor", "Licencias ILIMITADAS ($0)", "Línea Roja Soporte"] },
+            { id: "v_a", title: "ANUAL", price: p.v_anual, old: p.v_mes * 12, save: "El Negocio Completo", period: "/año", popular: true, features: ["Marca Blanca", "Dominio Propio", "Red de Revendedores"] },
+            { id: "v_s", title: "Semestral", price: p.v_sem, old: p.v_mes * 6, save: "Gran Ahorro", period: "/sem", popular: false, features: ["Panel Super Vendedor", "Licencias ILIMITADAS", "Acceso a Betas"] }
+        ];
+    };
+
+    const cards = getCards();
+
+    // Estilos Dark Mode (Inline para asegurar que se vea bien sin CSS externo)
+    const sContainer = { backgroundColor: "#0f172a", color: "white", padding: "3rem 1rem", minHeight: "100vh", fontFamily: "'Inter', sans-serif" };
+    const sHeader = { textAlign: "center", marginBottom: "3rem" };
+    const sTabContainer = { display: "inline-flex", background: "rgba(255,255,255,0.05)", padding: "5px", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.1)" };
+    const sTabBtn = (active) => ({
+        padding: "10px 24px", borderRadius: "8px", border: "none", cursor: "pointer", fontWeight: "600", fontSize: "0.9rem", transition: "all 0.3s",
+        background: active ? "rgba(255,255,255,0.1)" : "transparent",
+        color: active ? "white" : "#94a3b8",
+        boxShadow: active ? "0 4px 12px rgba(0,0,0,0.2)" : "none"
+    });
+
+    const sGrid = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "2rem", maxWidth: "1200px", margin: "0 auto" };
+    const sCard = (popular) => ({
+        background: popular ? "linear-gradient(145deg, #1e293b, #0f172a)" : "rgba(255,255,255,0.02)",
+        border: popular ? "2px solid #10b981" : "1px solid rgba(255,255,255,0.1)",
+        borderRadius: "24px", padding: "2rem", position: "relative",
+        transform: popular ? "scale(1.05)" : "scale(1)",
+        boxShadow: popular ? "0 20px 40px -10px rgba(16,185,129,0.2)" : "none",
+        transition: "transform 0.3s ease"
+    });
+
     return _.jsxs("div", {
-        className: "planes-suscripcion-container",
+        style: sContainer,
         children: [
-            _.jsx("h2", { className: "planes-titulo", children: "Elige tu Nivel de Socio" }),
-            _.jsxs("p", { className: "planes-subtitulo", children: ["Precios ajustados para ", e.nombre] }),
-            
+            // Header y Tabs
             _.jsxs("div", {
-                className: "planes-grid",
-                style: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px" },
+                style: sHeader,
                 children: [
-                    
-                    // === PLAN 1: PERSONAL (Usuario Final) ===
+                    _.jsx("h2", { style: { fontSize: "3rem", fontWeight: "800", marginBottom: "1rem" }, children: "Elige tu nivel de éxito" }),
                     _.jsxs("div", {
-                        className: "plan-card",
+                        style: sTabContainer,
                         children: [
-                            _.jsx("h3", { className: "plan-nombre", children: "Uso Personal" }),
-                            _.jsx("div", { className: "precio-mensual-info", children: "Ideal para tu negocio" }),
-                            _.jsxs("div", { className: "plan-precio", children: [_.jsx("span", { className: "simbolo-moneda", children: e.simbolo }), _.jsx("span", { className: "cantidad", children: b(e.p_mes) }), _.jsx("span", { className: "codigo-moneda", children: "/mes" })] }),
-                            
-                            _.jsxs("ul", { className: "plan-caracteristicas", children: [
-                                _.jsx("li", { children: "✅ 1 Licencia PC" }),
-                                _.jsx("li", { children: "✅ 5 WhatsApps Locales" }),
-                                _.jsx("li", { children: "✅ Respuestas con IA" }),
-                                _.jsx("li", { children: "✅ Soporte Instalación" })
-                            ]}),
-
-                            _.jsxs("div", { style: { marginTop: "15px", display: "flex", flexDirection: "column", gap: "10px" }, children: [
-                                _.jsx("button", { onClick: () => y(F, e.p_mes, e.moneda, "PERSONAL_MENSUAL"), className: "btn-plan", children: "Mensual" }),
-                                _.jsx("button", { onClick: () => y(F, e.p_sem, e.moneda, "PERSONAL_SEMESTRAL"), className: "btn-plan-outline", children: `Semestral (${e.simbolo}${b(e.p_sem)})` }),
-                                _.jsx("button", { onClick: () => y(F, e.p_anual, e.moneda, "PERSONAL_ANUAL"), className: "btn-plan-outline", children: `Anual (${e.simbolo}${b(e.p_anual)})` })
-                            ]})
-                        ]
-                    }),
-
-                    // === PLAN 2: REVENDEDOR (Emprendedor) ===
-                    _.jsxs("div", {
-                        className: "plan-card plan-destacado",
-                        style: { border: "2px solid #3b82f6" },
-                        children: [
-                            _.jsx("div", { className: "etiqueta-popular", style: { background: "#3b82f6" }, children: "EMPRENDEDOR" }),
-                            _.jsx("h3", { className: "plan-nombre", children: "Revendedor" }),
-                            _.jsx("div", { className: "precio-mensual-info", children: "Inicia tu negocio SaaS" }),
-                            _.jsxs("div", { className: "plan-precio", children: [_.jsx("span", { className: "simbolo-moneda", children: e.simbolo }), _.jsx("span", { className: "cantidad", children: b(e.r_mes) }), _.jsx("span", { className: "codigo-moneda", children: "/mes" })] }),
-
-                            _.jsxs("ul", { className: "plan-caracteristicas", children: [
-                                _.jsx("li", { children: "💼 Membresía Distribuidor" }),
-                                _.jsx("li", { children: "📉 Licencias al -50% OFF" }),
-                                _.jsx("li", { children: "✅ Panel de Reventa Activo" }),
-                                _.jsx("li", { children: "✅ Material de Ventas" })
-                            ]}),
-
-                            _.jsxs("div", { style: { marginTop: "15px", display: "flex", flexDirection: "column", gap: "10px" }, children: [
-                                _.jsx("button", { onClick: () => y(F, e.r_mes, e.moneda, "REVENDEDOR_MENSUAL"), className: "btn-plan", style: {background: "#3b82f6"}, children: "Suscripción Mensual" }),
-                                _.jsx("button", { onClick: () => y(F, e.r_sem, e.moneda, "REVENDEDOR_SEMESTRAL"), className: "btn-plan-outline", children: `Semestral (${e.simbolo}${b(e.r_sem)})` }),
-                                _.jsx("button", { onClick: () => y(F, e.r_anual, e.moneda, "REVENDEDOR_ANUAL"), className: "btn-plan-outline", children: `Anual (${e.simbolo}${b(e.r_anual)})` })
-                            ]})
-                        ]
-                    }),
-
-                    // === PLAN 3: SOCIO VIP (Mayorista) ===
-                    _.jsxs("div", {
-                        className: "plan-card",
-                        style: { border: "2px solid #D4AF37", background: "linear-gradient(to bottom, #fff, #fffde7)" },
-                        children: [
-                            _.jsx("div", { className: "etiqueta-popular", style: { background: "#D4AF37", color: "black" }, children: "MAYORISTA" }),
-                            _.jsx("h3", { className: "plan-nombre", style: { color: "#b4860b" }, children: "Socio VIP" }),
-                            _.jsx("div", { className: "precio-mensual-info", children: "Rentabilidad Máxima" }),
-                            _.jsxs("div", { className: "plan-precio", children: [_.jsx("span", { className: "simbolo-moneda", children: e.simbolo }), _.jsx("span", { className: "cantidad", children: b(e.v_mes) }), _.jsx("span", { className: "codigo-moneda", children: "/mes" })] }),
-
-                            _.jsxs("ul", { className: "plan-caracteristicas", children: [
-                                _.jsx("li", { children: "👑 Status Socio VIP" }),
-                                _.jsx("li", { children: "🚀 Licencias ILIMITADAS ($0/u)" }),
-                                _.jsx("li", { children: "✅ Soporte Línea Roja" }),
-                                _.jsx("li", { children: "✅ Acceso a Betas" })
-                            ]}),
-
-                            _.jsxs("div", { style: { marginTop: "15px", display: "flex", flexDirection: "column", gap: "10px" }, children: [
-                                _.jsx("button", { onClick: () => y(F, e.v_mes, e.moneda, "VIP_MENSUAL"), className: "btn-plan", style: { background: "#D4AF37", color: "black" }, children: "Suscripción Mensual" }),
-                                _.jsx("button", { onClick: () => y(F, e.v_sem, e.moneda, "VIP_SEMESTRAL"), className: "btn-plan-outline", children: `Semestral (${e.simbolo}${b(e.v_sem)})` }),
-                                _.jsx("button", { onClick: () => y(F, e.v_anual, e.moneda, "VIP_ANUAL"), className: "btn-plan-outline", children: `Anual (${e.simbolo}${b(e.v_anual)})` })
-                            ]})
+                            _.jsx("button", { onClick: () => setActiveTab("personal"), style: sTabBtn(activeTab === "personal"), children: "Uso Personal" }),
+                            _.jsx("button", { onClick: () => setActiveTab("pro"), style: sTabBtn(activeTab === "pro"), children: "Revendedor Pro" }),
+                            _.jsx("button", { onClick: () => setActiveTab("vip"), style: sTabBtn(activeTab === "vip"), children: "Revendedor VIP" })
                         ]
                     })
                 ]
             }),
-            _.jsx("p", { className: "garantia-texto", children: "🔒 Pagos seguros y activación inmediata vía soporte" })
+
+            // Grid de Tarjetas
+            _.jsx("div", {
+                style: sGrid,
+                children: cards.map((card, idx) => 
+                    _.jsxs("div", {
+                        style: sCard(card.popular),
+                        className: "hover-card-effect", // Clase auxiliar para hover si existe en CSS
+                        children: [
+                            card.popular && _.jsx("div", {
+                                style: { position: "absolute", top: 0, right: 0, background: "#10b981", color: "white", padding: "5px 15px", borderRadius: "0 20px 0 10px", fontWeight: "bold", fontSize: "0.8rem" },
+                                children: "POPULAR"
+                            }),
+                            _.jsx("h3", { style: { color: "#94a3b8", fontSize: "1.1rem", marginBottom: "1rem" }, children: card.title }),
+                            _.jsxs("div", {
+                                style: { display: "flex", alignItems: "baseline", marginBottom: "0.5rem" },
+                                children: [
+                                    _.jsx("span", { style: { fontSize: "3.5rem", fontWeight: "bold" }, children: `${e.simbolo}${b(card.price)}` }),
+                                    _.jsx("span", { style: { color: "#64748b", textDecoration: "line-through", marginLeft: "10px", fontSize: "1.2rem" }, children: `${e.simbolo}${b(card.old)}` })
+                                ]
+                            }),
+                            card.save && _.jsx("p", { style: { color: "#4ade80", fontWeight: "bold", fontSize: "0.9rem", marginBottom: "2rem" }, children: card.save }),
+                            
+                            _.jsx("ul", {
+                                style: { listStyle: "none", padding: 0, textAlign: "left", marginBottom: "2rem" },
+                                children: card.features.map((feat, i) => 
+                                    _.jsxs("li", { style: { display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px", color: "#e2e8f0" }, children: [
+                                        _.jsx("span", { style: { color: "#10b981" }, children: "✔" }), feat
+                                    ] }, i)
+                                )
+                            }),
+                            
+                            _.jsx("button", {
+                                onClick: () => y(card.price, e.moneda, `${activeTab.toUpperCase()}_${card.title}`),
+                                style: {
+                                    width: "100%", padding: "16px", borderRadius: "12px", fontWeight: "bold", cursor: "pointer", border: "none",
+                                    background: card.popular ? "linear-gradient(to right, #10b981, #059669)" : "rgba(255,255,255,0.1)",
+                                    color: "white", fontSize: "1rem"
+                                },
+                                children: "Contratar"
+                            })
+                        ]
+                    }, idx)
+                )
+            })
         ]
     })
 }
