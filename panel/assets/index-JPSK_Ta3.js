@@ -28232,7 +28232,7 @@ const Xv = {
         nombre: "Colombia",
         moneda: "COP",
         simbolo: "$",
-        // PERSONAL (Aprox 4k x 1 USD)
+        // PERSONAL
         p_mes: 20000, p_sem: 80000, p_anual: 140000,
         // REVENDEDOR
         r_mes: 80000, r_sem: 400000, r_anual: 1000000,
@@ -28243,21 +28243,20 @@ const Xv = {
         nombre: "Resto del Mundo",
         moneda: "USD",
         simbolo: "$",
-        // PERSONAL
-        p_mes: 5, p_sem: 20, p_anual: 30, // Ajustado a tu imagen ($30 anual)
-        // REVENDEDOR
+        // PERSONAL ($5 / $20 / $35)
+        p_mes: 5, p_sem: 20, p_anual: 35,
+        // REVENDEDOR ($20 / $100 / $250)
         r_mes: 20, r_sem: 100, r_anual: 250,
-        // VIP
+        // VIP (Ajustado a tu escala: $50 / $250 / $500)
         v_mes: 50, v_sem: 250, v_anual: 500
     }
 }
   , nI = () => {
     const {usuario: s} = Ea()
       , [e,i] = N.useState(Xv.WORLD)
-      , [activeTab, setActiveTab] = N.useState("personal") // Estado para las pestañas
+      , [activeTab, setActiveTab] = N.useState("personal")
       , m = N.useRef(!0);
 
-    // Detección de País
     N.useEffect(() => {
         m.current = !0;
         (async () => {
@@ -28273,127 +28272,135 @@ const Xv = {
         return () => { m.current = !1 };
     }, [s]);
 
-    // Función WhatsApp
     const y = (precio, moneda, plan) => {
         const telefono = "573004085041";
         const precioF = typeof precio === 'number' ? precio.toLocaleString('es-CO') : precio;
         const nombrePlan = plan.replace(/_/g, ' ');
         const userId = s ? s.email : "Invitado";
-        
-        const mensaje = `Hola 👋, estoy interesado en el plan:
+        const mensaje = `Hola 👋, quiero el plan:
 📦 *${nombrePlan}*
 💰 *Precio:* ${moneda} ${precioF}
 🆔 *ID:* ${userId}
 
 ¿Me envías el link de pago?`;
-
         window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`, '_blank');
     };
 
     const b = val => typeof val != "number" ? "N/A" : val.toLocaleString("es-ES");
 
-    // Datos de las tarjetas según la pestaña activa
+    // TUS DATOS REALES (WAI)
     const getCards = () => {
-        const p = e; // Precios actuales
+        const p = e;
         if (activeTab === "personal") return [
-            { id: "p_m", title: "Mensual", price: p.p_mes, old: p.p_mes * 3, save: null, period: "/mes", popular: false, features: ["1 Número de WhatsApp", "Uso en múltiples PCs", "Respuestas Automáticas"] },
-            { id: "p_a", title: "ANUAL", price: p.p_anual, old: p.p_mes * 12, save: `Ahorras ${p.simbolo}${b(p.p_mes * 12 - p.p_anual)}`, period: "/año", popular: true, features: ["1 Número de WhatsApp", "Soporte Prioritario", "Todas las funciones PRO"] },
-            { id: "p_s", title: "Semestral", price: p.p_sem, old: p.p_mes * 6, save: `Ahorras ${p.simbolo}${b(p.p_mes * 6 - p.p_sem)}`, period: "/sem", popular: false, features: ["1 Número de WhatsApp", "Uso en múltiples PCs", "Actualizaciones"] }
+            { id: "p_m", title: "Mensual", price: p.p_mes, old: p.p_mes * 3, save: null, period: "/mes", popular: false, features: ["✅ 1 Licencia PC", "✅ 5 WhatsApps en local", "✅ Plan prepago", "✅ Respuestas automáticas", "✅ IA (ChatGPT, Llama, Gemini)"] },
+            { id: "p_a", title: "ANUAL", price: p.p_anual, old: p.p_mes * 12, save: "MEJOR PRECIO", period: "/año", popular: true, features: ["✅ 1 Licencia PC (1 Año)", "✅ Todo lo del mensual", "✅ Soporte Prioritario", "✅ Ahorro masivo"] },
+            { id: "p_s", title: "Semestral", price: p.p_sem, old: p.p_mes * 6, save: "AHORRO", period: "/sem", popular: false, features: ["✅ 1 Licencia PC (6 Meses)", "✅ Todo lo del mensual", "✅ Soporte Estándar"] }
         ];
         if (activeTab === "pro") return [
-            { id: "r_m", title: "Mensual", price: p.r_mes, old: p.r_mes * 2, save: null, period: "/mes", popular: false, features: ["Panel Revendedor", "Licencias al -50%", "Soporte Prioritario"] },
-            { id: "r_a", title: "ANUAL", price: p.r_anual, old: p.r_mes * 12, save: "Margen Alto", period: "/año", popular: true, features: ["Panel Revendedor", "Licencias al -50%", "Material Marketing"] },
-            { id: "r_s", title: "Semestral", price: p.r_sem, old: p.r_mes * 6, save: "Ahorro", period: "/sem", popular: false, features: ["Panel Revendedor", "Licencias al -50%", "Soporte Prioritario"] }
+            { id: "r_m", title: "Mensual", price: p.r_mes, old: p.r_mes * 2, save: null, period: "/mes", popular: false, features: ["💼 Membresía Distribuidor", "📉 Licencias -50% OFF", "✅ Panel de Reventa", "✅ Material Gráfico"] },
+            { id: "r_a", title: "ANUAL", price: p.r_anual, old: p.r_mes * 12, save: "MAYOR MARGEN", period: "/año", popular: true, features: ["💼 Membresía (1 Año)", "📉 Licencias -50% OFF", "✅ Panel de Reventa", "✅ Prioridad WhatsApp"] },
+            { id: "r_s", title: "Semestral", price: p.r_sem, old: p.r_mes * 6, save: "AHORRO", period: "/sem", popular: false, features: ["💼 Membresía (6 Meses)", "📉 Licencias -50% OFF", "✅ Panel de Reventa"] }
         ];
         // VIP
         return [
-            { id: "v_m", title: "Mensual", price: p.v_mes, old: p.v_mes * 2, save: null, period: "/mes", popular: false, features: ["Panel Super Vendedor", "Licencias ILIMITADAS ($0)", "Línea Roja Soporte"] },
-            { id: "v_a", title: "ANUAL", price: p.v_anual, old: p.v_mes * 12, save: "El Negocio Completo", period: "/año", popular: true, features: ["Marca Blanca", "Dominio Propio", "Red de Revendedores"] },
-            { id: "v_s", title: "Semestral", price: p.v_sem, old: p.v_mes * 6, save: "Gran Ahorro", period: "/sem", popular: false, features: ["Panel Super Vendedor", "Licencias ILIMITADAS", "Acceso a Betas"] }
+            { id: "v_m", title: "Mensual", price: p.v_mes, old: p.v_mes * 2, save: null, period: "/mes", popular: false, features: ["👑 Status Socio VIP", "🚀 Licencias ILIMITADAS ($0)", "✅ Soporte Línea Roja", "✅ Acceso a Betas"] },
+            { id: "v_a", title: "ANUAL", price: p.v_anual, old: p.v_mes * 12, save: "NEGOCIO TOTAL", period: "/año", popular: true, features: ["👑 Status VIP (1 Año)", "🚀 Licencias ILIMITADAS ($0)", "✅ Estrategias Marketing", "✅ Todo Incluido"] },
+            { id: "v_s", title: "Semestral", price: p.v_sem, old: p.v_mes * 6, save: "AHORRO", period: "/sem", popular: false, features: ["👑 Status VIP (6 Meses)", "🚀 Licencias ILIMITADAS ($0)", "✅ Soporte Directo"] }
         ];
     };
 
     const cards = getCards();
 
-    // Estilos Dark Mode (Inline para asegurar que se vea bien sin CSS externo)
-    const sContainer = { backgroundColor: "#0f172a", color: "white", padding: "3rem 1rem", minHeight: "100vh", fontFamily: "'Inter', sans-serif" };
+    // ESTILOS WAI (Claros y Corporativos)
+    const sContainer = { backgroundColor: "#f8f9fa", color: "#333", padding: "3rem 1rem", minHeight: "100vh", fontFamily: "inherit" };
     const sHeader = { textAlign: "center", marginBottom: "3rem" };
-    const sTabContainer = { display: "inline-flex", background: "rgba(255,255,255,0.05)", padding: "5px", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.1)" };
+    const sTabContainer = { display: "inline-flex", background: "#e2e8f0", padding: "5px", borderRadius: "12px", boxShadow: "inset 0 2px 4px rgba(0,0,0,0.06)" };
+    
+    // Botones de pestañas (Azul WAI activo / Gris inactivo)
     const sTabBtn = (active) => ({
-        padding: "10px 24px", borderRadius: "8px", border: "none", cursor: "pointer", fontWeight: "600", fontSize: "0.9rem", transition: "all 0.3s",
-        background: active ? "rgba(255,255,255,0.1)" : "transparent",
-        color: active ? "white" : "#94a3b8",
-        boxShadow: active ? "0 4px 12px rgba(0,0,0,0.2)" : "none"
+        padding: "10px 24px", borderRadius: "8px", border: "none", cursor: "pointer", fontWeight: "600", fontSize: "0.95rem", transition: "all 0.3s",
+        background: active ? "#fff" : "transparent",
+        color: active ? "#0f172a" : "#64748b",
+        boxShadow: active ? "0 4px 6px rgba(0,0,0,0.1)" : "none",
+        transform: active ? "scale(1.05)" : "scale(1)"
     });
 
     const sGrid = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "2rem", maxWidth: "1200px", margin: "0 auto" };
+    
+    // Tarjetas Blancas limpias
     const sCard = (popular) => ({
-        background: popular ? "linear-gradient(145deg, #1e293b, #0f172a)" : "rgba(255,255,255,0.02)",
-        border: popular ? "2px solid #10b981" : "1px solid rgba(255,255,255,0.1)",
+        background: "#ffffff",
+        border: popular ? "2px solid #3b82f6" : "1px solid #e2e8f0",
         borderRadius: "24px", padding: "2rem", position: "relative",
-        transform: popular ? "scale(1.05)" : "scale(1)",
-        boxShadow: popular ? "0 20px 40px -10px rgba(16,185,129,0.2)" : "none",
+        transform: popular ? "translateY(-10px)" : "none",
+        boxShadow: popular ? "0 20px 25px -5px rgba(59, 130, 246, 0.15)" : "0 4px 6px -1px rgba(0, 0, 0, 0.05)",
         transition: "transform 0.3s ease"
     });
 
     return _.jsxs("div", {
         style: sContainer,
         children: [
-            // Header y Tabs
             _.jsxs("div", {
                 style: sHeader,
                 children: [
-                    _.jsx("h2", { style: { fontSize: "3rem", fontWeight: "800", marginBottom: "1rem" }, children: "Elige tu nivel de éxito" }),
+                    _.jsx("h2", { style: { fontSize: "2.5rem", fontWeight: "800", color: "#1e293b", marginBottom: "0.5rem" }, children: "Elige tu nivel de éxito" }),
+                    _.jsx("p", { style: { color: "#64748b", marginBottom: "2rem" }, children: "Planes flexibles para potenciar tu WhatsApp" }),
                     _.jsxs("div", {
                         style: sTabContainer,
                         children: [
                             _.jsx("button", { onClick: () => setActiveTab("personal"), style: sTabBtn(activeTab === "personal"), children: "Uso Personal" }),
-                            _.jsx("button", { onClick: () => setActiveTab("pro"), style: sTabBtn(activeTab === "pro"), children: "Revendedor Pro" }),
-                            _.jsx("button", { onClick: () => setActiveTab("vip"), style: sTabBtn(activeTab === "vip"), children: "Revendedor VIP" })
+                            _.jsx("button", { onClick: () => setActiveTab("pro"), style: sTabBtn(activeTab === "pro"), children: "Revendedor" }),
+                            _.jsx("button", { onClick: () => setActiveTab("vip"), style: sTabBtn(activeTab === "vip"), children: "Socio VIP" })
                         ]
                     })
                 ]
             }),
 
-            // Grid de Tarjetas
             _.jsx("div", {
                 style: sGrid,
                 children: cards.map((card, idx) => 
                     _.jsxs("div", {
                         style: sCard(card.popular),
-                        className: "hover-card-effect", // Clase auxiliar para hover si existe en CSS
                         children: [
                             card.popular && _.jsx("div", {
-                                style: { position: "absolute", top: 0, right: 0, background: "#10b981", color: "white", padding: "5px 15px", borderRadius: "0 20px 0 10px", fontWeight: "bold", fontSize: "0.8rem" },
+                                style: { position: "absolute", top: 0, right: 0, background: "#3b82f6", color: "white", padding: "5px 15px", borderRadius: "0 20px 0 10px", fontWeight: "bold", fontSize: "0.8rem" },
                                 children: "POPULAR"
                             }),
-                            _.jsx("h3", { style: { color: "#94a3b8", fontSize: "1.1rem", marginBottom: "1rem" }, children: card.title }),
+                            _.jsx("h3", { style: { color: "#64748b", fontSize: "1.1rem", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "1rem" }, children: card.title }),
+                            
+                            // PRECIOS CORREGIDOS (Para que no se salga el tachado)
                             _.jsxs("div", {
-                                style: { display: "flex", alignItems: "baseline", marginBottom: "0.5rem" },
+                                style: { display: "flex", flexDirection: "column", marginBottom: "1.5rem" }, // Cambiado a columna para evitar desbordes
                                 children: [
-                                    _.jsx("span", { style: { fontSize: "3.5rem", fontWeight: "bold" }, children: `${e.simbolo}${b(card.price)}` }),
-                                    _.jsx("span", { style: { color: "#64748b", textDecoration: "line-through", marginLeft: "10px", fontSize: "1.2rem" }, children: `${e.simbolo}${b(card.old)}` })
+                                    _.jsxs("div", { style: { display: "flex", alignItems: "baseline", gap: "10px" }, children: [
+                                        _.jsx("span", { style: { fontSize: "3rem", fontWeight: "800", color: "#0f172a" }, children: `${e.simbolo}${b(card.price)}` }),
+                                        _.jsx("span", { style: { color: "#94a3b8", fontSize: "1rem" }, children: card.period })
+                                    ]}),
+                                    // Precio tachado debajo o pequeño
+                                    _.jsx("span", { style: { color: "#ef4444", textDecoration: "line-through", fontSize: "1rem", fontWeight: "500" }, children: `Antes: ${e.simbolo}${b(card.old)}` })
                                 ]
                             }),
-                            card.save && _.jsx("p", { style: { color: "#4ade80", fontWeight: "bold", fontSize: "0.9rem", marginBottom: "2rem" }, children: card.save }),
+
+                            card.save && _.jsx("p", { style: { color: "#16a34a", background: "#dcfce7", display: "inline-block", padding: "4px 12px", borderRadius: "20px", fontSize: "0.85rem", fontWeight: "bold", marginBottom: "1.5rem" }, children: card.save }),
                             
                             _.jsx("ul", {
-                                style: { listStyle: "none", padding: 0, textAlign: "left", marginBottom: "2rem" },
+                                style: { listStyle: "none", padding: 0, marginTop: "1rem", textAlign: "left" },
                                 children: card.features.map((feat, i) => 
-                                    _.jsxs("li", { style: { display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px", color: "#e2e8f0" }, children: [
-                                        _.jsx("span", { style: { color: "#10b981" }, children: "✔" }), feat
-                                    ] }, i)
+                                    _.jsx("li", { style: { padding: "8px 0", borderBottom: "1px solid #f1f5f9", color: "#334155", fontSize: "0.95rem" }, children: feat }, i)
                                 )
                             }),
                             
                             _.jsx("button", {
                                 onClick: () => y(card.price, e.moneda, `${activeTab.toUpperCase()}_${card.title}`),
                                 style: {
-                                    width: "100%", padding: "16px", borderRadius: "12px", fontWeight: "bold", cursor: "pointer", border: "none",
-                                    background: card.popular ? "linear-gradient(to right, #10b981, #059669)" : "rgba(255,255,255,0.1)",
-                                    color: "white", fontSize: "1rem"
+                                    width: "100%", padding: "16px", borderRadius: "12px", fontWeight: "bold", cursor: "pointer", border: "none", marginTop: "20px",
+                                    background: card.popular ? "linear-gradient(to right, #2563eb, #3b82f6)" : "#f1f5f9", // Azul fuerte si es popular, gris suave si no
+                                    color: card.popular ? "white" : "#334155",
+                                    fontSize: "1rem", transition: "transform 0.2s"
                                 },
-                                children: "Contratar"
+                                onMouseOver: (e) => e.target.style.transform = "scale(1.02)",
+                                onMouseOut: (e) => e.target.style.transform = "scale(1)",
+                                children: "Contratar Ahora"
                             })
                         ]
                     }, idx)
