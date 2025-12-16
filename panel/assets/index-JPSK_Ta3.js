@@ -29793,9 +29793,9 @@ const UI = [["path", {
     // Función Dinámica de Activación
     const activarConPlan = async (planId, costo, nombrePlan) => {
         if (!re.includes("@")) return Ye({tipo: "error", text: "Email inválido"});
-        if (p.cuentasDisponibles < costo) return Ye({tipo: "error", text: `Saldo insuficiente (${costo} Fichas)`});
+        if (p.cuentasDisponibles < costo) return Ye({tipo: "error", text: `Saldo insuficiente (${costo} Licencias)`});
         
-        if (!confirm(`¿Confirmar Activación?\n\nPlan: ${nombrePlan}\nCosto: ${costo} Fichas`)) return;
+        if (!confirm(`¿Confirmar Activación?\n\nPlan: ${nombrePlan}\nCosto: ${costo} Licencias`)) return;
 
         ve(!0); Ye(null);
         try {
@@ -29878,7 +29878,7 @@ const UI = [["path", {
                                     style: {background: "#3b82f6"}, 
                                     children: [
                                         getNombreCorto(pl.nombre), 
-                                        _.jsx("span", { style: {display:"block", fontSize:"0.6em"}, children: `(${pl.costoCreditos} Fichas)` })
+                                        _.jsx("span", { style: {display:"block", fontSize:"0.6em"}, children: `(${pl.costoCreditos} Licencias)` })
                                     ] 
                                 }, pl.id)
                             ) : _.jsx("p", {style:{fontSize:"0.8rem"}, children:"Cargando planes..."})
@@ -29898,7 +29898,7 @@ const UI = [["path", {
                                     style: {background: "#10b981"}, 
                                     children: [
                                         getNombreCorto(pl.nombre), 
-                                        _.jsx("span", { style: {display:"block", fontSize:"0.6em"}, children: `(${pl.costoCreditos} Fichas)` })
+                                        _.jsx("span", { style: {display:"block", fontSize:"0.6em"}, children: `(${pl.costoCreditos} Licencias)` })
                                     ] 
                                 }, pl.id)
                             ) : _.jsx("p", {style:{fontSize:"0.8rem", color:"#166534"}, children:"Cargando packs..."})
@@ -29918,7 +29918,7 @@ const UI = [["path", {
                                     style: {background: "#f59e0b"}, 
                                     children: [
                                         getNombreCorto(pl.nombre), 
-                                        _.jsx("span", { style: {display:"block", fontSize:"0.6em"}, children: `(${pl.costoCreditos} Fichas)` })
+                                        _.jsx("span", { style: {display:"block", fontSize:"0.6em"}, children: `(${pl.costoCreditos} Licencias)` })
                                     ] 
                                 }, pl.id)
                             ) : _.jsx("p", {style:{fontSize:"0.8rem", color:"#b45309"}, children:"Cargando VIPs..."})
