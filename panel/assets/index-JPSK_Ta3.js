@@ -30232,6 +30232,8 @@ const UI = [["path", {
                             children: _.jsx(ey, {})
                         }), " Gestión Manual"]
                     })
+
+
                 }), _.jsxs("div", {
                     className: "manual-block",
                     children: [_.jsx("h4", {
@@ -30240,16 +30242,76 @@ const UI = [["path", {
                         children: ["Usa tus licencias (", p.cuentasDisponibles, ") para activar."]
                     }), _.jsxs("div", {
                         className: "input-group-manual",
+                        style: { flexDirection: "column", gap: "10px" },
                         children: [_.jsx("input", {
                             type: "email",
                             placeholder: "Email del cliente",
                             value: re,
-                            onChange: J => ye(J.target.value)
-                        }), _.jsx("button", {
-                            onClick: () => re.includes("@") && et(!0),
-                            disabled: p.cuentasDisponibles <= 0 || !re,
-                            className: "btn-activate",
-                            children: "Activar"
+                            onChange: J => ye(J.target.value),
+                            style: { width: "100%", marginBottom: "5px" }
+                        }), _.jsxs("div", {
+                            style: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "5px", width: "100%" },
+                            children: [_.jsxs("button", {
+                                onClick: () => {
+                                    if (!re.includes("@")) return Ye({ tipo: "error", text: "Email inválido" });
+                                    if (p.cuentasDisponibles < 1) return Ye({ tipo: "error", text: "Saldo insuficiente" });
+                                    if (!confirm("¿Activar MENSUAL por 1 crédito?")) return;
+                                    ve(!0);
+                                    Ye(null);
+                                    ge("revendedor/activar-licencia", "POST", { cliente: re.toLowerCase(), tipoPlan: "mensual" }).then(J => {
+                                        m(oe => ({ ...oe, cuentasDisponibles: J.nuevoSaldo !== undefined ? J.nuevoSaldo : (oe.cuentasDisponibles - 1) }));
+                                        dt(!0);
+                                        ye("")
+                                    }).catch(J => Ye({ tipo: "error", text: J.message })).finally(() => ve(!1))
+                                },
+                                disabled: p.cuentasDisponibles < 1 || !re || Te,
+                                className: "btn-activate",
+                                style: { background: "#3b82f6", fontSize: "0.8rem", padding: "8px 2px" },
+                                children: ["Mensual", _.jsx("span", {
+                                    style: { display: "block", fontSize: "0.65em", opacity: 0.8 },
+                                    children: "(1 Créd)"
+                                })]
+                            }), _.jsxs("button", {
+                                onClick: () => {
+                                    if (!re.includes("@")) return Ye({ tipo: "error", text: "Email inválido" });
+                                    if (p.cuentasDisponibles < 4) return Ye({ tipo: "error", text: "Saldo insuficiente" });
+                                    if (!confirm("¿Activar SEMESTRAL por 4 créditos?")) return;
+                                    ve(!0);
+                                    Ye(null);
+                                    ge("revendedor/activar-licencia", "POST", { cliente: re.toLowerCase(), tipoPlan: "semestral" }).then(J => {
+                                        m(oe => ({ ...oe, cuentasDisponibles: J.nuevoSaldo !== undefined ? J.nuevoSaldo : (oe.cuentasDisponibles - 4) }));
+                                        dt(!0);
+                                        ye("")
+                                    }).catch(J => Ye({ tipo: "error", text: J.message })).finally(() => ve(!1))
+                                },
+                                disabled: p.cuentasDisponibles < 4 || !re || Te,
+                                className: "btn-activate",
+                                style: { background: "#8b5cf6", fontSize: "0.8rem", padding: "8px 2px" },
+                                children: ["Semestral", _.jsx("span", {
+                                    style: { display: "block", fontSize: "0.65em", opacity: 0.8 },
+                                    children: "(4 Créd)"
+                                })]
+                            }), _.jsxs("button", {
+                                onClick: () => {
+                                    if (!re.includes("@")) return Ye({ tipo: "error", text: "Email inválido" });
+                                    if (p.cuentasDisponibles < 7) return Ye({ tipo: "error", text: "Saldo insuficiente" });
+                                    if (!confirm("¿Activar ANUAL por 7 créditos?")) return;
+                                    ve(!0);
+                                    Ye(null);
+                                    ge("revendedor/activar-licencia", "POST", { cliente: re.toLowerCase(), tipoPlan: "anual" }).then(J => {
+                                        m(oe => ({ ...oe, cuentasDisponibles: J.nuevoSaldo !== undefined ? J.nuevoSaldo : (oe.cuentasDisponibles - 7) }));
+                                        dt(!0);
+                                        ye("")
+                                    }).catch(J => Ye({ tipo: "error", text: J.message })).finally(() => ve(!1))
+                                },
+                                disabled: p.cuentasDisponibles < 7 || !re || Te,
+                                className: "btn-activate",
+                                style: { background: "#f59e0b", fontSize: "0.8rem", padding: "8px 2px" },
+                                children: ["Anual", _.jsx("span", {
+                                    style: { display: "block", fontSize: "0.65em", opacity: 0.8 },
+                                    children: "(7 Créd)"
+                                })]
+                            })]
                         })]
                     }), xt && _.jsx("div", {
                         className: "error-msg",
