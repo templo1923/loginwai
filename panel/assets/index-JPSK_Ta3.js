@@ -29678,8 +29678,8 @@ const UI = [["path", {
       , [o,c] = N.useState(nf.WORLD)
       , [f,h] = N.useState(!0)
       , [p,m] = N.useState({
-        saldo: 0,              // Dinero (Ganancias)
-        cuentasDisponibles: 0, // Fichas (Licencias Manuales)
+        saldo: 0,              
+        cuentasDisponibles: 0, 
         totalReferidos: 0,
         referidos: []
     })
@@ -29697,7 +29697,7 @@ const UI = [["path", {
       , [L,K] = N.useState(!1)
       , X = N.useRef(!0);
 
-    // URL BASE REFERIDO (Ajustada a tu web)
+    // URL BASE REFERIDO
     const urlBaseReferido = "https://loginwaibot.vercel.app/ref/?ref=";
 
     // --- RELOJ AUTOMÁTICO (30s) ---
@@ -29737,38 +29737,31 @@ const UI = [["path", {
         return ds
     };
 
-// --- CARGAR DATOS (CON ACCESO DEMO PARA PRUEBAS) ---
+    // --- CARGAR DATOS (CON FILTRO DE SEGURIDAD ACTUALIZADO) ---
     const C = async () => {
         var J;
         if (i) try {
-            // 1. Validación de licencia activa
             const oe = await ge("facturacion");
             const Ue = ((J = oe?.facturacion)?.activa) === !0;
             if (e(Ue), !Ue) return;
             
-            // 2. Info Partner y Validación de Rol
             if(i.email) {
                 const infoP = await ge(`revendedor/info?id=${i.email}`);
                 
-                // === 🔒 FILTRO DE ACCESO INTELIGENTE ===
+                // === 🔒 FILTRO DE ACCESO ===
                 const planUser = (infoP.plan || "").toLowerCase();
                 
-                // A. ¿Es un usuario con privilegios?
-                const esVIP = planUser.includes("revendedor") || planUser.includes("vip") || planUser.includes("admin");
+                // 1. ¿Quién entra? (VIPs, Revendedores, Admins, Partners)
+                const esVIP = planUser.includes("revendedor") || planUser.includes("vip") || planUser.includes("admin") || planUser.includes("partner");
+                // 2. ¿Quién más entra? (Usuarios en periodo de prueba/demo para antojarse)
+                const esPrueba = planUser.includes("prueba") || planUser.includes("gratuita");
                 
-                // B. ¿Es un usuario en periodo de prueba? (LE DAMOS ACCESO PARA ANTOJARLO)
-                const esPrueba = planUser.includes("prueba") || planUser.includes("gratuita") || planUser.includes("demo");
+                // 3. ¿Quién NO entra? (Clientes que ya pagaron solo uso personal y no son revendedores)
+                const esClientePersonal = !esVIP && !esPrueba; 
 
-                // C. ¿Es un cliente final que ya pagó? (Usuario estándar)
-                // Si dice "Mensual" o "Semestral" pero NO es VIP ni Prueba, es un cliente final.
-                const esClientePago = (planUser.includes("mensual") || planUser.includes("semestral") || planUser.includes("anual"));
-
-                // REGLA DE ORO:
-                // Bloqueamos SOLO si es un cliente que ya pagó licencia estándar y no es revendedor.
-                // Los de "Prueba" SÍ entran. Los "Revendedores" SÍ entran.
-                if (esClientePago && !esVIP && !esPrueba) {
-                    console.log("⛔ Acceso denegado: Cliente final estándar.");
-                    e(false); // Muestra pantalla "Acceso Restringido"
+                if (esClientePersonal) {
+                    // Bloqueamos el acceso visual
+                    e(false); 
                     return;
                 }
                 // === 🔓 FIN FILTRO ===
@@ -29784,7 +29777,6 @@ const UI = [["path", {
                 }
             }
             
-            // 3. Historial
             try {
                 const zt = await ge("retiros/historial");
                 X.current && b(zt.historial || []);
@@ -29792,7 +29784,7 @@ const UI = [["path", {
             
         } catch (oe) { console.error("Error dashboard:", oe) }
     };
-        
+    
     // --- ACCIONES ---
     const q = () => {
         navigator.clipboard.writeText(`${urlBaseReferido}${y}`);
@@ -29800,10 +29792,17 @@ const UI = [["path", {
         setTimeout( () => G(null), 2e3)
     };
     
+    // Función unificada para activar cualquier plan (Personal o Pack)
     const activarConPlan = async (plan, costo) => {
         if (!re.includes("@")) return Ye({tipo: "error", text: "Email inválido"});
         if (p.cuentasDisponibles < costo) return Ye({tipo: "error", text: `Saldo insuficiente (${costo} Créditos)`});
-        if (!confirm(`¿Activar ${plan.toUpperCase()}?`)) return;
+        
+        // Mensaje dinámico según el tipo de activación
+        let mensajeTipo = "USUARIO PERSONAL";
+        if (plan.includes("revendedor")) mensajeTipo = "PACK REVENDEDOR (B2B)";
+        if (plan.includes("vip")) mensajeTipo = "SOCIO VIP";
+
+        if (!confirm(`¿Confirmar activación?\n\nPlan: ${mensajeTipo}\nClave: ${plan}\nCosto: ${costo} Fichas`)) return;
 
         ve(!0); Ye(null);
         try {
@@ -29825,8 +29824,8 @@ const UI = [["path", {
 
     // --- RENDER ---
     return f ? _.jsxs("div", { className: "loader-full", children: [_.jsx(Zv, { className: "spinner" }), _.jsx("p", { children: "Cargando panel..." })] }) 
-    : s === !1 ? _.jsxs("div", { className: "reventa-dashboard", children: [_.jsx("header", { className: "dashboard-header", children: _.jsx("h1", { children: "Panel de Partner" }) }), _.jsxs("div", { style: { textAlign: "center", padding: "4rem 2rem", background: "white", borderRadius: "16px", maxWidth: "600px", margin: "2rem auto", border: "1px solid #e2e8f0" }, children: [_.jsx("div", { style: { display: "inline-flex", padding: "1.5rem", borderRadius: "50%", background: "#fef2f2", color: "#dc2626", marginBottom: "1.5rem" }, children: _.jsx(ko, { size: 48, strokeWidth: 1.5 }) }), _.jsx("h2", { style: { color: "#1e293b", marginBottom: "1rem", fontSize: "1.8rem" }, children: "Acceso Restringido" }), _.jsxs("p", { style: { color: "#64748b", fontSize: "1.1rem", marginBottom: "2.5rem" }, children: ["Debes adquirir una licencia para participar en el programa de reventa."] }), _.jsxs("button", { onClick: () => window.location.href = "/", className: "btn-primary", style: { padding: "1rem 2rem" }, children: [_.jsx(ey, { size: 20, style: { marginRight: "8px" } }), "Adquirir Licencia"] })] })] }) 
-    : Be ? _.jsx("div", { className: "success-overlay", children: _.jsxs("div", { className: "success-card", children: [_.jsx("div", { className: "icon-success", children: _.jsx(Af, { className: "w-16 h-16" }) }), _.jsx("h2", { children: "¡Activación Exitosa!" }), _.jsxs("p", { children: ["La licencia para ", _.jsx("b", { children: re }), " ha sido activada."] }), _.jsx("button", { onClick: () => { dt(!1), ye("") }, className: "btn-primary", children: "Entendido" })] }) }) 
+    : s === !1 ? _.jsxs("div", { className: "reventa-dashboard", children: [_.jsx("header", { className: "dashboard-header", children: _.jsx("h1", { children: "Panel de Partner" }) }), _.jsxs("div", { style: { textAlign: "center", padding: "4rem 2rem", background: "white", borderRadius: "16px", maxWidth: "600px", margin: "2rem auto", border: "1px solid #e2e8f0" }, children: [_.jsx("div", { style: { display: "inline-flex", padding: "1.5rem", borderRadius: "50%", background: "#fef2f2", color: "#dc2626", marginBottom: "1.5rem" }, children: _.jsx(ko, { size: 48, strokeWidth: 1.5 }) }), _.jsx("h2", { style: { color: "#1e293b", marginBottom: "1rem", fontSize: "1.8rem" }, children: "Acceso Restringido" }), _.jsxs("p", { style: { color: "#64748b", fontSize: "1.1rem", marginBottom: "2.5rem" }, children: ["Tu plan actual es de uso personal.", _.jsx("br",{}), "Adquiere una membresía para acceder al programa de reventa."] }), _.jsxs("button", { onClick: () => window.location.href = "/", className: "btn-primary", style: { padding: "1rem 2rem" }, children: [_.jsx(ey, { size: 20, style: { marginRight: "8px" } }), "Ver Membresías"] })] })] }) 
+    : Be ? _.jsx("div", { className: "success-overlay", children: _.jsxs("div", { className: "success-card", children: [_.jsx("div", { className: "icon-success", children: _.jsx(Af, { className: "w-16 h-16" }) }), _.jsx("h2", { children: "¡Activación Exitosa!" }), _.jsxs("p", { children: ["Se ha activado correctamente a:", _.jsx("br",{}), _.jsx("b", { children: re })] }), _.jsx("button", { onClick: () => { dt(!1), ye("") }, className: "btn-primary", children: "Entendido" })] }) }) 
     : _.jsxs("div", {
         className: "reventa-dashboard",
         children: [
@@ -29847,31 +29846,58 @@ const UI = [["path", {
             _.jsxs("section", { className: "stats-grid", children: [
                 _.jsxs("div", { className: "stat-card saldo-card", children: [_.jsx("div", { className: "stat-icon wallet", children: _.jsx(kI, {}) }), _.jsxs("div", { className: "stat-content", children: [_.jsx("span", { className: "stat-label", children: "Saldo (Dinero)" }), _.jsx("span", { className: "stat-value", children: $(p.saldo) })] }), _.jsxs("button", { onClick: () => K(!0), className: "btn-retirar", disabled: p.saldo <= 0, children: ["Retirar ", _.jsx(ME, { size: 16 })] })] }), 
                 _.jsxs("div", { className: "stat-card", children: [_.jsx("div", { className: "stat-icon users", children: _.jsx(Jv, {}) }), _.jsxs("div", { className: "stat-content", children: [_.jsx("span", { className: "stat-label", children: "Referidos" }), _.jsx("span", { className: "stat-value", children: p.totalReferidos })] })] }), 
-                _.jsxs("div", { className: "stat-card", children: [_.jsx("div", { className: "stat-icon ticket", children: _.jsx(OI, {}) }), _.jsxs("div", { className: "stat-content", children: [_.jsx("span", { className: "stat-label", children: "Licencias (Fichas)" }), _.jsx("span", { className: "stat-value", children: p.cuentasDisponibles })] })] }) 
+                _.jsxs("div", { className: "stat-card", children: [_.jsx("div", { className: "stat-icon ticket", children: _.jsx(OI, {}) }), _.jsxs("div", { className: "stat-content", children: [_.jsx("span", { className: "stat-label", children: "Licencias" }), _.jsx("span", { className: "stat-value", children: p.cuentasDisponibles })] })] }) 
             ]}), 
             
-            // MANUAL TOOLS (3 BOTONES)
+            // CONTENIDO DIVIDIDO
             _.jsxs("div", { className: "main-content-split", children: [
+                // COLUMNA IZQUIERDA: Listas
                 _.jsxs("div", { className: "content-left-column", children: [
                     _.jsxs("div", { className: "content-section referidos-list", children: [_.jsx("div", { className: "section-header", children: _.jsxs("h3", { children: [_.jsx("span", { className: "icon-title", children: _.jsx(Jv, {}) }), " Últimos Referidos"] }) }), _.jsx("div", { className: "table-responsive-wrapper", children: _.jsxs("table", { className: "custom-table", children: [_.jsx("thead", { children: _.jsxs("tr", { children: [_.jsx("th", { children: "Cliente" }), _.jsx("th", { children: "Plan" }), _.jsx("th", { children: "Fecha" })] }) }), _.jsx("tbody", { children: p.referidos.length > 0 ? p.referidos.map((J,oe) => _.jsxs("tr", { children: [_.jsx("td", { children: J.cliente }), _.jsx("td", { children: _.jsx("span", { className: "badge-plan", children: J.plan || "N/A" }) }), _.jsx("td", { children: ce(J.fecha_registro) })] }, oe)) : _.jsx("tr", { children: _.jsx("td", { colSpan: "3", className: "empty-row", children: "Sin referidos aún." }) }) })] }) })] }),
                     _.jsxs("div", { className: "content-section retiros-list", children: [_.jsx("div", { className: "section-header", children: _.jsxs("h3", { children: [_.jsx("span", { className: "icon-title", children: _.jsx(bI, {}) }), " Historial Retiros"] }) }), _.jsx("div", { className: "table-responsive-wrapper", children: _.jsxs("table", { className: "custom-table interactive-table", children: [_.jsx("thead", { children: _.jsxs("tr", { children: [_.jsx("th", { children: "Fecha" }), _.jsx("th", { children: "Método" }), _.jsx("th", { children: "Monto" }), _.jsx("th", { children: "Estado" })] }) }), _.jsx("tbody", { children: E.length > 0 ? E.map(J => _.jsx(qI, { ret: J, formatMoney: $, formatDate: ce, getEstadoBadge: ne }, J.id)) : _.jsx("tr", { children: _.jsx("td", { colSpan: "4", className: "empty-row", children: "No retiros." }) }) })] }) })] })
                 ]}), 
+                
+                // COLUMNA DERECHA: Herramientas Manuales (9 BOTONES)
                 _.jsxs("div", { className: "content-section manual-tools", children: [
                     _.jsx("div", { className: "section-header", children: _.jsxs("h3", { children: [_.jsx("span", { className: "icon-title", children: _.jsx(ey, {}) }), " Gestión Manual"] }) }), 
+                    
+                    // Input de correo
+                    _.jsx("input", { type: "email", placeholder: "Email del cliente a activar", value: re, onChange: J => ye(J.target.value), style: { width: "100%", marginBottom: "15px", padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "1rem" } }), 
+
+                    // 1. USO PERSONAL (AZUL)
                     _.jsxs("div", { className: "manual-block", children: [
-                        _.jsx("h4", { children: "Activar Cuenta" }), _.jsxs("p", { children: ["Créditos disponibles: ", _.jsx("strong",{children: p.cuentasDisponibles})] }), 
-                        _.jsxs("div", { className: "input-group-manual", style: { flexDirection: "column", gap: "10px" }, children: [
-                            _.jsx("input", { type: "email", placeholder: "Email del cliente", value: re, onChange: J => ye(J.target.value), style: { width: "100%", marginBottom: "5px" } }), 
-                            _.jsxs("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "5px", width: "100%" }, children: [
-                                _.jsxs("button", { onClick: () => activarConPlan("mensual", 1), disabled: p.cuentasDisponibles < 1 || !re || Te, className: "btn-activate", style: {background: "#3b82f6", fontSize: "0.8rem", padding: "8px 2px"}, children: ["Mensual", _.jsx("span", { style: {display:"block", fontSize:"0.65em", opacity:0.8}, children: "(1 Créd)" })] }),
-                                _.jsxs("button", { onClick: () => activarConPlan("semestral", 4), disabled: p.cuentasDisponibles < 4 || !re || Te, className: "btn-activate", style: {background: "#8b5cf6", fontSize: "0.8rem", padding: "8px 2px"}, children: ["Semestral", _.jsx("span", { style: {display:"block", fontSize:"0.65em", opacity:0.8}, children: "(4 Créd)" })] }),
-                                _.jsxs("button", { onClick: () => activarConPlan("anual", 7), disabled: p.cuentasDisponibles < 7 || !re || Te, className: "btn-activate", style: {background: "#f59e0b", fontSize: "0.8rem", padding: "8px 2px"}, children: ["Anual", _.jsx("span", { style: {display:"block", fontSize:"0.65em", opacity:0.8}, children: "(7 Créd)" })] })
-                            ]})
-                        ]}), 
-                        xt && _.jsx("div", { className: "error-msg", children: xt.text }), p.cuentasDisponibles === 0 && _.jsx("small", { className: "warn-text", children: "Recarga saldo manual abajo." })
-                    ]}), 
+                        _.jsx("h4", { style:{fontSize:"0.9rem", color: "#334155", marginBottom:"8px"}, children: "1. Uso Personal (Cliente Final)" }), 
+                        _.jsxs("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px" }, children: [
+                            _.jsxs("button", { onClick: () => activarConPlan("personal_mensual", 1), disabled: p.cuentasDisponibles < 1 || !re || Te, className: "btn-activate", style: {background: "#3b82f6"}, children: ["Mensual", _.jsx("span", { style: {display:"block", fontSize:"0.6em"}, children: "(1 Ficha)" })] }),
+                            _.jsxs("button", { onClick: () => activarConPlan("personal_semestral", 4), disabled: p.cuentasDisponibles < 4 || !re || Te, className: "btn-activate", style: {background: "#2563eb"}, children: ["Semestral", _.jsx("span", { style: {display:"block", fontSize:"0.6em"}, children: "(4 Fichas)" })] }),
+                            _.jsxs("button", { onClick: () => activarConPlan("personal_anual", 7), disabled: p.cuentasDisponibles < 7 || !re || Te, className: "btn-activate", style: {background: "#1d4ed8"}, children: ["Anual", _.jsx("span", { style: {display:"block", fontSize:"0.6em"}, children: "(7 Fichas)" })] })
+                        ]})
+                    ]}),
+                    _.jsx("div", { className: "divider", style: {margin: "12px 0"} }), 
+
+                    // 2. REVENDEDOR B2B (VERDE)
+                    _.jsxs("div", { className: "manual-block", style: {background: "#f0fdf4", border: "1px dashed #22c55e"}, children: [
+                        _.jsx("h4", { style:{fontSize:"0.9rem", color: "#166534", marginBottom:"8px"}, children: "2. Pack Revendedor (Inicio)" }), 
+                        _.jsxs("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px" }, children: [
+                            _.jsxs("button", { onClick: () => activarConPlan("revendedor_mensual", 10), disabled: p.cuentasDisponibles < 10 || !re || Te, className: "btn-activate", style: {background: "#10b981"}, children: ["Mensual", _.jsx("span", { style: {display:"block", fontSize:"0.6em"}, children: "(10 Fichas)" })] }),
+                            _.jsxs("button", { onClick: () => activarConPlan("revendedor_semestral", 50), disabled: p.cuentasDisponibles < 50 || !re || Te, className: "btn-activate", style: {background: "#059669"}, children: ["Semestral", _.jsx("span", { style: {display:"block", fontSize:"0.6em"}, children: "(50 Fichas)" })] }),
+                            _.jsxs("button", { onClick: () => activarConPlan("revendedor_anual", 90), disabled: p.cuentasDisponibles < 90 || !re || Te, className: "btn-activate", style: {background: "#047857"}, children: ["Anual", _.jsx("span", { style: {display:"block", fontSize:"0.6em"}, children: "(90 Fichas)" })] })
+                        ]})
+                    ]}),
+                    _.jsx("div", { className: "divider", style: {margin: "12px 0"} }), 
+
+                    // 3. SOCIO VIP (NARANJA/ORO)
+                    _.jsxs("div", { className: "manual-block", style: {background: "#fffbeb", border: "1px dashed #f59e0b"}, children: [
+                        _.jsx("h4", { style:{fontSize:"0.9rem", color: "#b45309", marginBottom:"8px"}, children: "3. Pack Socio VIP" }), 
+                        _.jsxs("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px" }, children: [
+                            _.jsxs("button", { onClick: () => activarConPlan("vip_mensual", 50), disabled: p.cuentasDisponibles < 50 || !re || Te, className: "btn-activate", style: {background: "#f59e0b"}, children: ["Mensual", _.jsx("span", { style: {display:"block", fontSize:"0.6em"}, children: "(50 Fichas)" })] }),
+                            _.jsxs("button", { onClick: () => activarConPlan("vip_semestral", 200), disabled: p.cuentasDisponibles < 200 || !re || Te, className: "btn-activate", style: {background: "#d97706"}, children: ["Semestral", _.jsx("span", { style: {display:"block", fontSize:"0.6em"}, children: "(200 Fichas)" })] }),
+                            _.jsxs("button", { onClick: () => activarConPlan("vip_anual", 300), disabled: p.cuentasDisponibles < 300 || !re || Te, className: "btn-activate", style: {background: "#b45309"}, children: ["Anual", _.jsx("span", { style: {display:"block", fontSize:"0.6em"}, children: "(300 Fichas)" })] })
+                        ]})
+                    ]}),
+
                     _.jsx("div", { className: "divider" }), 
-                    _.jsxs("div", { className: "manual-block", children: [_.jsx("h4", { children: "Comprar Licencias" }), _.jsx("p", { className: "subtext-manual", children: "Compra paquetes de fichas." }), _.jsxs("div", { className: "price-display", children: ["Desde: ", _.jsxs("strong", { children: [o.simbolo, o.monto.toLocaleString(), " ", o.moneda] })] }), _.jsxs("a", { href: "https://wa.me/573004085041?text=Hola,%20deseo%20comprar%20licencias%20manuales%20para%20revender.", target: "_blank", rel: "noopener noreferrer", className: "btn-whatsapp", children: [_.jsx(HI, {}), " Comprar Fichas"] })] })
+                    _.jsxs("div", { className: "manual-block", children: [_.jsx("h4", { children: "Comprar Fichas" }), _.jsxs("a", { href: "https://wa.me/573004085041?text=Hola,%20deseo%20comprar%20licencias%20manuales%20para%20revender.", target: "_blank", rel: "noopener noreferrer", className: "btn-whatsapp", children: [_.jsx(HI, {}), " Recargar"] })] })
                 ]})
             ]})
         ]
