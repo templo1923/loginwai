@@ -29671,620 +29671,170 @@ const UI = [["path", {
         })]
     })
 }
-  , VI = () => {
-    const [s,e] = N.useState(null)
-      , [i,r] = N.useState(null)
-      , [o,c] = N.useState(nf.WORLD)
-      , [f,h] = N.useState(!0)
-      , [p,m] = N.useState({
-        saldo: 0,
-        cuentasDisponibles: 0,
-        totalReferidos: 0,
-        referidos: []
-    })
-      , [E,b] = N.useState([])
-      , [y,A] = N.useState("")
-      , [T,k] = N.useState("")
-      , [z,H] = N.useState(!1)
-      , [B,F] = N.useState(!1)
-      , [Q,G] = N.useState(null)
-      , [re,ye] = N.useState("")
-      , [Te,ve] = N.useState(!1)
-      , [Ie,et] = N.useState(!1)
-      , [Be,dt] = N.useState(!1)
-      , [xt,Ye] = N.useState(null)
-      , [L,K] = N.useState(!1)
-      , X = N.useRef(!0);
-    N.useEffect( () => {
-        X.current = !0;
-        const J = t0(Ar, Ue => {
-            X.current && (r(Ue),
-            Ue || h(!1))
-        }
-        );
-        return (async () => {
-            let Ue = "WORLD";
-            try {
-                const $t = await fetch("https://ipwho.is/");
-                if (!$t.ok)
-                    throw new Error("Error IP");
-                const zt = await $t.json();
-                zt.success && zt.country_code === "CO" && (Ue = "CO")
-            } catch {
-                console.warn("Fallo IP, usando World")
-            }
-            X.current && c(nf[Ue])
-        }
-        )(),
-        () => {
-            X.current = !1,
-            J()
-        }
-    }
-    , []);
-    const ge = async (J, oe="GET", Ue=null) => {
-        const $t = await i.getIdToken(!0)
-          , zt = {
-            method: oe,
-            headers: {
-                Authorization: `Bearer ${$t}`,
-                "Content-Type": "application/json",
-                "ngrok-skip-browser-warning": "true"
-            }
-        };
-        Ue && (zt.body = JSON.stringify(Ue));
-        const Zt = await fetch(`${BI}/api/${J}`, zt)
-          , ds = await Zt.json();
-        if (!Zt.ok)
-            throw new Error(ds.mensaje || `Error ${Zt.status}`);
-        return ds
-    }
-      , C = async () => {
-        var J;
-        if (i)
-            try {
-                const oe = await ge("facturacion")
-                  , Ue = ((J = oe == null ? void 0 : oe.facturacion) == null ? void 0 : J.activa) === !0;
-                if (e(Ue),
-                !Ue)
-                    return;
-                const $t = await ge("mi-perfil");
-                X.current && m($t);
-                const zt = await ge("retiros/historial");
-                X.current && b(zt.historial || []);
-                const Zt = await ge("mi-enlace");
-                X.current && Zt.enlace && (A(Zt.enlace),
-                k(Zt.enlace))
-            } catch (oe) {
-                console.error("Error dashboard:", oe)
-            }
-    }
-    ;
-    N.useEffect( () => {
-        i && (h(!0),
-        C().finally( () => {
-            X.current && h(!1)
-        }
-        ))
-    }
-    , [i]);
-    const D = async () => {
-        if (T === y) {
-            H(!1);
-            return
-        }
-        F(!0),
-        G(null);
-        try {
-            const J = await ge("mi-enlace", "PUT", {
-                nuevoEnlace: T
-            });
-            A(J.enlace),
-            k(J.enlace),
-            H(!1),
-            G({
-                tipo: "success",
-                text: "Enlace actualizado"
-            }),
-            setTimeout( () => G(null), 3e3)
-        } catch (J) {
-            G({
-                tipo: "error",
-                text: J.message
-            })
-        } finally {
-            F(!1)
-        }
-    }
-      , q = () => {
-        navigator.clipboard.writeText(`${tf}${y}`),
-        G({
-            tipo: "success",
-            text: "¡Copiado!"
-        }),
-        setTimeout( () => G(null), 2e3)
-    }
-      , V = async () => {
-        et(!1),
-        ve(!0),
-        Ye(null);
-        try {
-            const J = await ge("revendedor/activar-licencia", "POST", {
-                cliente: re.toLowerCase()
-            });
-            m(oe => ({
-                ...oe,
-                cuentasDisponibles: J.cuentas
-            })),
-            dt(!0)
-        } catch (J) {
-            Ye({
-                tipo: "error",
-                text: J.message
-            })
-        } finally {
-            ve(!1)
-        }
-    }
-      , $ = J => o.moneda === "USD" ? `$${(J / nf.WORLD.tasaCambio).toFixed(2)} USD` : `$${J.toLocaleString("es-CO")} COP`
-      , ce = J => J ? new Date(J).toLocaleDateString("es-ES", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric"
-    }) : "-"
-      , ne = J => {
-        const oe = {
-            pendiente: {
-                bg: "#fff7ed",
-                color: "#c2410c",
-                label: "Pendiente"
-            },
-            aprobado: {
-                bg: "#f0fdf4",
-                color: "#15803d",
-                label: "Aprobado"
-            },
-            rechazado: {
-                bg: "#fef2f2",
-                color: "#b91c1c",
-                label: "Rechazado"
-            }
-        }
-          , Ue = oe[J] || oe.pendiente;
-        return _.jsx("span", {
-            style: {
-                backgroundColor: Ue.bg,
-                color: Ue.color
-            },
-            className: "badge-estado",
-            children: Ue.label
-        })
-    }
-    ;
-    return f ? _.jsxs("div", {
-        className: "loader-full",
-        children: [_.jsx(Zv, {
-            className: "spinner"
-        }), _.jsx("p", {
-            children: "Cargando panel..."
-        })]
-    }) : s === !1 ? _.jsxs("div", {
-        className: "reventa-dashboard",
-        children: [_.jsx("header", {
-            className: "dashboard-header",
-            children: _.jsx("h1", {
-                children: "Panel de Partner"
-            })
-        }), _.jsxs("div", {
-            style: {
-                textAlign: "center",
-                padding: "4rem 2rem",
-                background: "white",
-                borderRadius: "16px",
-                maxWidth: "600px",
-                margin: "2rem auto",
-                boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
-                border: "1px solid #e2e8f0"
-            },
-            children: [_.jsx("div", {
-                style: {
-                    display: "inline-flex",
-                    padding: "1.5rem",
-                    borderRadius: "50%",
-                    background: "#fef2f2",
-                    color: "#dc2626",
-                    marginBottom: "1.5rem"
-                },
-                children: _.jsx(ko, {
-                    size: 48,
-                    strokeWidth: 1.5
-                })
-            }), _.jsx("h2", {
-                style: {
-                    color: "#1e293b",
-                    marginBottom: "1rem",
-                    fontSize: "1.8rem"
-                },
-                children: "Acceso Restringido"
-            }), _.jsxs("p", {
-                style: {
-                    color: "#64748b",
-                    fontSize: "1.1rem",
-                    lineHeight: "1.6",
-                    marginBottom: "2.5rem"
-                },
-                children: ["Debes adquirir una licencia para participar en el programa de reventa.", _.jsx("br", {}), "Activa tu cuenta para comenzar a ganar comisiones."]
-            }), _.jsxs("button", {
-                onClick: () => window.location.href = "/",
-                className: "btn-primary",
-                style: {
-                    padding: "1rem 2rem",
-                    fontSize: "1.1rem"
-                },
-                children: [_.jsx(ey, {
-                    size: 20,
-                    style: {
-                        marginRight: "8px"
+; // Cierra la cadena anterior
+
+// ==========================================
+// 1. NUEVO PANEL DE PARTNER (CON 3 BOTONES)
+// ==========================================
+const VI = () => {
+    const { usuario: s } = Ea(),
+        [saldo, setSaldo] = N.useState(0),
+        [referidos, setReferidos] = N.useState(0),
+        [emailCliente, setEmail] = N.useState(""),
+        [cargando, setCargando] = N.useState(false),
+        [mensaje, setMensaje] = N.useState(null),
+        [link, setLink] = N.useState("");
+
+    // Cargar datos del revendedor
+    N.useEffect(() => {
+        if (s && s.email) {
+            // Usamos la variable BI que ya tienes definida en tu archivo para la URL
+            fetch(`${BI}/api/revendedor/info?id=${s.email}`)
+                .then(r => r.json())
+                .then(d => {
+                    if (d.ok) {
+                        setSaldo(d.saldo);
+                        setReferidos(d.referidos);
+                        setLink(`https://loginwaibot.vercel.app/ref/${d.slug}`);
                     }
-                }), "Adquirir Licencia"]
-            })]
-        })]
-    }) : Be ? _.jsx("div", {
-        className: "success-overlay",
-        children: _.jsxs("div", {
-            className: "success-card",
-            children: [_.jsx("div", {
-                className: "icon-success",
-                children: _.jsx(Af, {
-                    className: "w-16 h-16"
                 })
-            }), _.jsx("h2", {
-                children: "¡Activación Exitosa!"
-            }), _.jsxs("p", {
-                children: ["La licencia para ", _.jsx("b", {
-                    children: re
-                }), " ha sido activada correctamente."]
-            }), _.jsx("button", {
-                onClick: () => {
-                    dt(!1),
-                    ye("")
-                }
-                ,
-                className: "btn-primary",
-                children: "Entendido"
-            })]
-        })
-    }) : _.jsxs("div", {
-        className: "reventa-dashboard",
-        children: [_.jsx(zI, {
-            isOpen: L,
-            onClose: () => K(!1),
-            usuario: i,
-            saldoDisponible: p.saldo,
-            historialPrevio: E,
-            onRetiroExitoso: () => C()
-        }), Ie && _.jsx("div", {
-            className: "modal-backdrop",
-            children: _.jsxs("div", {
-                className: "modal-card",
-                children: [_.jsx("div", {
-                    className: "modal-icon warning",
-                    children: _.jsx(ko, {
-                        className: "w-8 h-8"
-                    })
-                }), _.jsx("h3", {
-                    children: "Verificación Necesaria"
-                }), _.jsxs("p", {
-                    children: ["Vas a gastar ", _.jsx("b", {
-                        children: "1 Licencia"
-                    }), " para activar a:"]
-                }), _.jsx("div", {
-                    className: "email-highlight",
-                    children: re.toLowerCase()
-                }), _.jsx("p", {
-                    className: "subtext",
-                    children: "Esta acción no se puede deshacer."
-                }), _.jsxs("div", {
-                    className: "modal-actions",
-                    children: [_.jsx("button", {
-                        onClick: () => et(!1),
-                        className: "btn-secondary",
-                        children: "Cancelar"
-                    }), _.jsx("button", {
-                        onClick: V,
-                        className: "btn-primary",
-                        children: "Confirmar"
-                    })]
-                })]
-            })
-        }), _.jsxs("header", {
-            className: "dashboard-header",
-            children: [_.jsx("h1", {
-                children: "Panel de Revendedor"
-            }), _.jsx("p", {
-                children: "Gestiona ganancias, enlaces y licencias."
-            })]
-        }), _.jsx("section", {
-            className: "link-hero",
-            children: _.jsxs("div", {
-                className: "hero-content",
-                children: [_.jsxs("div", {
-                    className: "hero-text-header",
-                    children: [_.jsx("h2", {
-                        children: "Tu Enlace de Referido"
-                    }), _.jsx("p", {
-                        children: "Gana 50% de comisión por venta."
-                    })]
-                }), _.jsxs("div", {
-                    className: `link-builder ${z ? "editing-mode" : ""}`,
-                    children: [z ? _.jsxs(_.Fragment, {
-                        children: [_.jsx("div", {
-                            className: "domain-part",
-                            children: tf
-                        }), _.jsx("div", {
-                            className: "input-part",
-                            children: _.jsx("input", {
-                                type: "text",
-                                value: T,
-                                onChange: J => k(J.target.value.replace(/[^a-zA-Z0-9-_]/g, "").toLowerCase()),
-                                className: "input-slug",
-                                autoFocus: !0
+                .catch(err => console.error(err));
+        }
+    }, [s]);
+
+    // Función Activar
+    const activar = async (tipoPlan, costo) => {
+        if (!emailCliente.includes("@")) return alert("Correo inválido");
+        
+        if (!confirm(`¿Confirmas activar el plan ${tipoPlan.toUpperCase()}?\nSe descontarán ${costo} créditos.`)) return;
+
+        setCargando(true);
+        try {
+            const req = await fetch(`${BI}/api/revendedor/activar-licencia`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    revendedorId: s.email,
+                    clienteCorreo: emailCliente,
+                    tipoPlan: tipoPlan
+                })
+            });
+            const res = await req.json();
+            
+            if (res.ok) {
+                setSaldo(res.nuevoSaldo);
+                setMensaje({ tipo: "exito", texto: `✅ ${res.mensaje}` });
+                setEmail(""); 
+            } else {
+                setMensaje({ tipo: "error", texto: `❌ ${res.mensaje}` });
+            }
+        } catch (e) {
+            setMensaje({ tipo: "error", texto: "Error de conexión" });
+        }
+        setCargando(false);
+    };
+
+    const copiar = () => {
+        navigator.clipboard.writeText(link);
+        alert("Link copiado: " + link);
+    };
+
+    const btnStyle = (bg) => ({
+        flex: 1, padding: "12px", border: "none", borderRadius: "8px", 
+        background: bg, color: "white", fontWeight: "bold", cursor: "pointer",
+        display: "flex", flexDirection: "column", alignItems: "center", gap: "2px"
+    });
+
+    return _.jsxs("div", {
+        className: "main-card",
+        style: { maxWidth: "900px", margin: "0 auto" },
+        children: [
+            _.jsxs("div", { style: { marginBottom: "30px", textAlign: "center" }, children: [
+                _.jsx("h2", { style: { fontSize: "2rem", color: "#1e293b", marginBottom: "10px" }, children: "💼 Panel de Partner" }),
+                _.jsxs("div", { style: { background: "#f1f5f9", padding: "10px", borderRadius: "8px", display: "inline-flex", alignItems: "center", gap: "10px", fontSize: "0.9rem" }, children: [
+                    _.jsx("span", { children: "Tu Link de Referido:" }),
+                    _.jsx("strong", { style: { color: "#3b82f6" }, children: link || "Cargando..." }),
+                    _.jsx("button", { onClick: copiar, style: { border: "none", background: "none", cursor: "pointer" }, children: "📋" })
+                ]})
+            ]}),
+            
+            // ESTADÍSTICAS
+            _.jsxs("div", {
+                style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "30px" },
+                children: [
+                    _.jsxs("div", {
+                        style: { background: "#fff", padding: "20px", borderRadius: "12px", border: "1px solid #e2e8f0", textAlign: "center", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)" },
+                        children: [
+                            _.jsx("div", { style: { fontSize: "2.5rem", fontWeight: "800", color: "#3b82f6" }, children: saldo }),
+                            _.jsx("div", { style: { color: "#64748b", fontWeight: "600" }, children: "Licencias Disponibles" }),
+                            _.jsx("button", { 
+                                onClick: () => window.open(`https://wa.me/573004085041?text=Hola,%20deseo%20recargar%20saldo.%20Mi%20ID:%20${s.email}`, '_blank'),
+                                style: { marginTop: "10px", padding: "5px 15px", borderRadius: "20px", border: "1px solid #3b82f6", background: "white", color: "#3b82f6", cursor: "pointer", fontSize: "0.8rem" },
+                                children: "+ Recargar"
                             })
-                        })]
-                    }) : _.jsx("div", {
-                        className: "full-link-part",
-                        children: _.jsx("div", {
-                            className: "input-full-url",
-                            children: `${tf}${y}`
-                        })
-                    }), _.jsxs("div", {
-                        className: "actions-part",
-                        children: [z ? _.jsx("button", {
-                            onClick: D,
-                            className: "btn-icon save-btn",
-                            title: "Guardar",
-                            children: B ? _.jsx(Zv, {
-                                className: "animate-spin"
-                            }) : _.jsx(AI, {})
-                        }) : _.jsx("button", {
-                            onClick: () => H(!0),
-                            className: "btn-icon edit-btn",
-                            title: "Editar",
-                            children: _.jsx(NI, {})
-                        }), _.jsxs("button", {
-                            onClick: q,
-                            className: "btn-copy",
-                            children: [_.jsx(yI, {}), " ", _.jsx("span", {
-                                children: "Copiar"
-                            })]
-                        })]
-                    })]
-                }), Q && _.jsxs("div", {
-                    className: `toast-message ${Q.tipo}`,
-                    children: [Q.tipo === "success" ? _.jsx(Af, {
-                        className: "w-4 h-4"
-                    }) : _.jsx(ko, {
-                        className: "w-4 h-4"
-                    }), Q.text]
-                })]
-            })
-        }), _.jsxs("section", {
-            className: "stats-grid",
-            children: [_.jsxs("div", {
-                className: "stat-card saldo-card",
-                children: [_.jsx("div", {
-                    className: "stat-icon wallet",
-                    children: _.jsx(kI, {})
-                }), _.jsxs("div", {
-                    className: "stat-content",
-                    children: [_.jsx("span", {
-                        className: "stat-label",
-                        children: "Saldo Acumulado"
-                    }), _.jsx("span", {
-                        className: "stat-value",
-                        children: $(p.saldo)
-                    })]
-                }), _.jsxs("button", {
-                    onClick: () => K(!0),
-                    className: "btn-retirar",
-                    disabled: p.saldo <= 0,
-                    children: ["Retirar ", _.jsx(ME, {
-                        size: 16
-                    })]
-                })]
-            }), _.jsxs("div", {
-                className: "stat-card",
-                children: [_.jsx("div", {
-                    className: "stat-icon users",
-                    children: _.jsx(Jv, {})
-                }), _.jsxs("div", {
-                    className: "stat-content",
-                    children: [_.jsx("span", {
-                        className: "stat-label",
-                        children: "Referidos Totales"
-                    }), _.jsx("span", {
-                        className: "stat-value",
-                        children: p.totalReferidos
-                    })]
-                })]
-            }), _.jsxs("div", {
-                className: "stat-card",
-                children: [_.jsx("div", {
-                    className: "stat-icon ticket",
-                    children: _.jsx(OI, {})
-                }), _.jsxs("div", {
-                    className: "stat-content",
-                    children: [_.jsx("span", {
-                        className: "stat-label",
-                        children: "Licencias Manuales"
-                    }), _.jsx("span", {
-                        className: "stat-value",
-                        children: p.cuentasDisponibles
-                    })]
-                })]
-            })]
-        }), _.jsxs("div", {
-            className: "main-content-split",
-            children: [_.jsxs("div", {
-                className: "content-left-column",
-                children: [_.jsxs("div", {
-                    className: "content-section referidos-list",
-                    children: [_.jsx("div", {
-                        className: "section-header",
-                        children: _.jsxs("h3", {
-                            children: [_.jsx("span", {
-                                className: "icon-title",
-                                children: _.jsx(Jv, {})
-                            }), " Últimos Referidos"]
-                        })
-                    }), _.jsx("div", {
-                        className: "table-responsive-wrapper",
-                        children: _.jsxs("table", {
-                            className: "custom-table",
-                            children: [_.jsx("thead", {
-                                children: _.jsxs("tr", {
-                                    children: [_.jsx("th", {
-                                        children: "Cliente"
-                                    }), _.jsx("th", {
-                                        children: "Plan"
-                                    }), _.jsx("th", {
-                                        children: "Fecha"
-                                    })]
-                                })
-                            }), _.jsx("tbody", {
-                                children: p.referidos.length > 0 ? p.referidos.map( (J, oe) => _.jsxs("tr", {
-                                    children: [_.jsx("td", {
-                                        "data-label": "Cliente",
-                                        className: "td-email",
-                                        title: J.cliente,
-                                        children: J.cliente
-                                    }), _.jsx("td", {
-                                        "data-label": "Plan",
-                                        children: _.jsx("span", {
-                                            className: "badge-plan",
-                                            children: J.plan || "N/A"
-                                        })
-                                    }), _.jsx("td", {
-                                        "data-label": "Fecha",
-                                        className: "td-date",
-                                        children: ce(J.fecha_registro)
-                                    })]
-                                }, oe)) : _.jsx("tr", {
-                                    children: _.jsx("td", {
-                                        colSpan: "3",
-                                        className: "empty-row",
-                                        children: "Sin referidos aún."
-                                    })
-                                })
-                            })]
-                        })
-                    })]
-                }), _.jsxs("div", {
-                    className: "content-section retiros-list",
-                    children: [_.jsx("div", {
-                        className: "section-header",
-                        children: _.jsxs("h3", {
-                            children: [_.jsx("span", {
-                                className: "icon-title",
-                                children: _.jsx(bI, {})
-                            }), " Historial de Retiros"]
-                        })
-                    }), _.jsx("div", {
-                        className: "table-responsive-wrapper",
-                        children: _.jsxs("table", {
-                            className: "custom-table interactive-table",
-                            children: [_.jsx("thead", {
-                                children: _.jsxs("tr", {
-                                    children: [_.jsx("th", {
-                                        children: "Fecha"
-                                    }), _.jsx("th", {
-                                        children: "Método"
-                                    }), _.jsx("th", {
-                                        children: "Monto"
-                                    }), _.jsx("th", {
-                                        children: "Estado"
-                                    })]
-                                })
-                            }), _.jsx("tbody", {
-                                children: E.length > 0 ? E.map(J => _.jsx(qI, {
-                                    ret: J,
-                                    formatMoney: $,
-                                    formatDate: ce,
-                                    getEstadoBadge: ne
-                                }, J.id)) : _.jsx("tr", {
-                                    children: _.jsx("td", {
-                                        colSpan: "4",
-                                        className: "empty-row",
-                                        children: "No has solicitado retiros."
-                                    })
-                                })
-                            })]
-                        })
-                    })]
-                })]
-            }), _.jsxs("div", {
-                className: "content-section manual-tools",
-                children: [_.jsx("div", {
-                    className: "section-header",
-                    children: _.jsxs("h3", {
-                        children: [_.jsx("span", {
-                            className: "icon-title",
-                            children: _.jsx(ey, {})
-                        }), " Gestión Manual"]
+                        ]
+                    }),
+                    _.jsxs("div", {
+                        style: { background: "#fff", padding: "20px", borderRadius: "12px", border: "1px solid #e2e8f0", textAlign: "center", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)" },
+                        children: [
+                            _.jsx("div", { style: { fontSize: "2.5rem", fontWeight: "800", color: "#10b981" }, children: referidos }),
+                            _.jsx("div", { style: { color: "#64748b", fontWeight: "600" }, children: "Referidos Totales" })
+                        ]
                     })
-                }), _.jsxs("div", {
-                    className: "manual-block",
-                    children: [_.jsx("h4", {
-                        children: "Activar Cuenta"
-                    }), _.jsxs("p", {
-                        children: ["Usa tus licencias (", p.cuentasDisponibles, ") para activar."]
-                    }), _.jsxs("div", {
-                        className: "input-group-manual",
-                        children: [_.jsx("input", {
-                            type: "email",
-                            placeholder: "Email del cliente",
-                            value: re,
-                            onChange: J => ye(J.target.value)
-                        }), _.jsx("button", {
-                            onClick: () => re.includes("@") && et(!0),
-                            disabled: p.cuentasDisponibles <= 0 || !re,
-                            className: "btn-activate",
-                            children: "Activar"
-                        })]
-                    }), xt && _.jsx("div", {
-                        className: "error-msg",
-                        children: xt.text
-                    }), p.cuentasDisponibles === 0 && _.jsx("small", {
-                        className: "warn-text",
-                        children: "Sin licencias disponibles."
-                    })]
-                }), _.jsx("div", {
-                    className: "divider"
-                }), _.jsxs("div", {
-                    className: "manual-block",
-                    children: [_.jsx("h4", {
-                        children: "Comprar Licencias"
-                    }), _.jsx("p", {
-                        className: "subtext-manual",
-                        children: "Recarga tu saldo de licencias manuales."
-                    }), _.jsxs("div", {
-                        className: "price-display",
-                        children: ["Precio: ", _.jsxs("strong", {
-                            children: [o.simbolo, o.monto.toLocaleString(), " ", o.moneda]
-                        })]
-                    }), _.jsxs("a", {
-                        href: "https://wa.me/573004085041?text=Hola,%20deseo%20comprar%20licencias%20manuales%20para%20revender.",
-                        target: "_blank",
-                        rel: "noopener noreferrer",
-                        className: "btn-whatsapp",
-                        children: [_.jsx(HI, {}), " Comprar Ahora"]
-                    })]
-                })]
-            })]
-        })]
-    })
-}
-  , GI = () => {
+                ]
+            }),
+
+            // ZONA DE ACTIVACIÓN (3 BOTONES)
+            _.jsxs("div", {
+                style: { background: "white", padding: "25px", borderRadius: "16px", border: "2px solid #e2e8f0" },
+                children: [
+                    _.jsx("h3", { style: { marginBottom: "15px", color: "#334155" }, children: "⚡ Activar Cliente Manualmente" }),
+                    _.jsx("input", {
+                        type: "email",
+                        placeholder: "Correo del cliente (debe estar registrado)",
+                        value: emailCliente,
+                        onChange: (e) => setEmail(e.target.value),
+                        style: { width: "100%", padding: "12px", marginBottom: "20px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "1rem" }
+                    }),
+                    
+                    _.jsxs("div", {
+                        style: { display: "flex", gap: "10px", flexWrap: "wrap" },
+                        children: [
+                            _.jsxs("button", {
+                                onClick: () => activar("mensual", 1),
+                                disabled: cargando || saldo < 1,
+                                style: { ...btnStyle("#3b82f6"), opacity: saldo < 1 ? 0.5 : 1 },
+                                children: [_.jsx("span", { children: "MENSUAL" }), _.jsx("span", { style: { fontSize: "0.8rem", opacity: 0.8 }, children: "(1 Crédito)" })]
+                            }),
+                            _.jsxs("button", {
+                                onClick: () => activar("semestral", 4),
+                                disabled: cargando || saldo < 4,
+                                style: { ...btnStyle("#8b5cf6"), opacity: saldo < 4 ? 0.5 : 1 },
+                                children: [_.jsx("span", { children: "SEMESTRAL" }), _.jsx("span", { style: { fontSize: "0.8rem", opacity: 0.8 }, children: "(4 Créditos)" })]
+                            }),
+                            _.jsxs("button", {
+                                onClick: () => activar("anual", 7),
+                                disabled: cargando || saldo < 7,
+                                style: { ...btnStyle("#f59e0b"), opacity: saldo < 7 ? 0.5 : 1 },
+                                children: [_.jsx("span", { children: "ANUAL" }), _.jsx("span", { style: { fontSize: "0.8rem", opacity: 0.8 }, children: "(7 Créditos)" })]
+                            })
+                        ]
+                    }),
+
+                    mensaje && _.jsx("div", {
+                        style: { marginTop: "15px", padding: "10px", borderRadius: "8px", background: mensaje.tipo === "exito" ? "#dcfce7" : "#fee2e2", color: mensaje.tipo === "exito" ? "#166534" : "#991b1b", textAlign: "center" },
+                        children: mensaje.texto
+                    })
+                ]
+            })
+        ]
+    });
+};
+
+// ==========================================
+// 2. DASHBOARD PRINCIPAL (GI)
+// ==========================================
+const GI = () => {
     const {usuario: s} = Ea()
       , [e,i] = N.useState("inicio")
       , [r,o] = N.useState(!1)
@@ -30328,12 +29878,12 @@ const UI = [["path", {
             } catch (m) {
                 console.error("Error procesando bienvenida:", m)
             }
-    }
-    ;
+    };
+    
     N.useEffect( () => {
         s && h()
-    }
-    , [s]);
+    }, [s]);
+
     const p = () => {
         switch (e) {
         case "inicio":
@@ -30346,28 +29896,31 @@ const UI = [["path", {
                         children: "Aquí puedes elegir que quieres configurar"
                     }), _.jsxs("div", {
                         className: "modules-grid",
-                        children: [_.jsxs("button", {
-                            onClick: () => i("reventa"),
-                            className: "module-btn btn-secondary",
-                            children: [_.jsx("span", {
-                                className: "module-icon",
-                                children: "💼"
-                            }), "Reventa"]
-                        }), _.jsxs("button", {
-                            onClick: () => i("facturacion"),
-                            className: "module-btn btn-primary",
-                            children: [_.jsx("span", {
-                                className: "module-icon",
-                                children: "💳"
-                            }), "Clave Licencia"]
-                        })]
+                        children: [
+                            _.jsxs("button", {
+                                onClick: () => i("reventa"),
+                                className: "module-btn btn-secondary",
+                                children: [_.jsx("span", {
+                                    className: "module-icon",
+                                    children: "💼"
+                                }), "Reventa"]
+                            }),
+                            _.jsxs("button", {
+                                onClick: () => i("facturacion"),
+                                className: "module-btn btn-primary",
+                                children: [_.jsx("span", {
+                                    className: "module-icon",
+                                    children: "💳"
+                                }), "Clave Licencia"]
+                            })
+                        ]
                     })]
                 })
             });
         case "reventa":
             return _.jsx("div", {
                 className: "single-content",
-                children: _.jsx(NuevoPanelPartner, {})
+                children: _.jsx(VI, {})
             });
         case "facturacion":
             return _.jsx("div", {
@@ -30377,8 +29930,8 @@ const UI = [["path", {
         default:
             return null
         }
-    }
-    ;
+    };
+
     return _.jsxs("div", {
         className: "app-layout",
         children: [_.jsx(sI, {
@@ -30408,8 +29961,12 @@ const UI = [["path", {
             })]
         })]
     })
-}
-  , YI = ({children: s}) => {
+};
+
+// ==========================================
+// 3. LOADER Y ROUTER (YI, FI)
+// ==========================================
+const YI = ({children: s}) => {
     const {estaAutenticado: e, cargando: i} = Ea();
     return i ? _.jsx("div", {
         style: {
@@ -30424,8 +29981,8 @@ const UI = [["path", {
     }) : e ? s : _.jsx(iC, {
         to: "/"
     })
-}
-;
+};
+
 function FI() {
     return _.jsx(xC, {
         children: _.jsx(JO, {
@@ -30442,88 +29999,8 @@ function FI() {
             })
         })
     })
-    // === NUEVO PANEL DE PARTNER (PEGAR AL FINAL DEL ARCHIVO) ===
-const NuevoPanelPartner = () => {
-    const { usuario: s } = Ea(),
-        [saldo, setSaldo] = N.useState(0),
-        [referidos, setReferidos] = N.useState(0),
-        [emailCliente, setEmail] = N.useState(""),
-        [cargando, setCargando] = N.useState(false),
-        [mensaje, setMensaje] = N.useState(null),
-        [link, setLink] = N.useState("");
-
-    // 1. Cargar datos
-    N.useEffect(() => {
-        if (s && s.email) {
-            fetch(`${Rf}/api/revendedor/info?id=${s.email}`)
-                .then(r => r.json())
-                .then(d => {
-                    if (d.ok) {
-                        setSaldo(d.saldo);
-                        setReferidos(d.referidos);
-                        setLink(`https://loginwaibot.vercel.app/ref/${d.slug}`);
-                    }
-                })
-                .catch(err => console.error(err));
-        }
-    }, [s]);
-
-    // 2. Función Activar
-    const activar = async (tipoPlan, costo) => {
-        if (!emailCliente.includes("@")) return alert("Correo inválido");
-        if (!confirm(`¿Activar ${tipoPlan.toUpperCase()} por ${costo} créditos?`)) return;
-
-        setCargando(true);
-        try {
-            const req = await fetch(`${Rf}/api/revendedor/activar-licencia`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ revendedorId: s.email, clienteCorreo: emailCliente, tipoPlan: tipoPlan })
-            });
-            const res = await req.json();
-            if (res.ok) {
-                setSaldo(res.nuevoSaldo);
-                setMensaje({ tipo: "exito", texto: `✅ ${res.mensaje}` });
-                setEmail(""); 
-            } else {
-                setMensaje({ tipo: "error", texto: `❌ ${res.mensaje}` });
-            }
-        } catch (e) { setMensaje({ tipo: "error", texto: "Error de conexión" }); }
-        setCargando(false);
-    };
-
-    const copiar = () => { navigator.clipboard.writeText(link); alert("Copiado!"); };
-    const btnStyle = (bg) => ({ flex: 1, padding: "12px", border: "none", borderRadius: "8px", background: bg, color: "white", fontWeight: "bold", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center" });
-
-    return _.jsxs("div", { className: "main-card", style: { maxWidth: "900px", margin: "20px auto", padding: "20px", background: "white", borderRadius: "15px" }, children: [
-        _.jsxs("div", { style: { textAlign: "center", marginBottom: "30px" }, children: [
-            _.jsx("h2", { style: { fontSize: "2rem", color: "#1e293b" }, children: "💼 Panel de Partner" }),
-            _.jsxs("p", { children: ["Tu Link: ", _.jsx("strong", { style: { color: "#3b82f6" }, children: link }), " ", _.jsx("button", { onClick: copiar, children: "📋" })] })
-        ]}),
-        _.jsxs("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "30px" }, children: [
-            _.jsxs("div", { style: { background: "#f8fafc", padding: "20px", borderRadius: "12px", textAlign: "center", border: "1px solid #e2e8f0" }, children: [
-                _.jsx("div", { style: { fontSize: "2.5rem", fontWeight: "bold", color: "#3b82f6" }, children: saldo }),
-                _.jsx("div", { children: "Licencias Disponibles" }),
-                _.jsx("button", { onClick: () => window.open(`https://wa.me/573004085041?text=Recarga%20${s.email}`, '_blank'), style: { marginTop: "10px", padding: "5px 10px", background: "#dbeafe", color: "#1e40af", border: "none", borderRadius: "5px", cursor: "pointer" }, children: "+ Recargar" })
-            ]}),
-            _.jsxs("div", { style: { background: "#f8fafc", padding: "20px", borderRadius: "12px", textAlign: "center", border: "1px solid #e2e8f0" }, children: [
-                _.jsx("div", { style: { fontSize: "2.5rem", fontWeight: "bold", color: "#10b981" }, children: referidos }),
-                _.jsx("div", { children: "Referidos Totales" })
-            ]})
-        ]}),
-        _.jsxs("div", { style: { background: "#fff", padding: "25px", borderRadius: "16px", border: "2px solid #e2e8f0" }, children: [
-            _.jsx("h3", { children: "⚡ Activar Cliente" }),
-            _.jsx("input", { type: "email", placeholder: "Correo del cliente", value: emailCliente, onChange: (e) => setEmail(e.target.value), style: { width: "100%", padding: "12px", marginBottom: "20px", border: "1px solid #ccc", borderRadius: "8px" } }),
-            _.jsxs("div", { style: { display: "flex", gap: "10px" }, children: [
-                _.jsxs("button", { onClick: () => activar("mensual", 1), disabled: cargando || saldo < 1, style: { ...btnStyle("#3b82f6"), opacity: saldo < 1 ? 0.5 : 1 }, children: ["MENSUAL", "(1 Crédito)"] }),
-                _.jsxs("button", { onClick: () => activar("semestral", 4), disabled: cargando || saldo < 4, style: { ...btnStyle("#8b5cf6"), opacity: saldo < 4 ? 0.5 : 1 }, children: ["SEMESTRAL", "(4 Créditos)"] }),
-                _.jsxs("button", { onClick: () => activar("anual", 7), disabled: cargando || saldo < 7, style: { ...btnStyle("#f59e0b"), opacity: saldo < 7 ? 0.5 : 1 }, children: ["ANUAL", "(7 Créditos)"] })
-            ]}),
-            mensaje && _.jsx("div", { style: { marginTop: "15px", padding: "10px", background: mensaje.tipo === "exito" ? "#dcfce7" : "#fee2e2", textAlign: "center", borderRadius: "5px" }, children: mensaje.texto })
-        ]})
-    ]});
-};
 }
+
 h1.createRoot(document.getElementById("root")).render(_.jsx(a1.StrictMode, {
     children: _.jsx(FI, {})
 }));
