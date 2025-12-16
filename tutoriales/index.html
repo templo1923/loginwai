@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutoriales - Agente IA WhatsApp WAI</title>
+    <link rel="icon" href="https://artechclick.com/logo.svg" type="image/svg+xml">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* Variables de color y tipografía de Artech */
+        :root {
+            --color-primary: #000191; /* Azul oscuro */
+            --color-secondary: #0eda91; /* Verde claro */
+            --color-accent1: #adc9e7; /* Ajustado para complementar */
+            --color-accent2: #c5dcf0; /* Ajustado para complementar */
+            --color-bg-light: #f8f9fa; /* Blanco ligeramente roto */
+            --color-text-dark: #1a202c; /* Gris muy oscuro, casi negro */
+            --color-text-gray: #4a5568; /* Gris medio */
+            --color-benefits-bg: #e7effc; /* Azul muy pálido para la sección de beneficios */
+
+            /* Versiones RGB para sombras con alfa */
+            --color-primary-rgb: 0, 1, 145;
+            --color-secondary-rgb: 14, 218, 145;
+        }
+
+        /* Clases de utilidad Tailwind personalizadas */
+        .bg-primary { background-color: var(--color-primary); }
+        .text-primary { color: var(--color-primary); }
+        .bg-secondary { background-color: var(--color-secondary); }
+        .text-secondary { color: var(--color-secondary); }
+        .bg-accent1 { background-color: var(--color-accent1); }
+        .text-accent1 { color: var(--color-accent1); }
+        .bg-accent2 { background-color: var(--color-accent2); }
+        .text-accent2 { color: var(--color-accent2); }
+        .bg-bg-light { background-color: var(--color-bg-light); }
+        .text-text-dark { color: var(--color-text-dark); }
+        .text-text-gray { color: var(--color-text-gray); }
+        .bg-benefits { background-color: var(--color-benefits-bg); }
+        .highlight-primary-text-secondary-bg {
+            color: var(--color-primary);
+            background-color: color-mix(in srgb, var(--color-secondary) 20%, transparent);
+            padding: 0.1em 0.4em;
+            border-radius: 0.25em;
+            font-weight: 700;
+        }
+        .text-actual-secondary {
+            color: var(--color-secondary);
+        }
+        .text-highlight {
+            color: var(--color-primary);
+            background-color: color-mix(in srgb, var(--color-secondary) 25%, transparent);
+            padding: 0.15em 0.4em;
+            border-radius: 0.3em;
+            font-weight: 600;
+        }
+
+        /* Estilos generales y de layout */
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.8;
+            color: var(--color-text-dark);
+            background-color: var(--color-bg-light);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .container {
+            max-width: 1100px;
+        }
+        .section-title {
+            font-size: 2.75rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 2.5rem;
+            text-align: center;
+            line-height: 1.3;
+        }
+        @media (max-width: 768px) {
+            .section-title {
+                font-size: 2.25rem;
+            }
+        }
+        .rounded-box {
+            border-radius: 1.25rem;
+        }
+        .shadow-custom {
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Estilos específicos para los tutoriales */
+        .tutorial-item {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 1.25rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+            /* Eliminamos margin-bottom de aquí para que el grid lo maneje */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .tutorial-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(var(--color-primary-rgb), 0.15);
+        }
+        .tutorial-item h3 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .tutorial-item p {
+            font-size: 1.05rem;
+            color: var(--color-text-gray);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            border-radius: 0.75rem; /* Bordes redondeados para el video */
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Estilos de cuadrícula tipo YouTube */
+        .tutorials-grid {
+            display: grid;
+            gap: 2.5rem; /* Espacio entre los elementos de la cuadrícula */
+            grid-template-columns: 1fr; /* Una columna por defecto (móvil) */
+        }
+
+        @media (min-width: 768px) { /* Tablet y pantallas más grandes */
+            .tutorials-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* 2 o 3 columnas, dependiendo del espacio */
+            }
+        }
+
+        @media (min-width: 1024px) { /* Escritorio */
+            .tutorials-grid {
+                grid-template-columns: repeat(3, 1fr); /* 3 columnas fijas */
+            }
+        }
+    </style>
+</head>
+<body class="bg-bg-light text-text-dark">
+
+    <main class="container mx-auto px-4 py-8 md:py-12 lg:py-16" style="padding-top: 150px;">
+        <h1 class="section-title mb-8">Tutoriales - Agente IA WhatsApp WAI</h1>
+        
+        <div class="tutorials-grid">
+                        <!-- Tutorial 0 -->
+            <div class="tutorial-item animate-fadeIn" style="animation-delay: 0.1s;">
+                <h3>Tour por la aplicación WAI</h3>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/h4RxJOoXrPs" allowfullscreen loading="lazy" title="YouTube video player"></iframe>
+                </div>
+                <p>WAI  - Es una APP avanzada para usar WhatsApp con cinco agentes de IA, con funciones especiales</p>
+            </div>
+            
+            <!-- Tutorial 1 -->
+            <div class="tutorial-item animate-fadeIn" style="animation-delay: 0.1s;">
+                <h3>Configuración inicial</h3>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/BH8xrpahgtI" allowfullscreen loading="lazy" title="YouTube video player"></iframe>
+                </div>
+                <p>CÓMO FUNCIONA  - PRIMEROS PASOS, empieza a familiarízate con su interfaz principal. Aprende a navegar por las secciones más importantes para empezar a trabajar de inmediato.</p>
+            </div>
+
+            <!-- Tutorial 2 -->
+            <div class="tutorial-item animate-fadeIn" style="animation-delay: 0.2s;">
+                <h3>Tutorial Mensajes Predeterminados</h3>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/HeXfVXE-FkI" allowfullscreen loading="lazy" title="YouTube video player"></iframe>
+                </div>
+                <p>Este tutorial te guiará a través de la configuración para agregar mensajes predeterminados. Personaliza los mensjaes para un mejor flujo.</p>
+            </div>
+
+            <!-- Tutorial 3 -->
+            <div class="tutorial-item animate-fadeIn" style="animation-delay: 0.3s;">
+                <h3>Configurar la API KEY DE GROQ POR PRIMERA VEZ</h3>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/hM0vlfZFiEU" allowfullscreen loading="lazy" title="YouTube video player"></iframe>
+                </div>
+                <p>Configura la API de Groq por primera vez, esto es una paso necesario para empezar</p>
+            </div>
+            
+                        <!-- Tutorial 4 -->
+            <div class="tutorial-item animate-fadeIn" style="animation-delay: 0.3s;">
+                <h3>Cómo hacer instrucciones para EL CONTEXTO</h3>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/JTqhZWuXQG4" allowfullscreen loading="lazy" title="YouTube video player"></iframe>
+                </div>
+                <p>Configura el contexto dando instricciones, nombre y personalidad a tu agente</p>
+            </div>
+            
+                                    <!-- Tutorial de groq -->
+            <div class="tutorial-item animate-fadeIn" style="animation-delay: 0.3s;">
+                <h3>Aumentar los limites de Groq, Para garantizar que IA no falle</h3>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/hyGUBZSyjIo" allowfullscreen loading="lazy" title="YouTube video player"></iframe>
+                </div>
+                <p>El límite de Groq ha dismunuido, si usas un contexto largo aumenta tu plan de Groq para manejar un contexto mayor a 2000 palabras, así la IA va trabajar mejor.</p>
+            </div>
+            
+                                                <!-- Tutorial de openAI -->
+            <div class="tutorial-item animate-fadeIn" style="animation-delay: 0.3s;">
+                <h3>Configurar Clave de OpenAI, Para garantizar acceso a la IA</h3>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/c098_ICY9s0" allowfullscreen loading="lazy" title="YouTube video player"></iframe>
+                </div>
+                <p>OpenAI es mucho más estable que Groq, configura ChatGPT 4o mini para experimetar una mayor estabilidad en la IA.</p>
+            </div>
+            
+                                                            <!-- Tutorial -->
+            <div class="tutorial-item animate-fadeIn" style="animation-delay: 0.3s;">
+                <h3>Reconocimiento de imágenes de WAI para Extraer texto</h3>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/MdtTkgYOCr8" allowfullscreen loading="lazy" title="YouTube video player"></iframe>
+                </div>
+                <p>Las imágenes recibidas serán procesadas con OCR para extraer texto y verificar si cumplen con los filtros configurados.</p>
+            </div>
+            
+                                                                        <!-- Tutorial -->
+            <div class="tutorial-item animate-fadeIn" style="animation-delay: 0.3s;">
+                <h3>Activar mensajes de remarketing</h3>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/UU3oyAFvdJE" allowfullscreen loading="lazy" title="YouTube video player"></iframe>
+                </div>
+                <p>Programa mensajes de remarketing para recordarles a tus clientes que tienen una conversación activa.</p>
+            </div>
+            
+                                                                                    <!-- Tutorial -->
+            <div class="tutorial-item animate-fadeIn" style="animation-delay: 0.3s;">
+                <h3>Activar, Desactivar y Gestionar clientes en WAI</h3>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/9xMtMIm009I" allowfullscreen loading="lazy" title="YouTube video player"></iframe>
+                </div>
+                <p>Gestiona a los clientes etiquetándolos y desactivando cuentas individuales.</p>
+            </div>
+            
+                        
+                                                                                    <!-- Tutorial -->
+            <div class="tutorial-item animate-fadeIn" style="animation-delay: 0.3s;">
+                <h3>Configura tu API de Gemini para WAI</h3>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/hKmBQqh9vaQ" allowfullscreen loading="lazy" title="YouTube video player"></iframe>
+                </div>
+                <p>Cómo conseguir una API de Gemini Gratis</p>
+            </div>
+            
+            <div class="tutorial-item animate-fadeIn" style="animation-delay: 0.3s;">
+                <h3>Gana el 50% de Comisión: Cómo activar tu enlace de reventa WAI</h3>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/ekwrVefIUfQ" allowfullscreen loading="lazy" title="YouTube video player"></iframe>
+                </div>
+                <p>¿Quieres generar ingresos extras con WAI? En este tutorial aprenderás paso a paso cómo ubicar y copiar tu enlace de referido inteligente dentro del panel de control</p>
+            </div>
+
+
+
+        </div>
+    </main>
+
+</body>
+</html>
