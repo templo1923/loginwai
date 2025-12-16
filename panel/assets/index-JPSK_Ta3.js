@@ -29926,7 +29926,7 @@ const UI = [["path", {
                     ]}),
 
                     _.jsx("div", { className: "divider" }), 
-                    _.jsxs("div", { className: "manual-block", children: [_.jsx("h4", { children: "Comprar Fichas" }), _.jsxs("a", { href: "https://wa.me/573004085041?text=Hola,%20deseo%20comprar%20licencias%20manuales%20para%20revender.", target: "_blank", rel: "noopener noreferrer", className: "btn-whatsapp", children: [_.jsx(HI, {}), " Recargar"] })] })
+                    _.jsxs("div", { className: "manual-block", children: [_.jsx("h4", { children: "Comprar Lincencias" }), _.jsxs("a", { href: "https://wa.me/573004085041?text=Hola,%20deseo%20comprar%20licencias%20manuales%20para%20revender.", target: "_blank", rel: "noopener noreferrer", className: "btn-whatsapp", children: [_.jsx(HI, {}), " Recargar"] })] })
                 ]})
             ]})
         ]
