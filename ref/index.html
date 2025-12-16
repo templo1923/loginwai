@@ -512,204 +512,153 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
- // === CÓDIGO NUEVO DE RASTREO (API CALL) ===
- // 1. Obtener la URL actual y el código (lo que está después de la última barra)
- const currentUrl = window.location.href;
- // Eliminar barra final si existe para que no de vacío
- const cleanUrl = currentUrl.replace(/\/$/, ""); 
- // Obtener el segmento final (ej: refisopxd)
- const referralCode = cleanUrl.substring(cleanUrl.lastIndexOf('/') + 1);
+    // --- 1. CAPTURAR EL REFERIDO (Soporta ?ref=usuario y /ref/usuario) ---
+    const urlParams = new URLSearchParams(window.location.search);
+    let referralCode = urlParams.get('ref');
 
- // 2. Enviar a la API si existe el código
- if (referralCode) {
-    console.log("Enviando rastreo para:", referralCode);
-    const apiEndpoint = 'https://api.artechclick.com/api/rastreo';
+    // Respaldo para rutas limpias (ej: /ref/usuario)
+    if (!referralCode) {
+        const path = window.location.pathname;
+        if (path.includes('/ref/') && path.split('/').length > 2) {
+            referralCode = path.split('/').pop();
+        }
+    }
 
-    fetch(apiEndpoint, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
+    // Persistencia (guardar en navegador por si recarga)
+    if (referralCode) {
+        console.log("✅ Vendedor activo:", referralCode);
+        localStorage.setItem('waibot_ref', referralCode);
+    } else {
+        referralCode = localStorage.getItem('waibot_ref') || "";
+    }
+
+    // --- 2. ENVIAR RASTREO A TU SERVIDOR PROPIO ---
+    if (referralCode) {
+        // ✅ AQUÍ ESTÁ TU URL CONFIGURADA
+        const apiEndpoint = 'https://crm.jhllegalgroup.com/api/rastreo'; 
+        
+        fetch(apiEndpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ enlace: referralCode })
+        })
+        .then(res => {
+            if(res.ok) console.log("📊 Visita registrada en tu servidor");
+        })
+        .catch(e => console.log("Nota: El rastreo requiere que el backend esté activo."));
+    }
+
+    // --- 3. CONFIGURACIÓN DE PAÍSES Y PAGOS ---
+    const configuracionPaises = {
+        'CO': { 
+            nombre: 'Colombia', moneda: 'COP', simbolo: '$', 
+            precios: { mensual: 20000, trimestral: 65000 },
+            links: { 
+                mensual: 'https://checkout.wompi.co/l/nwUVjH', 
+                trimestral: 'https://checkout.wompi.co/l/NmZccW' 
+            } 
         },
-        body: JSON.stringify({ enlace: referralCode })
-    })
-    .then(response => {
-        if (response.ok) {
-            console.log('Rastreo enviado exitosamente');
-        } else {
-            console.error('Error al enviar rastreo:', response.status);
+        'PE': { 
+            nombre: 'Perú', moneda: 'PEN', simbolo: 'S/', 
+            precios: { mensual: 30, trimestral: 99 },
+            links: { 
+                mensual: 'https://pay.hotmart.com/N99712121W?off=fygptixp', 
+                trimestral: 'https://pay.hotmart.com/N99712121W?off=epzshlbg' 
+            } 
+        },
+        'MX': { 
+            nombre: 'México', moneda: '+IVA', simbolo: '$', 
+            precios: { mensual: 155, trimestral: 540 },
+            links: { 
+                mensual: 'https://pay.hotmart.com/N99712121W?off=drvviumb', 
+                trimestral: 'https://pay.hotmart.com/N99712121W?off=3g1jjsqz' 
+            } 
+        },
+        'CL': { 
+            nombre: 'Chile', moneda: '+IVA', simbolo: '$', 
+            precios: { mensual: 7500, trimestral: 30000 },
+            links: { 
+                mensual: 'https://pay.hotmart.com/N99712121W?off=0zxgvbyz', 
+                trimestral: 'https://pay.hotmart.com/N99712121W?off=gz7maaax' 
+            } 
+        },
+        'DEFAULT': { 
+            nombre: 'tu país', moneda: 'USD', simbolo: '$', 
+            precios: { mensual: 8.5, trimestral: 33 },
+            links: { 
+                mensual: 'https://pay.hotmart.com/N99712121W?off=gds67zq0', 
+                trimestral: 'https://pay.hotmart.com/N99712121W?off=f8rg71la' 
+            } 
         }
-    })
-    .catch(error => {
-        console.error('Error de red en rastreo:', error);
-    });
- }
- // === FIN CÓDIGO NUEVO DE RASTREO ===
+    };
 
+    // --- 4. INYECTOR DE REFERIDO EN BOTONES DE PAGO ---
+    const agregarRefAlLink = (urlBase, ref) => {
+        if (!urlBase) return "#";
+        if (!ref) return urlBase;
+        
+        // Detectar si el link ya tiene parámetros
+        const separador = urlBase.includes('?') ? '&' : '?';
+        
+        // Enviamos el código a Wompi/Hotmart
+        // reference: Wompi
+        // ref, sck: Hotmart
+        return `${urlBase}${separador}reference=${ref}&sck=${ref}&ref=${ref}`;
+    };
 
- // === CÓDIGO AÑADIDO: AJUSTE PARA LA BANDA SUPERIOR ===
- const banner = document.getElementById('black-friday-banner');
- if (banner) {
-    const bannerHeight = banner.offsetHeight;
-    document.body.style.paddingTop = bannerHeight + 'px';
- }
- // === FIN CÓDIGO AÑADIDO ===
+    const formatearPrecio = (p) => (p % 1 !== 0) ? p.toFixed(2) : Math.round(p).toLocaleString('es');
+    const calcularAhorro = (conf, plan) => plan === 'trimestral' ? Math.round(((conf.precios.mensual * 3 - conf.precios.trimestral) / (conf.precios.mensual * 3)) * 100) : 0;
 
+    const actualizarUI = (codPais) => {
+        const conf = configuracionPaises[codPais] || configuracionPaises['DEFAULT'];
+        const subtitulo = document.getElementById('planes-subtitulo');
+        if(subtitulo) subtitulo.textContent = `Precios para ${conf.nombre}`;
 
-  // === ¡IMPORTANTE! AQUÍ DEBES AÑADIR TUS ENLACES DE PAGO REALES ===
-  const configuracionPaises = {
-    'CO': { 
-        nombre: 'Colombia', 
-        moneda: 'COP', 
-        simbolo: '$', 
-        precios: { mensual: 20000, trimestral: 65000, anual: 65000 },
-        links: { 
-            mensual: 'https://checkout.wompi.co/l/nwUVjH', 
-            trimestral: 'https://checkout.wompi.co/l/NmZccW' 
-        } 
-    },
-    'PE': { 
-        nombre: 'Perú', 
-        moneda: 'PEN', 
-        simbolo: 'S/', 
-        precios: { mensual: 30, trimestral: 99, anual: 99 },
-        links: { 
-            mensual: 'https://pay.hotmart.com/N99712121W?off=fygptixp', 
-            trimestral: 'https://pay.hotmart.com/N99712121W?off=epzshlbg' 
-        } 
-    },
-    'MX': { 
-        nombre: 'México', 
-        moneda: '+IVA', 
-        simbolo: '$', 
-        precios: { mensual: 155, trimestral: 540, anual: 540 },
-        links: { 
-            mensual: 'https://pay.hotmart.com/N99712121W?off=drvviumb', 
-            trimestral: 'https://pay.hotmart.com/N99712121W?off=3g1jjsqz' 
-        } 
-    },
-    'CL': { 
-        nombre: 'Chile', 
-        moneda: '+IVA', 
-        simbolo: '$', 
-        precios: { mensual: 7500, trimestral: 30000, anual: 30000 },
-        links: { 
-            mensual: 'https://pay.hotmart.com/N99712121W?off=0zxgvbyz', 
-            trimestral: 'https://pay.hotmart.com/N99712121W?off=gz7maaax' 
-        } 
-    },
-    'DEFAULT': { 
-        nombre: 'tu país', 
-        moneda: 'USD', 
-        simbolo: '$', 
-        precios: { mensual: 8.5, trimestral: 33, anual: 33 },
-        links: { 
-            mensual: 'https://pay.hotmart.com/N99712121W?off=gds67zq0', 
-            trimestral: 'https://pay.hotmart.com/N99712121W?off=f8rg71la' 
-        } 
-    }
-  };
+        ['mensual', 'trimestral'].forEach(plan => {
+            if (document.getElementById(`simbolo-${plan}`)) {
+                document.getElementById(`simbolo-${plan}`).textContent = conf.simbolo;
+                document.getElementById(`cantidad-${plan}`).textContent = formatearPrecio(conf.precios[plan]);
+                document.getElementById(`moneda-${plan}`).textContent = conf.moneda;
 
-  const formatearPrecio = (precio) => {
-    if (precio % 1 !== 0) return precio.toFixed(2);
-    return Math.round(precio).toLocaleString('es');
-  };
+                const antes = document.getElementById(`precio-por-mes-${plan}`);
+                if (plan === 'trimestral') {
+                    antes.innerHTML = `<s>Antes: ${conf.simbolo} ${formatearPrecio(conf.precios.mensual * 3)}</s>`;
+                    const ahorroEl = document.getElementById(`ahorro-${plan}`);
+                    if(ahorroEl) {
+                        const ahorro = calcularAhorro(conf, plan);
+                        ahorroEl.textContent = `Ahorra ${ahorro}%`;
+                        ahorroEl.style.display = 'inline-block';
+                    }
+                }
 
-  const calcularPrecioMensual = (config, tipoPlan) => {
-    const precio = config.precios[tipoPlan];
-    switch(tipoPlan) {
-      case 'trimestral': return precio * 2
-      default: return precio;
-    }
-  };
-
-  const calcularAhorro = (config, tipoPlan) => {
-    const precioMensualBase = config.precios.mensual;
-    if (tipoPlan === 'trimestral') {
-      const precioNormal = precioMensualBase * 3;
-      const ahorro = ((precioNormal - config.precios.trimestral) / precioNormal) * 100;
-      return Math.round(ahorro);
-    } else if (tipoPlan === 'anual') {
-      const precioNormal = precioMensualBase * 12;
-      const ahorro = ((precioNormal - config.precios.anual) / precioNormal) * 100;
-      return Math.round(ahorro);
-    }
-    return 0;
-  };
-
-  const actualizarPreciosUI = (codigoPais) => {
-    const config = configuracionPaises[codigoPais] || configuracionPaises['DEFAULT'];
-    
-    document.getElementById('planes-subtitulo').textContent = `Precio exclusivo para ${config.nombre}`;
-
-    const planes = ['mensual', 'trimestral']; // Plan anual excluido
-
-    planes.forEach(plan => {
-        if (document.getElementById(`simbolo-${plan}`)) {
-            document.getElementById(`simbolo-${plan}`).textContent = config.simbolo;
-            document.getElementById(`cantidad-${plan}`).textContent = formatearPrecio(config.precios[plan]);
-            document.getElementById(`moneda-${plan}`).textContent = config.moneda;
-            
-            const precioPorMes = calcularPrecioMensual(config, plan);
-            const infoMensualEl = document.getElementById(`precio-por-mes-${plan}`);
-            if (plan !== 'mensual') {
-                infoMensualEl.innerHTML = `<s>Antes: ${config.simbolo} ${formatearPrecio(precioPorMes)}</s>`;
-            } else {
-                infoMensualEl.textContent = '';
+                // INYECCIÓN DEL LINK REAL CON TU REFERIDO
+                const btn = document.getElementById(`link-${plan}`);
+                if (btn && conf.links[plan]) {
+                    btn.href = agregarRefAlLink(conf.links[plan], referralCode);
+                }
             }
+        });
+    };
 
-            const ahorro = calcularAhorro(config, plan);
-            const ahorroEl = document.getElementById(`ahorro-${plan}`);
-            if (ahorro > 0) {
-                ahorroEl.textContent = `Ahorra 50%`;
-                ahorroEl.style.display = 'inline-block';
-            } else {
-                ahorroEl.style.display = 'none';
-            }
+    // --- 5. DETECCIÓN AUTOMÁTICA DE PAÍS ---
+    fetch('https://ipapi.co/json/')
+        .then(r => r.json())
+        .then(d => actualizarUI(d.country_code))
+        .catch(() => {
+            fetch('https://api.country.is/')
+                .then(r => r.json())
+                .then(d => actualizarUI(d.country))
+                .catch(() => actualizarUI('DEFAULT'));
+        });
 
-            // === MODIFICACIÓN CLAVE: Actualizar el enlace del botón ===
-            const linkElement = document.getElementById(`link-${plan}`);
-            if (linkElement && config.links && config.links[plan]) {
-                linkElement.href = config.links[plan];
-            }
-        }
-    });
-  };
-
-  const detectarPais = async () => {
-    try {
-      const response = await fetch('https://ipapi.co/json/');
-      if (!response.ok) throw new Error('Respuesta no fue OK');
-      const data = await response.json();
-      if (data && data.country_code) {
-          actualizarPreciosUI(data.country_code);
-      } else {
-       throw new Error('Datos de país no encontrados');
-      }
-    } catch (error) {
-      console.warn('Error con ipapi.co, intentando con API de respaldo:', error.message);
-      try {
-        const response2 = await fetch('https://api.country.is/');
-        if (!response2.ok) throw new Error('Respuesta no fue OK');
-        const data2 = await response2.json();
-        if (data2 && data2.country) {
-          actualizarPreciosUI(data2.country);
-        } else {
-          throw new Error('Datos de país no encontrados en respaldo');
-        }
-      } catch (error2) {
-        console.error('Error con ambas APIs. Usando precios por defecto.', error2.message);
-        actualizarPreciosUI('DEFAULT');
-      }
-    }
-   };
-   
-   detectarPais();
+    // Ajuste Banner Black Friday
+    const banner = document.getElementById('black-friday-banner');
+    if (banner) document.body.style.paddingTop = banner.offsetHeight + 'px';
 });
 
-// Prevenir que se desmarque el checkbox
+// Checkbox términos
 document.getElementById('terms-checkbox').addEventListener('click', function(e) {
-    e.preventDefault();
-    this.checked = true;
+    e.preventDefault(); this.checked = true;
 });
 </script>
 
