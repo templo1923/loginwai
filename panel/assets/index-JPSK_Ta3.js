@@ -29760,14 +29760,30 @@ const UI = [["path", {
             }
     }
     ;
-    N.useEffect( () => {
-        i && (h(!0),
-        C().finally( () => {
+// --- VALIDACIÓN AUTOMÁTICA EN TIEMPO REAL ---
+N.useEffect(() => {
+    let intervalo;
+    
+    if (i) {
+        // 1. Carga inicial
+        h(!0);
+        C().finally(() => {
             X.current && h(!1)
-        }
-        ))
+        });
+
+        // 2. Configurar el reloj para validar cada 30 segundos
+        intervalo = setInterval(() => {
+            // Llamamos a C() silenciosamente para validar licencia
+            // Si la licencia venció en la BD, C() actualizará el estado y bloqueará la pantalla
+            C(); 
+        }, 30000); // 30000 ms = 30 segundos. Puedes bajarlo a 10000 para probar.
     }
-    , [i]);
+
+    // Limpieza al salir
+    return () => {
+        if (intervalo) clearInterval(intervalo);
+    };
+}, [i]);
     const D = async () => {
         if (T === y) {
             H(!1);
