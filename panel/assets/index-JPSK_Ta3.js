@@ -29737,35 +29737,62 @@ const UI = [["path", {
         return ds
     };
 
-    // --- CARGAR DATOS (MAPEADO EXACTO) ---
+// --- CARGAR DATOS (CON ACCESO DEMO PARA PRUEBAS) ---
     const C = async () => {
         var J;
         if (i) try {
+            // 1. Validación de licencia activa
             const oe = await ge("facturacion");
             const Ue = ((J = oe?.facturacion)?.activa) === !0;
             if (e(Ue), !Ue) return;
             
-            // Info Partner
+            // 2. Info Partner y Validación de Rol
             if(i.email) {
                 const infoP = await ge(`revendedor/info?id=${i.email}`);
+                
+                // === 🔒 FILTRO DE ACCESO INTELIGENTE ===
+                const planUser = (infoP.plan || "").toLowerCase();
+                
+                // A. ¿Es un usuario con privilegios?
+                const esVIP = planUser.includes("revendedor") || planUser.includes("vip") || planUser.includes("admin");
+                
+                // B. ¿Es un usuario en periodo de prueba? (LE DAMOS ACCESO PARA ANTOJARLO)
+                const esPrueba = planUser.includes("prueba") || planUser.includes("gratuita") || planUser.includes("demo");
+
+                // C. ¿Es un cliente final que ya pagó? (Usuario estándar)
+                // Si dice "Mensual" o "Semestral" pero NO es VIP ni Prueba, es un cliente final.
+                const esClientePago = (planUser.includes("mensual") || planUser.includes("semestral") || planUser.includes("anual"));
+
+                // REGLA DE ORO:
+                // Bloqueamos SOLO si es un cliente que ya pagó licencia estándar y no es revendedor.
+                // Los de "Prueba" SÍ entran. Los "Revendedores" SÍ entran.
+                if (esClientePago && !esVIP && !esPrueba) {
+                    console.log("⛔ Acceso denegado: Cliente final estándar.");
+                    e(false); // Muestra pantalla "Acceso Restringido"
+                    return;
+                }
+                // === 🔓 FIN FILTRO ===
+
                 if(infoP.ok) {
                     X.current && m({
-                        saldo: infoP.saldo, // Dinero Real
-                        cuentasDisponibles: infoP.cuentasDisponibles, // Fichas (Licencias)
+                        saldo: infoP.saldo, 
+                        cuentasDisponibles: infoP.cuentasDisponibles, 
                         totalReferidos: infoP.referidos,
                         referidos: [] 
                     });
                     if(infoP.slug) { A(infoP.slug); k(infoP.slug); }
                 }
             }
-            // Historial
+            
+            // 3. Historial
             try {
                 const zt = await ge("retiros/historial");
                 X.current && b(zt.historial || []);
             } catch {}
+            
         } catch (oe) { console.error("Error dashboard:", oe) }
     };
-    
+        
     // --- ACCIONES ---
     const q = () => {
         navigator.clipboard.writeText(`${urlBaseReferido}${y}`);
