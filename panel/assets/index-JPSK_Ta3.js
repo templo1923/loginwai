@@ -29677,6 +29677,10 @@ const UI = [["path", {
       , [i,r] = N.useState(null)
       , [o,c] = N.useState(nf.WORLD)
       , [f,h] = N.useState(!0)
+      
+      // ESTADO NUEVO: Aquí guardaremos los planes descargados de la DB
+      , [planesDB, setPlanesDB] = N.useState([]) 
+
       , [p,m] = N.useState({
         saldo: 0,              
         cuentasDisponibles: 0, 
@@ -29697,10 +29701,9 @@ const UI = [["path", {
       , [L,K] = N.useState(!1)
       , X = N.useRef(!0);
 
-    // URL BASE REFERIDO
     const urlBaseReferido = "https://loginwaibot.vercel.app/ref/?ref=";
 
-    // --- RELOJ AUTOMÁTICO (30s) ---
+    // --- RELOJ AUTOMÁTICO ---
     N.useEffect(() => {
         let intervalo;
         if (i) {
@@ -29726,7 +29729,6 @@ const UI = [["path", {
         })(), () => { X.current = !1, J() }
     }, []);
 
-    // --- HELPER API SEGURO ---
     const ge = async (J, oe="GET", Ue=null) => {
         const $t = await i.getIdToken(!0);
         const zt = { method: oe, headers: { Authorization: `Bearer ${$t}`, "Content-Type": "application/json", "ngrok-skip-browser-warning": "true" } };
@@ -29737,7 +29739,7 @@ const UI = [["path", {
         return ds
     };
 
-    // --- CARGAR DATOS (CON FILTRO DE SEGURIDAD ACTUALIZADO) ---
+    // --- CARGAR DATOS (AHORA TRAE LOS PLANES TAMBIÉN) ---
     const C = async () => {
         var J;
         if (i) try {
@@ -29746,25 +29748,24 @@ const UI = [["path", {
             if (e(Ue), !Ue) return;
             
             if(i.email) {
+                // 1. Info del Usuario
                 const infoP = await ge(`revendedor/info?id=${i.email}`);
                 
-                // === 🔒 FILTRO DE ACCESO ===
+                // 2. Info de los Planes (NUEVO: Descarga precios de DB)
+                try {
+                    const planesRes = await ge("planes");
+                    if (planesRes.ok && planesRes.planes) {
+                        setPlanesDB(planesRes.planes);
+                    }
+                } catch (errPlanes) { console.log("Error cargando planes", errPlanes); }
+
+                // Filtro de Seguridad
                 const planUser = (infoP.plan || "").toLowerCase();
-                
-                // 1. ¿Quién entra? (VIPs, Revendedores, Admins, Partners)
                 const esVIP = planUser.includes("revendedor") || planUser.includes("vip") || planUser.includes("admin") || planUser.includes("partner");
-                // 2. ¿Quién más entra? (Usuarios en periodo de prueba/demo para antojarse)
                 const esPrueba = planUser.includes("prueba") || planUser.includes("gratuita");
-                
-                // 3. ¿Quién NO entra? (Clientes que ya pagaron solo uso personal y no son revendedores)
                 const esClientePersonal = !esVIP && !esPrueba; 
 
-                if (esClientePersonal) {
-                    // Bloqueamos el acceso visual
-                    e(false); 
-                    return;
-                }
-                // === 🔓 FIN FILTRO ===
+                if (esClientePersonal) { e(false); return; }
 
                 if(infoP.ok) {
                     X.current && m({
@@ -29776,56 +29777,59 @@ const UI = [["path", {
                     if(infoP.slug) { A(infoP.slug); k(infoP.slug); }
                 }
             }
-            
             try {
                 const zt = await ge("retiros/historial");
                 X.current && b(zt.historial || []);
             } catch {}
-            
         } catch (oe) { console.error("Error dashboard:", oe) }
     };
     
-    // --- ACCIONES ---
     const q = () => {
         navigator.clipboard.writeText(`${urlBaseReferido}${y}`);
         G({ tipo: "success", text: "¡Link Copiado!" });
         setTimeout( () => G(null), 2e3)
     };
     
-    // Función unificada para activar cualquier plan (Personal o Pack)
-    const activarConPlan = async (plan, costo) => {
+    // Función Dinámica de Activación
+    const activarConPlan = async (planId, costo, nombrePlan) => {
         if (!re.includes("@")) return Ye({tipo: "error", text: "Email inválido"});
-        if (p.cuentasDisponibles < costo) return Ye({tipo: "error", text: `Saldo insuficiente (${costo} Créditos)`});
+        if (p.cuentasDisponibles < costo) return Ye({tipo: "error", text: `Saldo insuficiente (${costo} Fichas)`});
         
-        // Mensaje dinámico según el tipo de activación
-        let mensajeTipo = "USUARIO PERSONAL";
-        if (plan.includes("revendedor")) mensajeTipo = "PACK REVENDEDOR (B2B)";
-        if (plan.includes("vip")) mensajeTipo = "SOCIO VIP";
-
-        if (!confirm(`¿Confirmar activación?\n\nPlan: ${mensajeTipo}\nClave: ${plan}\nCosto: ${costo} Fichas`)) return;
+        if (!confirm(`¿Confirmar Activación?\n\nPlan: ${nombrePlan}\nCosto: ${costo} Fichas`)) return;
 
         ve(!0); Ye(null);
         try {
-            const res = await ge("revendedor/activar-licencia", "POST", { clienteCorreo: re.toLowerCase(), revendedorId: i.email, tipoPlan: plan });
+            // Enviamos el ID del plan (ej: "personal_mensual") y el backend buscará el costo real
+            const res = await ge("revendedor/activar-licencia", "POST", { clienteCorreo: re.toLowerCase(), revendedorId: i.email, tipoPlan: planId });
             m(prev => ({ ...prev, cuentasDisponibles: res.nuevoSaldo !== undefined ? res.nuevoSaldo : (prev.cuentasDisponibles - costo) }));
             dt(!0); ye("");
             setTimeout(C, 1000); 
         } catch (err) { Ye({ tipo: "error", text: err.message }); } finally { ve(!1); }
     };
 
-    const D = async () => {
-        if (T === y) { H(!1); return }
-        F(!0), G(null);
-        try {
-            const J = await ge("mi-enlace", "PUT", { nuevoEnlace: T });
-            A(J.enlace), k(J.enlace), H(!1), G({ tipo: "success", text: "Enlace actualizado" }), setTimeout( () => G(null), 3e3)
-        } catch (J) { G({ tipo: "error", text: J.message }) } finally { F(!1) }
-    }, $ = J => o.moneda === "USD" ? `$${(J / nf.WORLD.tasaCambio).toFixed(2)} USD` : `$${J.toLocaleString("es-CO")} COP`, ce = J => J ? new Date(J).toLocaleDateString("es-ES", { day: "2-digit", month: "short", year: "numeric" }) : "-", ne = J => { const oe = { pendiente: { bg: "#fff7ed", color: "#c2410c", label: "Pendiente" }, aprobado: { bg: "#f0fdf4", color: "#15803d", label: "Aprobado" }, rechazado: { bg: "#fef2f2", color: "#b91c1c", label: "Rechazado" } }, Ue = oe[J] || oe.pendiente; return _.jsx("span", { style: { backgroundColor: Ue.bg, color: Ue.color }, className: "badge-estado", children: Ue.label }) };
+    const D = async () => { if (T === y) { H(!1); return } F(!0), G(null); try { const J = await ge("mi-enlace", "PUT", { nuevoEnlace: T }); A(J.enlace), k(J.enlace), H(!1), G({ tipo: "success", text: "Enlace actualizado" }), setTimeout( () => G(null), 3e3) } catch (J) { G({ tipo: "error", text: J.message }) } finally { F(!1) } }, $ = J => o.moneda === "USD" ? `$${(J / nf.WORLD.tasaCambio).toFixed(2)} USD` : `$${J.toLocaleString("es-CO")} COP`, ce = J => J ? new Date(J).toLocaleDateString("es-ES", { day: "2-digit", month: "short", year: "numeric" }) : "-", ne = J => { const oe = { pendiente: { bg: "#fff7ed", color: "#c2410c", label: "Pendiente" }, aprobado: { bg: "#f0fdf4", color: "#15803d", label: "Aprobado" }, rechazado: { bg: "#fef2f2", color: "#b91c1c", label: "Rechazado" } }, Ue = oe[J] || oe.pendiente; return _.jsx("span", { style: { backgroundColor: Ue.bg, color: Ue.color }, className: "badge-estado", children: Ue.label }) };
+
+    // --- FILTRADO DE PLANES DINÁMICOS ---
+    // Ordenamos por precio para que salgan Mensual(Barato) -> Anual(Caro)
+    const planesOrdenados = [...planesDB].sort((a,b) => a.costoCreditos - b.costoCreditos);
+    
+    // Separamos por categorías según el ID en Firebase
+    const listaPersonal = planesOrdenados.filter(pl => pl.id.startsWith("personal_"));
+    const listaRevendedor = planesOrdenados.filter(pl => pl.id.startsWith("revendedor_"));
+    const listaVip = planesOrdenados.filter(pl => pl.id.startsWith("vip_"));
+
+    // Helper para nombre corto en botón
+    const getNombreCorto = (nombre) => {
+        if(nombre.includes("Mensual")) return "Mensual";
+        if(nombre.includes("Semestral")) return "Semestral";
+        if(nombre.includes("Anual")) return "Anual";
+        return nombre;
+    };
 
     // --- RENDER ---
     return f ? _.jsxs("div", { className: "loader-full", children: [_.jsx(Zv, { className: "spinner" }), _.jsx("p", { children: "Cargando panel..." })] }) 
-    : s === !1 ? _.jsxs("div", { className: "reventa-dashboard", children: [_.jsx("header", { className: "dashboard-header", children: _.jsx("h1", { children: "Panel de Partner" }) }), _.jsxs("div", { style: { textAlign: "center", padding: "4rem 2rem", background: "white", borderRadius: "16px", maxWidth: "600px", margin: "2rem auto", border: "1px solid #e2e8f0" }, children: [_.jsx("div", { style: { display: "inline-flex", padding: "1.5rem", borderRadius: "50%", background: "#fef2f2", color: "#dc2626", marginBottom: "1.5rem" }, children: _.jsx(ko, { size: 48, strokeWidth: 1.5 }) }), _.jsx("h2", { style: { color: "#1e293b", marginBottom: "1rem", fontSize: "1.8rem" }, children: "Acceso Restringido" }), _.jsxs("p", { style: { color: "#64748b", fontSize: "1.1rem", marginBottom: "2.5rem" }, children: ["Tu plan actual es de uso personal.", _.jsx("br",{}), "Adquiere una membresía para acceder al programa de reventa."] }), _.jsxs("button", { onClick: () => window.location.href = "/", className: "btn-primary", style: { padding: "1rem 2rem" }, children: [_.jsx(ey, { size: 20, style: { marginRight: "8px" } }), "Ver Membresías"] })] })] }) 
-    : Be ? _.jsx("div", { className: "success-overlay", children: _.jsxs("div", { className: "success-card", children: [_.jsx("div", { className: "icon-success", children: _.jsx(Af, { className: "w-16 h-16" }) }), _.jsx("h2", { children: "¡Activación Exitosa!" }), _.jsxs("p", { children: ["Se ha activado correctamente a:", _.jsx("br",{}), _.jsx("b", { children: re })] }), _.jsx("button", { onClick: () => { dt(!1), ye("") }, className: "btn-primary", children: "Entendido" })] }) }) 
+    : s === !1 ? _.jsxs("div", { className: "reventa-dashboard", children: [_.jsx("header", { className: "dashboard-header", children: _.jsx("h1", { children: "Panel de Partner" }) }), _.jsxs("div", { style: { textAlign: "center", padding: "4rem 2rem", background: "white", borderRadius: "16px", maxWidth: "600px", margin: "2rem auto", border: "1px solid #e2e8f0" }, children: [_.jsx("div", { style: { display: "inline-flex", padding: "1.5rem", borderRadius: "50%", background: "#fef2f2", color: "#dc2626", marginBottom: "1.5rem" }, children: _.jsx(ko, { size: 48, strokeWidth: 1.5 }) }), _.jsx("h2", { style: { color: "#1e293b", marginBottom: "1rem", fontSize: "1.8rem" }, children: "Acceso Restringido" }), _.jsxs("p", { style: { color: "#64748b", fontSize: "1.1rem", marginBottom: "2.5rem" }, children: ["Plan personal detectado.", _.jsx("br",{}), "Actualiza a Revendedor para acceder."] }), _.jsxs("button", { onClick: () => window.location.href = "/", className: "btn-primary", style: { padding: "1rem 2rem" }, children: [_.jsx(ey, { size: 20, style: { marginRight: "8px" } }), "Actualizar Plan"] })] })] }) 
+    : Be ? _.jsx("div", { className: "success-overlay", children: _.jsxs("div", { className: "success-card", children: [_.jsx("div", { className: "icon-success", children: _.jsx(Af, { className: "w-16 h-16" }) }), _.jsx("h2", { children: "¡Activación Exitosa!" }), _.jsxs("p", { children: ["Activado correctamente:", _.jsx("br",{}), _.jsx("b", { children: re })] }), _.jsx("button", { onClick: () => { dt(!1), ye("") }, className: "btn-primary", children: "Entendido" })] }) }) 
     : _.jsxs("div", {
         className: "reventa-dashboard",
         children: [
@@ -29851,49 +29855,74 @@ const UI = [["path", {
             
             // CONTENIDO DIVIDIDO
             _.jsxs("div", { className: "main-content-split", children: [
-                // COLUMNA IZQUIERDA: Listas
                 _.jsxs("div", { className: "content-left-column", children: [
                     _.jsxs("div", { className: "content-section referidos-list", children: [_.jsx("div", { className: "section-header", children: _.jsxs("h3", { children: [_.jsx("span", { className: "icon-title", children: _.jsx(Jv, {}) }), " Últimos Referidos"] }) }), _.jsx("div", { className: "table-responsive-wrapper", children: _.jsxs("table", { className: "custom-table", children: [_.jsx("thead", { children: _.jsxs("tr", { children: [_.jsx("th", { children: "Cliente" }), _.jsx("th", { children: "Plan" }), _.jsx("th", { children: "Fecha" })] }) }), _.jsx("tbody", { children: p.referidos.length > 0 ? p.referidos.map((J,oe) => _.jsxs("tr", { children: [_.jsx("td", { children: J.cliente }), _.jsx("td", { children: _.jsx("span", { className: "badge-plan", children: J.plan || "N/A" }) }), _.jsx("td", { children: ce(J.fecha_registro) })] }, oe)) : _.jsx("tr", { children: _.jsx("td", { colSpan: "3", className: "empty-row", children: "Sin referidos aún." }) }) })] }) })] }),
                     _.jsxs("div", { className: "content-section retiros-list", children: [_.jsx("div", { className: "section-header", children: _.jsxs("h3", { children: [_.jsx("span", { className: "icon-title", children: _.jsx(bI, {}) }), " Historial Retiros"] }) }), _.jsx("div", { className: "table-responsive-wrapper", children: _.jsxs("table", { className: "custom-table interactive-table", children: [_.jsx("thead", { children: _.jsxs("tr", { children: [_.jsx("th", { children: "Fecha" }), _.jsx("th", { children: "Método" }), _.jsx("th", { children: "Monto" }), _.jsx("th", { children: "Estado" })] }) }), _.jsx("tbody", { children: E.length > 0 ? E.map(J => _.jsx(qI, { ret: J, formatMoney: $, formatDate: ce, getEstadoBadge: ne }, J.id)) : _.jsx("tr", { children: _.jsx("td", { colSpan: "4", className: "empty-row", children: "No retiros." }) }) })] }) })] })
                 ]}), 
                 
-                // COLUMNA DERECHA: Herramientas Manuales (9 BOTONES)
+                // --- SECCIÓN 100% DINÁMICA ---
                 _.jsxs("div", { className: "content-section manual-tools", children: [
                     _.jsx("div", { className: "section-header", children: _.jsxs("h3", { children: [_.jsx("span", { className: "icon-title", children: _.jsx(ey, {}) }), " Gestión Manual"] }) }), 
                     
-                    // Input de correo
-                    _.jsx("input", { type: "email", placeholder: "Email del cliente a activar", value: re, onChange: J => ye(J.target.value), style: { width: "100%", marginBottom: "15px", padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "1rem" } }), 
+                    _.jsx("input", { type: "email", placeholder: "Email del cliente", value: re, onChange: J => ye(J.target.value), style: { width: "100%", marginBottom: "15px", padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1" } }), 
 
-                    // 1. USO PERSONAL (AZUL)
+                    // 1. USO PERSONAL (Dinámico)
                     _.jsxs("div", { className: "manual-block", children: [
                         _.jsx("h4", { style:{fontSize:"0.9rem", color: "#334155", marginBottom:"8px"}, children: "1. Uso Personal (Cliente Final)" }), 
-                        _.jsxs("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px" }, children: [
-                            _.jsxs("button", { onClick: () => activarConPlan("personal_mensual", 1), disabled: p.cuentasDisponibles < 1 || !re || Te, className: "btn-activate", style: {background: "#3b82f6"}, children: ["Mensual", _.jsx("span", { style: {display:"block", fontSize:"0.6em"}, children: "(1 Ficha)" })] }),
-                            _.jsxs("button", { onClick: () => activarConPlan("personal_semestral", 4), disabled: p.cuentasDisponibles < 4 || !re || Te, className: "btn-activate", style: {background: "#2563eb"}, children: ["Semestral", _.jsx("span", { style: {display:"block", fontSize:"0.6em"}, children: "(4 Fichas)" })] }),
-                            _.jsxs("button", { onClick: () => activarConPlan("personal_anual", 7), disabled: p.cuentasDisponibles < 7 || !re || Te, className: "btn-activate", style: {background: "#1d4ed8"}, children: ["Anual", _.jsx("span", { style: {display:"block", fontSize:"0.6em"}, children: "(7 Fichas)" })] })
-                        ]})
+                        _.jsx("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px" }, children: 
+                            listaPersonal.length > 0 ? listaPersonal.map(pl => 
+                                _.jsxs("button", { 
+                                    onClick: () => activarConPlan(pl.id, pl.costoCreditos, pl.nombre), 
+                                    disabled: p.cuentasDisponibles < pl.costoCreditos || !re || Te, 
+                                    className: "btn-activate", 
+                                    style: {background: "#3b82f6"}, 
+                                    children: [
+                                        getNombreCorto(pl.nombre), 
+                                        _.jsx("span", { style: {display:"block", fontSize:"0.6em"}, children: `(${pl.costoCreditos} Fichas)` })
+                                    ] 
+                                }, pl.id)
+                            ) : _.jsx("p", {style:{fontSize:"0.8rem"}, children:"Cargando planes..."})
+                        })
                     ]}),
                     _.jsx("div", { className: "divider", style: {margin: "12px 0"} }), 
 
-                    // 2. REVENDEDOR B2B (VERDE)
+                    // 2. REVENDEDOR B2B (Dinámico)
                     _.jsxs("div", { className: "manual-block", style: {background: "#f0fdf4", border: "1px dashed #22c55e"}, children: [
                         _.jsx("h4", { style:{fontSize:"0.9rem", color: "#166534", marginBottom:"8px"}, children: "2. Pack Revendedor (Inicio)" }), 
-                        _.jsxs("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px" }, children: [
-                            _.jsxs("button", { onClick: () => activarConPlan("revendedor_mensual", 10), disabled: p.cuentasDisponibles < 10 || !re || Te, className: "btn-activate", style: {background: "#10b981"}, children: ["Mensual", _.jsx("span", { style: {display:"block", fontSize:"0.6em"}, children: "(10 Fichas)" })] }),
-                            _.jsxs("button", { onClick: () => activarConPlan("revendedor_semestral", 50), disabled: p.cuentasDisponibles < 50 || !re || Te, className: "btn-activate", style: {background: "#059669"}, children: ["Semestral", _.jsx("span", { style: {display:"block", fontSize:"0.6em"}, children: "(50 Fichas)" })] }),
-                            _.jsxs("button", { onClick: () => activarConPlan("revendedor_anual", 90), disabled: p.cuentasDisponibles < 90 || !re || Te, className: "btn-activate", style: {background: "#047857"}, children: ["Anual", _.jsx("span", { style: {display:"block", fontSize:"0.6em"}, children: "(90 Fichas)" })] })
-                        ]})
+                        _.jsx("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px" }, children: 
+                            listaRevendedor.length > 0 ? listaRevendedor.map(pl => 
+                                _.jsxs("button", { 
+                                    onClick: () => activarConPlan(pl.id, pl.costoCreditos, pl.nombre), 
+                                    disabled: p.cuentasDisponibles < pl.costoCreditos || !re || Te, 
+                                    className: "btn-activate", 
+                                    style: {background: "#10b981"}, 
+                                    children: [
+                                        getNombreCorto(pl.nombre), 
+                                        _.jsx("span", { style: {display:"block", fontSize:"0.6em"}, children: `(${pl.costoCreditos} Fichas)` })
+                                    ] 
+                                }, pl.id)
+                            ) : _.jsx("p", {style:{fontSize:"0.8rem", color:"#166534"}, children:"Cargando packs..."})
+                        })
                     ]}),
                     _.jsx("div", { className: "divider", style: {margin: "12px 0"} }), 
 
-                    // 3. SOCIO VIP (NARANJA/ORO)
+                    // 3. SOCIO VIP (Dinámico)
                     _.jsxs("div", { className: "manual-block", style: {background: "#fffbeb", border: "1px dashed #f59e0b"}, children: [
                         _.jsx("h4", { style:{fontSize:"0.9rem", color: "#b45309", marginBottom:"8px"}, children: "3. Pack Socio VIP" }), 
-                        _.jsxs("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px" }, children: [
-                            _.jsxs("button", { onClick: () => activarConPlan("vip_mensual", 50), disabled: p.cuentasDisponibles < 50 || !re || Te, className: "btn-activate", style: {background: "#f59e0b"}, children: ["Mensual", _.jsx("span", { style: {display:"block", fontSize:"0.6em"}, children: "(50 Fichas)" })] }),
-                            _.jsxs("button", { onClick: () => activarConPlan("vip_semestral", 200), disabled: p.cuentasDisponibles < 200 || !re || Te, className: "btn-activate", style: {background: "#d97706"}, children: ["Semestral", _.jsx("span", { style: {display:"block", fontSize:"0.6em"}, children: "(200 Fichas)" })] }),
-                            _.jsxs("button", { onClick: () => activarConPlan("vip_anual", 300), disabled: p.cuentasDisponibles < 300 || !re || Te, className: "btn-activate", style: {background: "#b45309"}, children: ["Anual", _.jsx("span", { style: {display:"block", fontSize:"0.6em"}, children: "(300 Fichas)" })] })
-                        ]})
+                        _.jsx("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px" }, children: 
+                            listaVip.length > 0 ? listaVip.map(pl => 
+                                _.jsxs("button", { 
+                                    onClick: () => activarConPlan(pl.id, pl.costoCreditos, pl.nombre), 
+                                    disabled: p.cuentasDisponibles < pl.costoCreditos || !re || Te, 
+                                    className: "btn-activate", 
+                                    style: {background: "#f59e0b"}, 
+                                    children: [
+                                        getNombreCorto(pl.nombre), 
+                                        _.jsx("span", { style: {display:"block", fontSize:"0.6em"}, children: `(${pl.costoCreditos} Fichas)` })
+                                    ] 
+                                }, pl.id)
+                            ) : _.jsx("p", {style:{fontSize:"0.8rem", color:"#b45309"}, children:"Cargando VIPs..."})
+                        })
                     ]}),
 
                     _.jsx("div", { className: "divider" }), 
