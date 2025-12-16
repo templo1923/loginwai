@@ -29678,8 +29678,8 @@ const UI = [["path", {
       , [o,c] = N.useState(nf.WORLD)
       , [f,h] = N.useState(!0)
       , [p,m] = N.useState({
-        saldo: 0,              // Dinero acumulado (Comisiones)
-        cuentasDisponibles: 0, // Fichas (Créditos para activar)
+        saldo: 0,              // Dinero (Ganancias)
+        cuentasDisponibles: 0, // Fichas (Licencias Manuales)
         totalReferidos: 0,
         referidos: []
     })
@@ -29697,10 +29697,10 @@ const UI = [["path", {
       , [L,K] = N.useState(!1)
       , X = N.useRef(!0);
 
-    // ✅ CORRECCIÓN DE RUTA: Usamos parámetros de consulta para evitar errores 404
+    // URL BASE REFERIDO (Ajustada a tu web)
     const urlBaseReferido = "https://loginwaibot.vercel.app/ref/?ref=";
 
-    // --- LOGICA DE ACTUALIZACIÓN AUTOMÁTICA ---
+    // --- RELOJ AUTOMÁTICO (30s) ---
     N.useEffect(() => {
         let intervalo;
         if (i) {
@@ -29721,12 +29721,12 @@ const UI = [["path", {
                 if (!$t.ok) throw new Error("Error IP");
                 const zt = await $t.json();
                 zt.success && zt.country_code === "CO" && (Ue = "CO")
-            } catch { console.warn("Fallo IP") }
+            } catch { }
             X.current && c(nf[Ue])
         })(), () => { X.current = !1, J() }
     }, []);
 
-    // --- API HELPER CON TOKEN ---
+    // --- HELPER API SEGURO ---
     const ge = async (J, oe="GET", Ue=null) => {
         const $t = await i.getIdToken(!0);
         const zt = { method: oe, headers: { Authorization: `Bearer ${$t}`, "Content-Type": "application/json", "ngrok-skip-browser-warning": "true" } };
@@ -29737,7 +29737,7 @@ const UI = [["path", {
         return ds
     };
 
-    // --- CARGA DE DATOS ---
+    // --- CARGAR DATOS (MAPEADO EXACTO) ---
     const C = async () => {
         var J;
         if (i) try {
@@ -29745,13 +29745,13 @@ const UI = [["path", {
             const Ue = ((J = oe?.facturacion)?.activa) === !0;
             if (e(Ue), !Ue) return;
             
-            // Info Revendedor
+            // Info Partner
             if(i.email) {
                 const infoP = await ge(`revendedor/info?id=${i.email}`);
                 if(infoP.ok) {
                     X.current && m({
-                        saldo: infoP.saldo, 
-                        cuentasDisponibles: infoP.cuentasDisponibles, 
+                        saldo: infoP.saldo, // Dinero Real
+                        cuentasDisponibles: infoP.cuentasDisponibles, // Fichas (Licencias)
                         totalReferidos: infoP.referidos,
                         referidos: [] 
                     });
@@ -29766,7 +29766,7 @@ const UI = [["path", {
         } catch (oe) { console.error("Error dashboard:", oe) }
     };
     
-    // --- ACCIONES DE UI ---
+    // --- ACCIONES ---
     const q = () => {
         navigator.clipboard.writeText(`${urlBaseReferido}${y}`);
         G({ tipo: "success", text: "¡Link Copiado!" });
@@ -29787,7 +29787,7 @@ const UI = [["path", {
         } catch (err) { Ye({ tipo: "error", text: err.message }); } finally { ve(!1); }
     };
 
-    const D = async () => { /* Guardar slug personalizado */
+    const D = async () => {
         if (T === y) { H(!1); return }
         F(!0), G(null);
         try {
@@ -29806,7 +29806,7 @@ const UI = [["path", {
             _.jsx(zI, { isOpen: L, onClose: () => K(!1), usuario: i, saldoDisponible: p.saldo, historialPrevio: E, onRetiroExitoso: () => C() }), 
             _.jsxs("header", { className: "dashboard-header", children: [_.jsx("h1", { children: "Panel de Revendedor" }), _.jsx("p", { children: "Gestiona ganancias, enlaces y licencias." })] }), 
             
-            // SECCIÓN LINK (URL Actualizada)
+            // LINK
             _.jsx("section", { className: "link-hero", children: _.jsxs("div", { className: "hero-content", children: [
                 _.jsxs("div", { className: "hero-text-header", children: [_.jsx("h2", { children: "Tu Enlace de Referido" }), _.jsx("p", { children: "Comparte este link para ganar comisiones." })] }), 
                 _.jsxs("div", { className: "link-builder", children: [
@@ -29816,14 +29816,14 @@ const UI = [["path", {
                 Q && _.jsxs("div", { className: `toast-message ${Q.tipo}`, children: [Q.tipo === "success" ? _.jsx(Af, { className: "w-4 h-4" }) : _.jsx(ko, { className: "w-4 h-4" }), Q.text] })
             ]}) }), 
             
-            // ESTADÍSTICAS (Separado Saldo de Licencias)
+            // STATS
             _.jsxs("section", { className: "stats-grid", children: [
                 _.jsxs("div", { className: "stat-card saldo-card", children: [_.jsx("div", { className: "stat-icon wallet", children: _.jsx(kI, {}) }), _.jsxs("div", { className: "stat-content", children: [_.jsx("span", { className: "stat-label", children: "Saldo (Dinero)" }), _.jsx("span", { className: "stat-value", children: $(p.saldo) })] }), _.jsxs("button", { onClick: () => K(!0), className: "btn-retirar", disabled: p.saldo <= 0, children: ["Retirar ", _.jsx(ME, { size: 16 })] })] }), 
                 _.jsxs("div", { className: "stat-card", children: [_.jsx("div", { className: "stat-icon users", children: _.jsx(Jv, {}) }), _.jsxs("div", { className: "stat-content", children: [_.jsx("span", { className: "stat-label", children: "Referidos" }), _.jsx("span", { className: "stat-value", children: p.totalReferidos })] })] }), 
                 _.jsxs("div", { className: "stat-card", children: [_.jsx("div", { className: "stat-icon ticket", children: _.jsx(OI, {}) }), _.jsxs("div", { className: "stat-content", children: [_.jsx("span", { className: "stat-label", children: "Licencias (Fichas)" }), _.jsx("span", { className: "stat-value", children: p.cuentasDisponibles })] })] }) 
             ]}), 
             
-            // LISTAS Y GESTIÓN MANUAL
+            // MANUAL TOOLS (3 BOTONES)
             _.jsxs("div", { className: "main-content-split", children: [
                 _.jsxs("div", { className: "content-left-column", children: [
                     _.jsxs("div", { className: "content-section referidos-list", children: [_.jsx("div", { className: "section-header", children: _.jsxs("h3", { children: [_.jsx("span", { className: "icon-title", children: _.jsx(Jv, {}) }), " Últimos Referidos"] }) }), _.jsx("div", { className: "table-responsive-wrapper", children: _.jsxs("table", { className: "custom-table", children: [_.jsx("thead", { children: _.jsxs("tr", { children: [_.jsx("th", { children: "Cliente" }), _.jsx("th", { children: "Plan" }), _.jsx("th", { children: "Fecha" })] }) }), _.jsx("tbody", { children: p.referidos.length > 0 ? p.referidos.map((J,oe) => _.jsxs("tr", { children: [_.jsx("td", { children: J.cliente }), _.jsx("td", { children: _.jsx("span", { className: "badge-plan", children: J.plan || "N/A" }) }), _.jsx("td", { children: ce(J.fecha_registro) })] }, oe)) : _.jsx("tr", { children: _.jsx("td", { colSpan: "3", className: "empty-row", children: "Sin referidos aún." }) }) })] }) })] }),
