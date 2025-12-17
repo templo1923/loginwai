@@ -28237,7 +28237,7 @@ const Xv = {
         // REVENDEDOR
         r_mes: 50000, r_sem: 250000, r_anual: 500000,
         // VIP
-        v_mes: 800000, v_sem: 1.5M, v_anual: 2500000
+        v_mes: 800000, v_sem: 1.5, v_anual: 2500000
     },
     WORLD: {
         nombre: "Resto del Mundo",
