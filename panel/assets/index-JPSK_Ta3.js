@@ -28257,6 +28257,10 @@ const Xv = {
       , [activeTab, setActiveTab] = N.useState("personal")
       , m = N.useRef(!0);
 
+    // 2. NUEVOS ESTADOS (Para el Popup de Bre-B)
+    const [verModal, setVerModal] = N.useState(false);
+    const [planSeleccionado, setPlanSeleccionado] = N.useState(null);
+
     N.useEffect(() => {
         m.current = !0;
         (async () => {
@@ -28337,143 +28341,98 @@ const Xv = {
         transition: "transform 0.3s ease"
     });
 
-// INICIO DEL BLOQUE CORREGIDO
-// INICIO DEL BLOQUE "MARKETING AGRESIVO"
+// INICIO DEL BLOQUE CORREGIDO// INICIO DEL BLOQUE "TODO POR WHATSAPP/POPUP"
     return _.jsxs("div", {
-        style: { padding: "4rem 1rem", textAlign: "center", background: "#f8fafc" },
+        style: { padding: "4rem 1rem", textAlign: "center", background: "#f8fafc", position: "relative" },
         children: [
-            // 1. TÍTULO CON GANCHO
+            // 1. TÍTULO PODEROSO
             _.jsxs("div", { style: { marginBottom: "3rem" }, children: [
                 _.jsx("h2", { style: { fontSize: "2.5rem", fontWeight: "900", color: "#0f172a", marginBottom: "0.5rem" }, children: "Elige tu Nivel de Éxito 🚀" }),
-                _.jsx("p", { style: { color: "#64748b", fontSize: "1.2rem", maxWidth: "600px", margin: "0 auto" }, children: "Ya sea para automatizar tu empresa o para iniciar tu propio negocio digital hoy mismo." })
+                _.jsx("p", { style: { color: "#64748b", fontSize: "1.2rem", maxWidth: "600px", margin: "0 auto" }, children: "Automatización profesional y oportunidades de negocio." })
             ]}),
 
-            // 2. PESTAÑAS (TABS)
+            // 2. PESTAÑAS
             _.jsxs("div", { style: { display: "inline-flex", background: "#e2e8f0", padding: "6px", borderRadius: "16px", marginBottom: "3rem", boxShadow: "inset 0 2px 4px rgba(0,0,0,0.05)" }, children: [
                 _.jsx("button", { onClick: () => setActiveTab("personal"), style: { padding: "12px 30px", borderRadius: "12px", border: "none", cursor: "pointer", fontWeight: "800", fontSize: "1rem", transition: "all 0.3s", background: activeTab === "personal" ? "white" : "transparent", color: activeTab === "personal" ? "#2563eb" : "#64748b", boxShadow: activeTab === "personal" ? "0 4px 10px rgba(37, 99, 235, 0.2)" : "none", transform: activeTab === "personal" ? "scale(1.05)" : "scale(1)" }, children: "👤 Uso Personal" }),
-                _.jsx("button", { onClick: () => setActiveTab("pro"), style: { padding: "12px 30px", borderRadius: "12px", border: "none", cursor: "pointer", fontWeight: "800", fontSize: "1rem", transition: "all 0.3s", background: activeTab === "pro" ? "#10b981" : "transparent", color: activeTab === "pro" ? "white" : "#64748b", boxShadow: activeTab === "pro" ? "0 4px 10px rgba(16, 185, 129, 0.3)" : "none", transform: activeTab === "pro" ? "scale(1.05)" : "scale(1)" }, children: "💼 Revendedor" }),
+                _.jsx("button", { onClick: () => setActiveTab("revendedor"), style: { padding: "12px 30px", borderRadius: "12px", border: "none", cursor: "pointer", fontWeight: "800", fontSize: "1rem", transition: "all 0.3s", background: activeTab === "revendedor" ? "#10b981" : "transparent", color: activeTab === "revendedor" ? "white" : "#64748b", boxShadow: activeTab === "revendedor" ? "0 4px 10px rgba(16, 185, 129, 0.3)" : "none", transform: activeTab === "revendedor" ? "scale(1.05)" : "scale(1)" }, children: "💼 Revendedor" }),
                 _.jsx("button", { onClick: () => setActiveTab("vip"), style: { padding: "12px 30px", borderRadius: "12px", border: "none", cursor: "pointer", fontWeight: "800", fontSize: "1rem", transition: "all 0.3s", background: activeTab === "vip" ? "#f59e0b" : "transparent", color: activeTab === "vip" ? "white" : "#64748b", boxShadow: activeTab === "vip" ? "0 4px 10px rgba(245, 158, 11, 0.3)" : "none", transform: activeTab === "vip" ? "scale(1.05)" : "scale(1)" }, children: "👑 Socio VIP" })
             ]}),
 
-            // 3. TARJETAS PODEROSAS
+            // 3. TARJETAS (GRID)
             _.jsx("div", { style: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "2.5rem", maxWidth: "1250px", margin: "0 auto" }, children: 
                 ({
                     personal: [
-                        { 
-                            t: "MENSUAL", p: "$20.000", sub: "/mes", ant: "$30.000", 
-                            feat: ["✅ 1 Licencia PC (Full Access)", "⚡ 5 WhatsApps en local", "🤖 IA (ChatGPT, Llama, Gemini)", "💬 Respuestas Automáticas", "🛠️ Soporte de Instalación"], 
-                            btn: "Comprar Ahora", link: "LINK_WOMPI_MENSUAL", col: "blue" 
-                        },
-                        { 
-                            t: "SEMESTRAL", p: "$70.000", sub: "/sem", ant: "$120.000", save: "🔥 AHORRA 40%", 
-                            feat: ["✅ Todo lo del Mensual", "🚀 Soporte Prioritario VIP", "🔄 Actualizaciones Beta", "🛡️ Garantía de Estabilidad", "💰 Precio Congelado"], 
-                            btn: "Comprar Semestral", link: "LINK_WOMPI_SEMESTRAL", col: "blue", best: true 
-                        },
-                        { 
-                            t: "ANUAL", p: "$120.000", sub: "/año", ant: "$240.000", save: "💎 MEJOR OFERTA (50%)", 
-                            feat: ["✅ Todo Incluido x 12 Meses", "🎓 Asesoría Personalizada", "🌟 Prioridad en Soporte", "🔒 Cero pagos extra", "🎁 Bonus: Scripts Exclusivos"], 
-                            btn: "Comprar Anual", link: "LINK_WOMPI_ANUAL", col: "blue" 
-                        }
+                        { t: "MENSUAL", p: "$20.000", sub: "/mes", ant: "$30.000", feat: ["✅ 1 Licencia Full", "⚡ 5 WhatsApps locales", "🤖 IA (ChatGPT/Gemini)", "🎁 Plantillas de Ventas", "🛠️ Soporte Básico"], btn: "Comprar Ahora", col: "blue" },
+                        { t: "SEMESTRAL", p: "$70.000", sub: "/sem", ant: "$120.000", save: "🔥 AHORRA 40%", feat: ["✅ Todo lo del Mensual", "🚀 Soporte Prioritario", "🎓 Acceso Grupo WhatsApp", "🛡️ Garantía Estabilidad", "💰 Precio Congelado"], btn: "Comprar Semestral", col: "blue", best: true },
+                        { t: "ANUAL", p: "$120.000", sub: "/año", ant: "$240.000", save: "💎 MEJOR OFERTA", feat: ["✅ Todo Incluido x 12 Meses", "🌟 Prioridad Total", "🔒 Cero pagos extra", "🎁 Pack de Prompts IA", "🎓 Grupo Premium"], btn: "Comprar Anual", col: "blue" }
                     ],
-                    pro: [
-                        { 
-                            t: "PACK EMPRENDEDOR", p: "$50.000", sub: "Recibes 5 Licencias", roi: "💰 GANA $100.000", 
-                            feat: ["📦 Stock: 5 Licencias", "💵 Costo unitario: $10.000", "🏷️ Vendes a: $20.000 c/u", "📊 Panel de Control Propio", "🚀 Inicio Inmediato"], 
-                            btn: "Iniciar Negocio", link: "https://wa.me/573004085041?text=Quiero_Pack_Emprendedor_50k", col: "green" 
-                        },
-                        { 
-                            t: "PACK NEGOCIO", p: "$250.000", sub: "Recibes 35 Licencias", roi: "💰 GANA $700.000", 
-                            feat: ["📦 Stock: 35 Licencias", "📉 Costo unitario: $7.100", "📈 Retorno: 280% Neto", "⏳ 6 Meses de Panel Activo", "🎓 Material de Ventas"], 
-                            btn: "Comprar Pack", link: "https://wa.me/573004085041?text=Quiero_Pack_Negocio_250k", col: "green", best: true 
-                        },
-                        { 
-                            t: "PACK IMPERIO", p: "$500.000", sub: "Recibes 100 Licencias", roi: "💰 GANA $2.000.000", 
-                            feat: ["📦 Stock Masivo: 100 Lic", "🤯 Costo ridículo: $5.000", "🔥 Margen BRUTAL (300%)", "👑 1 Año de Panel Activo", "🛡️ Soporte Mayorista"], 
-                            btn: "Ser Líder", link: "https://wa.me/573004085041?text=Quiero_Pack_Imperio_500k", col: "green" 
-                        }
+                    revendedor: [
+                        { t: "PACK EMPRENDEDOR", p: "$50.000", sub: "Recibes 5 Licencias", roi: "💰 GANA $100.000", feat: ["📦 Stock: 5 Licencias", "💵 Costo unitario: $10.000", "🏷️ Vendes a: $20.000", "🎓 Grupo de Revendedores", "🚀 Inicio Inmediato"], btn: "Iniciar Negocio", col: "green" },
+                        { t: "PACK NEGOCIO", p: "$250.000", sub: "Recibes 35 Licencias", roi: "💰 GANA $700.000", feat: ["📦 Stock: 35 Licencias", "📉 Costo unitario: $7.100", "📈 Retorno: 280% Neto", "⏳ 6 Meses Panel Activo", "🎨 Imágenes para Publicidad"], btn: "Comprar Pack", col: "green", best: true },
+                        { t: "PACK IMPERIO", p: "$500.000", sub: "Recibes 100 Licencias", roi: "💰 GANA $2.000.000", feat: ["📦 Stock Masivo: 100 Lic", "🤯 Costo ridículo: $5.000", "🔥 Margen BRUTAL (300%)", "👑 1 Año Panel Activo", "🛡️ Soporte Mayorista"], btn: "Ser Líder", col: "green" }
                     ],
                     vip: [
-                        { 
-                            t: "MAYORISTA JUNIOR", p: "$800.000", sub: "Stock: 250 Licencias", roi: "COSTO: $3.200 /lic", 
-                            feat: ["🏭 Conviértete en Distribuidor", "👥 Recluta tus Revendedores", "📉 Precio Imbatible", "💼 Estrategia B2B Incluida", "🌐 Panel VIP"], 
-                            btn: "Aplicar Ahora", link: "https://wa.me/573004085041?text=Interesado_Mayorista_Jr", col: "orange" 
-                        },
-                        { 
-                            t: "DISTRIBUIDOR PRO", p: "$1.5 M", sub: "Stock: 600 Licencias", roi: "COSTO: $2.500 /lic", 
-                            feat: ["🚀 Domina tu Ciudad", "💰 Margen Infinito", "📊 Panel VIP (6 Meses)", "🤝 Asesoría 1 a 1 con Dueño", "🎨 Kit de Marketing Pro"], 
-                            btn: "Aplicar Ahora", link: "https://wa.me/573004085041?text=Interesado_Distribuidor_Pro", col: "orange", best: true 
-                        },
-                        { 
-                            t: "FRANQUICIA MASTER", p: "$2.5 M", sub: "Stock: 1.500 Licencias", roi: "COSTO: $1.600 /lic", 
-                            feat: ["👑 Dueño del Sistema", "🌍 Sin Competencia de Precio", "⏳ Negocio Automático", "🎩 Panel VIP (1 Año)", "💎 Acceso al Código (Consultar)"], 
-                            btn: "Comprar Franquicia", link: "https://wa.me/573004085041?text=Quiero_Franquicia_Master", col: "orange" 
-                        }
+                        { t: "MAYORISTA JUNIOR", p: "$800.000", sub: "Stock: 250 Licencias", roi: "COSTO: $3.200 /lic", feat: ["🏭 Distribuye a Revendedores", "👥 Crea tu propia red", "📉 Precio Imbatible", "💼 Estrategia B2B", "🌐 Panel VIP"], btn: "Aplicar Ahora", col: "orange" },
+                        { t: "DISTRIBUIDOR PRO", p: "$1.5 M", sub: "Stock: 600 Licencias", roi: "COSTO: $2.500 /lic", feat: ["🚀 Domina tu Ciudad", "💰 Margen Infinito", "📊 Panel VIP (6 Meses)", "🤝 Asesoría Privada", "🎨 Kit Marketing Pro"], btn: "Aplicar Ahora", col: "orange", best: true },
+                        { t: "FRANQUICIA MASTER", p: "$2.5 M", sub: "Stock: 1.500 Licencias", roi: "COSTO: $1.600 /lic", feat: ["👑 Dueño del Sistema", "🌍 Sin Competencia", "⏳ Negocio Automático", "🎩 Panel VIP (1 Año)", "💎 Grupo Socios Elite"], btn: "Comprar Franquicia", col: "orange" }
                     ]
                 }[activeTab] || []).map((p, i) => 
-                    _.jsxs("div", { key: i, style: { 
-                        background: "white", borderRadius: "24px", padding: "2.5rem 1.8rem", position: "relative", 
-                        border: p.best ? `3px solid ${p.col==='green'?'#10b981':p.col==='orange'?'#f59e0b':'#3b82f6'}` : "1px solid #e2e8f0", 
-                        transform: p.best ? "scale(1.03)" : "scale(1)", 
-                        boxShadow: p.best ? "0 25px 50px -12px rgba(0,0,0,0.15)" : "0 4px 6px -1px rgba(0,0,0,0.05)",
-                        transition: "transform 0.2s, box-shadow 0.2s",
-                        display: "flex", flexDirection: "column"
-                    }, children: [
-                        // ETIQUETA POPULAR
-                        p.best && _.jsx("span", { style: { position: "absolute", top: "-14px", left: "50%", transform: "translateX(-50%)", background: p.col==='green'?'#10b981':p.col==='orange'?'#f59e0b':'#3b82f6', color: "white", padding: "6px 16px", borderRadius: "30px", fontSize: "0.85rem", fontWeight: "800", boxShadow: "0 4px 10px rgba(0,0,0,0.2)", letterSpacing: "1px" }, children: "🔥 MÁS VENDIDO" }),
-                        
-                        // ROI BADGE (GANANCIA)
-                        p.roi && _.jsx("div", { style: { background: p.col==='green'?'#ecfdf5':'#fffbeb', color: p.col==='green'?'#047857':'#b45309', padding: "8px 16px", borderRadius: "12px", display: "inline-block", marginBottom: "1.5rem", fontWeight: "800", fontSize: "0.95rem", border: `1px solid ${p.col==='green'?'#a7f3d0':'#fde68a'}`, textAlign: "center", width: "100%" }, children: p.roi }),
-
-                        // TÍTULO DEL PLAN
+                    _.jsxs("div", { key: i, style: { background: "white", borderRadius: "24px", padding: "2.5rem 1.8rem", position: "relative", border: p.best ? `3px solid ${p.col==='green'?'#10b981':p.col==='orange'?'#f59e0b':'#3b82f6'}` : "1px solid #e2e8f0", transform: p.best ? "scale(1.03)" : "scale(1)", boxShadow: p.best ? "0 25px 50px -12px rgba(0,0,0,0.15)" : "0 4px 6px -1px rgba(0,0,0,0.05)" }, children: [
+                        p.best && _.jsx("span", { style: { position: "absolute", top: "-14px", left: "50%", transform: "translateX(-50%)", background: p.col==='green'?'#10b981':p.col==='orange'?'#f59e0b':'#3b82f6', color: "white", padding: "6px 16px", borderRadius: "30px", fontSize: "0.85rem", fontWeight: "800", boxShadow: "0 4px 10px rgba(0,0,0,0.2)" }, children: "🔥 MÁS VENDIDO" }),
+                        p.roi && _.jsx("div", { style: { background: p.col==='green'?'#ecfdf5':'#fffbeb', color: p.col==='green'?'#047857':'#b45309', padding: "8px", borderRadius: "12px", marginBottom: "1.5rem", fontWeight: "800", fontSize: "0.95rem", border: `1px solid ${p.col==='green'?'#a7f3d0':'#fde68a'}`, textAlign: "center" }, children: p.roi }),
                         _.jsx("h3", { style: { color: "#64748b", fontSize: "0.9rem", letterSpacing: "1.5px", textTransform: "uppercase", marginBottom: "0.5rem", fontWeight: "800", textAlign: "center" }, children: p.t }),
-                        
-                        // PRECIO
-                        _.jsxs("div", { style: { marginBottom: "0.5rem", display: "flex", alignItems: "baseline", justifyContent: "center", gap: "6px" }, children: [ 
-                            _.jsx("span", { style: { fontSize: "3rem", fontWeight: "900", color: "#0f172a", letterSpacing: "-1px" }, children: p.p }), 
-                            _.jsx("span", { style: { color: "#64748b", fontWeight: "600", fontSize: "1.1rem" }, children: p.sub }) 
-                        ]}),
-                        
-                        // PRECIO ANTERIOR (TACHADO)
-                        p.ant && _.jsx("p", { style: { textDecoration: "line-through", color: "#94a3b8", fontSize: "1rem", marginBottom: "1rem", textAlign: "center", fontWeight: "500" }, children: ["Normal: ", p.ant] }),
-                        
-                        // AHORRO
+                        _.jsxs("div", { style: { marginBottom: "0.5rem", display: "flex", alignItems: "baseline", justifyContent: "center", gap: "6px" }, children: [ _.jsx("span", { style: { fontSize: "3rem", fontWeight: "900", color: "#0f172a" }, children: p.p }), _.jsx("span", { style: { color: "#64748b", fontWeight: "600" }, children: p.sub }) ] }),
+                        p.ant && _.jsx("p", { style: { textDecoration: "line-through", color: "#94a3b8", fontSize: "1rem", marginBottom: "1rem", textAlign: "center" }, children: ["Normal: ", p.ant] }),
                         p.save && _.jsx("div", { style: { textAlign: "center", marginBottom: "1.5rem" }, children: _.jsx("span", { style: { color: "#15803d", background: "#dcfce7", padding: "6px 14px", borderRadius: "20px", fontSize: "0.85rem", fontWeight: "800" }, children: p.save }) }),
-
-                        // SEPARADOR
                         _.jsx("hr", { style: { border: "none", borderTop: "1px dashed #e2e8f0", margin: "1rem 0" } }),
-
-                        // LISTA DE FEATURES (Con Emojis y estilo)
-                        _.jsx("ul", { style: { listStyle: "none", padding: 0, margin: "0 0 2rem 0", textAlign: "left", flexGrow: 1 }, children: p.feat.map((f, x) => 
-                            _.jsxs("li", { style: { marginBottom: "12px", display: "flex", alignItems: "start", color: "#334155", fontSize: "0.95rem", lineHeight: "1.5" }, children: [ 
-                                // El check o emoji ya viene en el texto, pero podemos forzar alineación
-                                _.jsx("span", { style: { marginRight: "10px", marginTop: "2px", fontSize: "1.1rem" }, children: "" }), 
-                                f 
-                            ] }, x)) 
-                        }),
-
-                        // BOTÓN DE ACCIÓN
-                        _.jsx("a", { 
-                            href: p.link, 
-                            target: "_blank", 
-                            rel: "noopener noreferrer",
-                            style: { 
-                                display: "block", width: "100%", padding: "16px", borderRadius: "14px", 
-                                background: p.col==='green'?'#10b981':p.col==='orange'?'#f59e0b':'#0f172a', 
-                                color: "white", fontWeight: "800", textDecoration: "none", marginTop: "auto", 
-                                cursor: "pointer", boxShadow: p.col==='green'?"0 10px 15px -3px rgba(16, 185, 129, 0.3)":p.col==='orange'?"0 10px 15px -3px rgba(245, 158, 11, 0.3)":"0 10px 15px -3px rgba(15, 23, 42, 0.3)",
-                                textAlign: "center", fontSize: "1.1rem", transition: "transform 0.2s"
-                            }, 
-                            onMouseOver: (e) => e.target.style.transform = "scale(1.02)",
-                            onMouseOut: (e) => e.target.style.transform = "scale(1)",
+                        _.jsx("ul", { style: { listStyle: "none", padding: 0, margin: "0 0 2rem 0", textAlign: "left" }, children: p.feat.map((f, x) => _.jsxs("li", { style: { marginBottom: "12px", display: "flex", alignItems: "start", color: "#334155", fontSize: "0.95rem" }, children: [ _.jsx("span", { style: { marginRight: "10px" }, children: "" }), f ] }, x)) }),
+                        
+                        // BOTÓN ÚNICO: ¡TODOS ABREN EL MODAL!
+                        _.jsx("button", { 
+                            onClick: () => { setPlanSeleccionado(p); setVerModal(true); },
+                            style: { width: "100%", padding: "16px", borderRadius: "14px", background: p.col==='green'?'#10b981':p.col==='orange'?'#f59e0b':'#0f172a', color: "white", fontWeight: "800", border: "none", cursor: "pointer", fontSize: "1.1rem", boxShadow: "0 10px 15px -3px rgba(0,0,0,0.2)" },
                             children: p.btn 
                         })
                     ]})
                 )
+            }),
+
+            // 4. POPUP (MODAL) UNIFICADO
+            verModal && planSeleccionado && _.jsx("div", {
+                style: { position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,0.7)", zIndex: 99999, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px", backdropFilter: "blur(5px)" },
+                children: _.jsxs("div", {
+                    style: { background: "white", borderRadius: "24px", padding: "2.5rem", maxWidth: "480px", width: "100%", position: "relative", boxShadow: "0 25px 50px -12px rgba(0,0,0,0.4)", animation: "fadeIn 0.3s ease" },
+                    children: [
+                        _.jsx("button", { onClick: () => setVerModal(false), style: { position: "absolute", top: "20px", right: "20px", background: "#f1f5f9", border: "none", borderRadius: "50%", width: "36px", height: "36px", cursor: "pointer", fontWeight: "bold", color: "#64748b", fontSize: "1.2rem" }, children: "✕" }),
+                        
+                        _.jsx("h3", { style: { fontSize: "1.8rem", color: "#0f172a", marginBottom: "0.5rem", fontWeight: "800" }, children: "Activación Rápida ⚡" }),
+                        _.jsx("p", { style: { color: "#64748b", marginBottom: "2rem", fontSize: "1.1rem" }, children: `Estás adquiriendo: ${planSeleccionado.t}` }),
+                        
+                        _.jsxs("div", { style: { background: "#f8fafc", padding: "1.5rem", borderRadius: "16px", border: "2px dashed #cbd5e1", marginBottom: "2rem", textAlign: "left" }, children: [
+                            _.jsxs("p", { style: { fontWeight: "bold", color: "#334155", marginBottom: "12px", fontSize: "1.1rem" }, children: ["🟣 Pagar con ", _.jsx("span", { style: {color: "#7c3aed"}, children: "Bre-B / Transfiya"})] }),
+                            _.jsx("p", { style: { fontSize: "0.95rem", color: "#475569", marginBottom: "15px" }, children: "Transfiere desde cualquier banco usando la Llave (Celular):" }),
+                            
+                            _.jsxs("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", background: "white", padding: "15px", borderRadius: "12px", border: "1px solid #e2e8f0", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }, children: [
+                                _.jsx("span", { style: { fontSize: "1.5rem", fontWeight: "900", color: "#0f172a", letterSpacing: "1px" }, children: "300 408 5041" }),
+                                _.jsx("button", { onClick: () => navigator.clipboard.writeText("3004085041"), style: { background: "#e0f2fe", color: "#0284c7", border: "none", padding: "6px 12px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: "bold", cursor: "pointer" }, children: "Copiar" })
+                            ]}),
+                            _.jsx("p", { style: { fontSize: "0.85rem", color: "#94a3b8", marginTop: "12px", textAlign: "center" }, children: "Titular: Maik Bermeo" })
+                        ]}),
+
+                        _.jsx("a", {
+                            href: `https://wa.me/573004085041?text=Hola,%20ya%20hice%20el%20pago%20de%20${planSeleccionado.p}%20para%20el%20${planSeleccionado.t}.%20Adjunto%20comprobante!`,
+                            target: "_blank",
+                            rel: "noopener noreferrer",
+                            onClick: () => setVerModal(false),
+                            style: { display: "block", width: "100%", padding: "18px", borderRadius: "14px", background: "#25D366", color: "white", fontWeight: "800", textDecoration: "none", textAlign: "center", fontSize: "1.2rem", boxShadow: "0 10px 20px -5px rgba(37, 211, 102, 0.4)", transition: "transform 0.2s" },
+                            children: "✅ Enviar Comprobante"
+                        })
+                    ]
+                })
             })
         ]
     })
-    // FIN DEL BLOQUE "MARKETING AGRESIVO"
-    // FIN DEL BLOQUE CORREGIDO
+    // FIN DEL BLOQUE "TODO UNIFICADO"
 }
 
 
