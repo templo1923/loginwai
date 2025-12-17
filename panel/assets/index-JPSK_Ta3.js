@@ -28255,17 +28255,17 @@ const Xv = {
 
 
 nI = () => {
-    // 1. LÓGICA DE ESTADOS Y CONTEXTO
+    // 1. ESTADOS Y CONTEXTO
     const { usuario: s } = Ea(),
           [e, i] = N.useState(Xv.WORLD),
           [activeTab, setActiveTab] = N.useState("personal"),
           m = N.useRef(!0);
 
-    // NUEVOS ESTADOS (Para el Popup de Pago)
+    // 2. NUEVOS ESTADOS PARA EL POPUP DE PAGO
     const [verModal, setVerModal] = N.useState(false);
     const [planSeleccionado, setPlanSeleccionado] = N.useState(null);
 
-    // DETECCIÓN DE IP (Lógica Original)
+    // 3. EFECTO DE DETECCIÓN DE IP (Lógica original intacta)
     N.useEffect(() => {
         m.current = !0;
         (async () => {
@@ -28281,28 +28281,31 @@ nI = () => {
         return () => { m.current = !1 };
     }, [s]);
 
-    // 2. DATA DE PLANES (TEXTOS CORREGIDOS)
+    // 4. DATOS DE LOS PLANES (Textos corregidos: Sin Prompts, Con Estrategias)
     const data = {
         personal: [
-            { t: "MENSUAL", p: "$20.000", sub: "/mes", ant: "$30.000", feat: ["✅ 1 Licencia Full", "⚡ 5 WhatsApps locales", "🤖 IA (ChatGPT/Gemini)", "💬 Respuestas Automáticas", "🛠️ Soporte Básico"], btn: "Comprar Ahora", col: "blue" },
-            { t: "SEMESTRAL", p: "$70.000", sub: "/sem", ant: "$120.000", save: "🔥 AHORRA 40%", feat: ["✅ Todo lo del Mensual", "🚀 Soporte Prioritario", "🎓 Acceso Grupo WhatsApp", "🛡️ Garantía Estabilidad", "💰 Precio Congelado"], btn: "Comprar Semestral", col: "blue", best: true },
-            { t: "ANUAL", p: "$120.000", sub: "/año", ant: "$240.000", save: "💎 MEJOR OFERTA", feat: ["✅ Todo Incluido x 12 Meses", "🌟 Prioridad Total", "🔒 Cero pagos extra", "🎁 Actualizaciones Beta", "🎓 Grupo Premium VIP"], btn: "Comprar Anual", col: "blue" }
+            { t: "MENSUAL", p: e.p_mes, sub: "/mes", ant: e.p_mes * 1.5, feat: ["✅ 1 Licencia Full", "⚡ 5 WhatsApps locales", "🤖 IA (ChatGPT/Gemini)", "💬 Respuestas Automáticas", "🛠️ Soporte Básico"], btn: "Comprar Ahora", col: "blue" },
+            { t: "SEMESTRAL", p: e.p_sem, sub: "/sem", ant: e.p_mes * 6, save: "🔥 AHORRA 40%", feat: ["✅ Todo lo del Mensual", "🚀 Soporte Prioritario", "🎓 Acceso Grupo WhatsApp", "🛡️ Garantía Estabilidad", "💰 Precio Congelado"], btn: "Comprar Semestral", col: "blue", best: true },
+            { t: "ANUAL", p: e.p_anual, sub: "/año", ant: e.p_mes * 12, save: "💎 MEJOR OFERTA", feat: ["✅ Todo Incluido x 12 Meses", "🌟 Prioridad Total", "🔒 Cero pagos extra", "🎁 Actualizaciones Beta", "🎓 Grupo Premium VIP"], btn: "Comprar Anual", col: "blue" }
         ],
         revendedor: [
-            { t: "PACK EMPRENDEDOR", p: "$50.000", sub: "Recibes 5 Licencias", roi: "💰 GANA $100.000", feat: ["📦 Stock: 5 Licencias", "💵 Costo unitario: $10.000", "🏷️ Vendes a: $20.000", "🎓 Grupo de Revendedores", "🚀 Inicio Inmediato"], btn: "Iniciar Negocio", col: "green" },
-            { t: "PACK NEGOCIO", p: "$250.000", sub: "Recibes 35 Licencias", roi: "💰 GANA $700.000", feat: ["📦 Stock: 35 Licencias", "📉 Costo unitario: $7.100", "📈 Retorno: 280% Neto", "⏳ 6 Meses Panel Activo", "🧠 Estrategias de Cierre"], btn: "Comprar Pack", col: "green", best: true },
-            { t: "PACK IMPERIO", p: "$500.000", sub: "Recibes 100 Licencias", roi: "💰 GANA $2.000.000", feat: ["📦 Stock Masivo: 100 Lic", "🤯 Costo ridículo: $5.000", "🔥 Margen BRUTAL (300%)", "👑 1 Año Panel Activo", "🛡️ Soporte Mayorista"], btn: "Ser Líder", col: "green" }
+            { t: "PACK EMPRENDEDOR", p: e.r_mes, sub: "Recibes 5 Licencias", roi: "💰 GANA EL DOBLE", feat: ["📦 Stock: 5 Licencias", "💵 Costo bajo por licencia", "🏷️ Vendes al doble", "🎓 Grupo de Revendedores", "🚀 Inicio Inmediato"], btn: "Iniciar Negocio", col: "green" },
+            { t: "PACK NEGOCIO", p: e.r_sem, sub: "Recibes 35 Licencias", roi: "💰 GANA EL TRIPLE", feat: ["📦 Stock: 35 Licencias", "📉 Costo unitario ultra bajo", "📈 Retorno Masivo", "⏳ 6 Meses Panel Activo", "🧠 Estrategias de Cierre"], btn: "Comprar Pack", col: "green", best: true },
+            { t: "PACK IMPERIO", p: e.r_anual, sub: "Recibes 100 Licencias", roi: "💰 GANANCIA TOTAL", feat: ["📦 Stock Masivo: 100 Lic", "🤯 Costo ridículo", "🔥 Margen BRUTAL", "👑 1 Año Panel Activo", "🛡️ Soporte Mayorista"], btn: "Ser Líder", col: "green" }
         ],
         vip: [
-            { t: "MAYORISTA JUNIOR", p: "$800.000", sub: "Stock: 250 Licencias", roi: "COSTO: $3.200 /lic", feat: ["🏭 Distribuye a Revendedores", "👥 Crea tu propia red", "📉 Precio Imbatible", "💼 Estrategia B2B", "🌐 Panel VIP"], btn: "Aplicar Ahora", col: "orange" },
-            { t: "DISTRIBUIDOR PRO", p: "$1.5 M", sub: "Stock: 600 Licencias", roi: "COSTO: $2.500 /lic", feat: ["🚀 Domina tu Ciudad", "💰 Margen Infinito", "📊 Panel VIP (6 Meses)", "🤝 Asesoría Privada", "🧠 Mentoría de Ventas"], btn: "Aplicar Ahora", col: "orange", best: true },
-            { t: "FRANQUICIA MASTER", p: "$2.5 M", sub: "Stock: 1.500 Licencias", roi: "COSTO: $1.600 /lic", feat: ["👑 Dueño del Sistema", "🌍 Sin Competencia", "⏳ Negocio Automático", "🎩 Panel VIP (1 Año)", "💎 Grupo Socios Elite"], btn: "Comprar Franquicia", col: "orange" }
+            { t: "MAYORISTA JUNIOR", p: e.v_mes, sub: "Stock: 250 Licencias", roi: "DISTRIBUIDOR", feat: ["🏭 Distribuye a Revendedores", "👥 Crea tu propia red", "📉 Precio Imbatible", "💼 Estrategia B2B", "🌐 Panel VIP"], btn: "Aplicar Ahora", col: "orange" },
+            { t: "DISTRIBUIDOR PRO", p: e.v_sem, sub: "Stock: 600 Licencias", roi: "MASTER", feat: ["🚀 Domina tu Ciudad", "💰 Margen Infinito", "📊 Panel VIP (6 Meses)", "🤝 Asesoría Privada", "🧠 Mentoría de Ventas"], btn: "Aplicar Ahora", col: "orange", best: true },
+            { t: "FRANQUICIA MASTER", p: e.v_anual, sub: "Stock: 1.500 Licencias", roi: "DUEÑO DE SISTEMA", feat: ["👑 Dueño del Sistema", "🌍 Sin Competencia", "⏳ Negocio Automático", "🎩 Panel VIP (1 Año)", "💎 Grupo Socios Elite"], btn: "Comprar Franquicia", col: "orange" }
         ]
     };
 
     const cur = data[activeTab] || [];
+    
+    // Función auxiliar para formatear moneda
+    const fmt = (val) => typeof val === "number" ? val.toLocaleString("es-CO") : val;
 
-    // 3. RENDERIZADO VISUAL FINAL
+    // 5. RENDERIZADO VISUAL FINAL
     return _.jsxs("div", {
         style: { padding: "4rem 1rem", textAlign: "center", background: "#f8fafc", position: "relative" },
         children: [
@@ -28325,8 +28328,11 @@ nI = () => {
                     p.best && _.jsx("span", { style: { position: "absolute", top: "-14px", left: "50%", transform: "translateX(-50%)", background: p.col==='green'?'#10b981':p.col==='orange'?'#f59e0b':'#3b82f6', color: "white", padding: "6px 16px", borderRadius: "30px", fontSize: "0.85rem", fontWeight: "800", boxShadow: "0 4px 10px rgba(0,0,0,0.2)" }, children: "🔥 MÁS VENDIDO" }),
                     p.roi && _.jsx("div", { style: { background: p.col==='green'?'#ecfdf5':'#fffbeb', color: p.col==='green'?'#047857':'#b45309', padding: "8px", borderRadius: "12px", marginBottom: "1.5rem", fontWeight: "800", fontSize: "0.95rem", border: `1px solid ${p.col==='green'?'#a7f3d0':'#fde68a'}`, textAlign: "center" }, children: p.roi }),
                     _.jsx("h3", { style: { color: "#64748b", fontSize: "0.9rem", letterSpacing: "1.5px", textTransform: "uppercase", marginBottom: "0.5rem", fontWeight: "800", textAlign: "center" }, children: p.t }),
-                    _.jsxs("div", { style: { marginBottom: "0.5rem", display: "flex", alignItems: "baseline", justifyContent: "center", gap: "6px" }, children: [ _.jsx("span", { style: { fontSize: "3rem", fontWeight: "900", color: "#0f172a" }, children: p.p }), _.jsx("span", { style: { color: "#64748b", fontWeight: "600" }, children: p.sub }) ] }),
-                    p.ant && _.jsx("p", { style: { textDecoration: "line-through", color: "#94a3b8", fontSize: "1rem", marginBottom: "1rem", textAlign: "center" }, children: ["Normal: ", p.ant] }),
+                    _.jsxs("div", { style: { marginBottom: "0.5rem", display: "flex", alignItems: "baseline", justifyContent: "center", gap: "6px" }, children: [ 
+                        _.jsx("span", { style: { fontSize: "3rem", fontWeight: "900", color: "#0f172a" }, children: `${e.simbolo}${fmt(p.p)}` }), 
+                        _.jsx("span", { style: { color: "#64748b", fontWeight: "600" }, children: p.sub }) 
+                    ] }),
+                    p.ant && _.jsx("p", { style: { textDecoration: "line-through", color: "#94a3b8", fontSize: "1rem", marginBottom: "1rem", textAlign: "center" }, children: ["Normal: ", e.simbolo, fmt(p.ant)] }),
                     p.save && _.jsx("div", { style: { textAlign: "center", marginBottom: "1.5rem" }, children: _.jsx("span", { style: { color: "#15803d", background: "#dcfce7", padding: "6px 14px", borderRadius: "20px", fontSize: "0.85rem", fontWeight: "800" }, children: p.save }) }),
                     _.jsx("hr", { style: { border: "none", borderTop: "1px dashed #e2e8f0", margin: "1rem 0" } }),
                     _.jsx("ul", { style: { listStyle: "none", padding: 0, margin: "0 0 2rem 0", textAlign: "left" }, children: p.feat.map((f, x) => _.jsxs("li", { style: { marginBottom: "12px", display: "flex", alignItems: "start", color: "#334155", fontSize: "0.95rem" }, children: [ _.jsx("span", { style: { marginRight: "10px" }, children: "" }), f ] }, x)) }),
@@ -28349,7 +28355,7 @@ nI = () => {
                         _.jsx("button", { onClick: () => setVerModal(false), style: { position: "absolute", top: "20px", right: "20px", background: "#f1f5f9", border: "none", borderRadius: "50%", width: "36px", height: "36px", cursor: "pointer", fontWeight: "bold", color: "#64748b", fontSize: "1.2rem" }, children: "✕" }),
                         
                         _.jsx("h3", { style: { fontSize: "1.8rem", color: "#0f172a", marginBottom: "0.5rem", fontWeight: "800" }, children: "Confirmar Compra ⚡" }),
-                        _.jsx("p", { style: { color: "#64748b", marginBottom: "1.5rem", fontSize: "1.1rem" }, children: `Plan seleccionado: ${planSeleccionado.t}` }),
+                        _.jsx("p", { style: { color: "#64748b", marginBottom: "1.5rem", fontSize: "1.1rem" }, children: `Estás adquiriendo: ${planSeleccionado.t}` }),
                         
                         // CAJA DE LOGOS (Bancos Soportados)
                         _.jsxs("div", { style: { display: "flex", justifyContent: "center", gap: "10px", flexWrap: "wrap", marginBottom: "1.5rem", background: "#f1f5f9", padding: "10px", borderRadius: "12px" }, children: [
@@ -28373,7 +28379,7 @@ nI = () => {
                         ]}),
 
                         _.jsx("a", {
-                            href: `https://wa.me/573004085041?text=Hola,%20ya%20hice%20el%20pago%20de%20${planSeleccionado.p}%20para%20el%20${planSeleccionado.t}.%20Adjunto%20comprobante!`,
+                            href: `https://wa.me/573004085041?text=Hola,%20ya%20hice%20el%20pago%20de%20${e.simbolo}${fmt(planSeleccionado.p)}%20para%20el%20${planSeleccionado.t}.%20Adjunto%20comprobante!`,
                             target: "_blank",
                             rel: "noopener noreferrer",
                             onClick: () => setVerModal(false),
@@ -28386,9 +28392,6 @@ nI = () => {
         ]
     })
 }
-
-
-
 
 
   , iI = "/assets/logo-BSWxvb2b.png"
