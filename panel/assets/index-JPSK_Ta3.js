@@ -28233,11 +28233,11 @@ const Xv = {
         moneda: "COP",
         simbolo: "$",
         // PERSONAL
-        p_mes: 20000, p_sem: 80000, p_anual: 140000,
+        p_mes: 20000, p_sem: 70000, p_anual: 120000,
         // REVENDEDOR
-        r_mes: 80000, r_sem: 400000, r_anual: 1000000,
+        r_mes: 50000, r_sem: 250000, r_anual: 500000,
         // VIP
-        v_mes: 200000, v_sem: 1000000, v_anual: 2000000
+        v_mes: 800000, v_sem: 1.5M, v_anual: 2500000
     },
     WORLD: {
         nombre: "Resto del Mundo",
@@ -28289,7 +28289,7 @@ const Xv = {
             { t: "ANUAL", p: e.p_anual, sub: "/año", ant: e.p_mes * 12, save: "💎 MEJOR OFERTA", feat: ["✅ Todo Incluido x 12 Meses", "🌟 Prioridad Total", "🔒 Cero pagos extra", "🎁 Actualizaciones Beta", "🎓 Grupo Premium VIP"], btn: "Comprar Anual", col: "blue" }
         ],
         revendedor: [
-            { t: "PACK EMPRENDEDOR", p: e.r_mes, sub: "Recibes 5 Licencias", roi: "💰 GANA EL DOBLE", feat: ["📦 Stock: 5 Licencias", "💵 Costo bajo por licencia", "🏷️ Vendes al doble", "🎓 Grupo de Revendedores", "🚀 Inicio Inmediato"], btn: "Iniciar Negocio", col: "green" },
+            { t: "PACK EMPRENDEDOR", p: e.r_mes, sub: "Recibes 5 Licencias", roi: "💰 GANA EL DOBLE", feat: ["📦 Stock: 5 Licencias", "💵 Costo bajo por licencia", "🏷️ Vendes al doble", "🎓 Grupo de Revendedores", "⏳ 1 Mes Panel Activo", "🚀 Inicio Inmediato"], btn: "Iniciar Negocio", col: "green" },
             { t: "PACK NEGOCIO", p: e.r_sem, sub: "Recibes 35 Licencias", roi: "💰 GANA EL TRIPLE", feat: ["📦 Stock: 35 Licencias", "📉 Costo unitario ultra bajo", "📈 Retorno Masivo", "⏳ 6 Meses Panel Activo", "🧠 Estrategias de Cierre"], btn: "Comprar Pack", col: "green", best: true },
             { t: "PACK IMPERIO", p: e.r_anual, sub: "Recibes 100 Licencias", roi: "💰 GANANCIA TOTAL", feat: ["📦 Stock Masivo: 100 Lic", "🤯 Costo ridículo", "🔥 Margen BRUTAL", "👑 1 Año Panel Activo", "🛡️ Soporte Mayorista"], btn: "Ser Líder", col: "green" }
         ],
@@ -28356,11 +28356,11 @@ const Xv = {
                         
                         // CAJA DE LOGOS (Bancos Soportados)
                         _.jsxs("div", { style: { display: "flex", justifyContent: "center", gap: "12px", flexWrap: "wrap", marginBottom: "1.5rem", background: "#f1f5f9", padding: "12px", borderRadius: "16px" }, children: [
-                            _.jsx("img", { src: "https://upload.wikimedia.org/wikipedia/commons/c/ca/Nequi_logo.svg", style: { height: "24px", objectFit: "contain" }, alt: "Nequi" }),
-                            _.jsx("img", { src: "https://upload.wikimedia.org/wikipedia/commons/1/1e/Logo_Bancolombia.svg", style: { height: "24px", objectFit: "contain" }, alt: "Bancolombia" }),
-                            _.jsx("img", { src: "https://seeklogo.com/images/D/daviplata-logo-C5209C96E2-seeklogo.com.png", style: { height: "24px", objectFit: "contain" }, alt: "Daviplata" }),
-                            _.jsx("img", { src: "https://upload.wikimedia.org/wikipedia/commons/e/e4/BBVA_2019.svg", style: { height: "22px", objectFit: "contain" }, alt: "BBVA" }),
-                            _.jsx("img", { src: "https://seeklogo.com/images/D/dale-logo-3037005934-seeklogo.com.png", style: { height: "24px", objectFit: "contain" }, alt: "Dale" })
+                            _.jsx("img", { src: "https://cdn.brandfetch.io/id6FVNP6X7/theme/dark/logo.svg?c=1dxbfHSJFAPEGdCLU4o5B", style: { height: "24px", objectFit: "contain" }, alt: "Nequi" }),
+                            _.jsx("img", { src: "https://cdn.brandfetch.io/idPIbCua49/theme/dark/logo.svg?c=1dxbfHSJFAPEGdCLU4o5B", style: { height: "24px", objectFit: "contain" }, alt: "Bancolombia" }),
+                            _.jsx("img", { src: "https://cdn.brandfetch.io/idYUaU0ImR/w/400/h/400/theme/dark/icon.jpeg?c=1dxbfHSJFAPEGdCLU4o5B", style: { height: "24px", objectFit: "contain" }, alt: "Daviplata" }),
+                            _.jsx("img", { src: "https://cdn.brandfetch.io/idQW_ZOF8l/w/400/h/400/theme/dark/icon.png?c=1dxbfHSJFAPEGdCLU4o5B", style: { height: "22px", objectFit: "contain" }, alt: "BBVA" }),
+                            _.jsx("img", { src: "https://d1b4gd4m8561gs.cloudfront.net/sites/default/files/images/bre-b-identifica.png", style: { height: "24px", objectFit: "contain" }, alt: "Breve" })
                         ]}),
 
                         _.jsxs("div", { style: { background: "#f8fafc", padding: "1.5rem", borderRadius: "16px", border: "2px dashed #cbd5e1", marginBottom: "2rem", textAlign: "left" }, children: [
@@ -28371,7 +28371,7 @@ const Xv = {
                                 _.jsx("span", { style: { fontSize: "1.6rem", fontWeight: "900", color: "#0f172a", letterSpacing: "1px" }, children: "0090206622" }),
                                 _.jsx("button", { onClick: () => navigator.clipboard.writeText("0090206622"), style: { background: "#e0f2fe", color: "#0284c7", border: "none", padding: "6px 12px", borderRadius: "8px", fontSize: "0.9rem", fontWeight: "bold", cursor: "pointer" }, children: "Copiar" })
                             ]}),
-                            _.jsx("p", { style: { fontSize: "0.85rem", color: "#94a3b8", marginTop: "12px", textAlign: "center" }, children: "Titular: Maik Bermeo" })
+                            _.jsx("p", { style: { fontSize: "0.85rem", color: "#94a3b8", marginTop: "12px", textAlign: "center" }, children: "Titular: Kiamber Corp" })
                         ]}),
 
                         _.jsx("a", {
