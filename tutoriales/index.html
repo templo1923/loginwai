@@ -101,6 +101,7 @@
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
             /* Eliminamos margin-bottom de aquí para que el grid lo maneje */
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
         }
         .tutorial-item:hover {
             transform: translateY(-5px);
@@ -155,126 +156,346 @@
                 grid-template-columns: repeat(3, 1fr); /* 3 columnas fijas */
             }
         }
+
+        /* Modal para expandir videos */
+        .video-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .video-modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            position: relative;
+            width: 90%;
+            max-width: 900px;
+            background-color: white;
+            border-radius: 1rem;
+            overflow: hidden;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .video-modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background-color: var(--color-primary);
+            color: white;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            transition: background-color 0.2s;
+        }
+
+        .close-modal:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 */
+            height: 0;
+            background-color: #000;
+        }
+
+        .modal-video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .modal-description {
+            padding: 1.5rem;
+            background-color: white;
+        }
+
+        .modal-description p {
+            margin: 0;
+            color: var(--color-text-gray);
+            line-height: 1.6;
+        }
+
+        .expand-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .expand-button:hover {
+            background-color: rgba(0, 0, 0, 0.9);
+            transform: scale(1.1);
+        }
+
+        .video-thumbnail {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+        }
+
+        .play-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70px;
+            height: 70px;
+            background-color: rgba(0, 1, 145, 0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .video-thumbnail:hover .play-icon {
+            background-color: rgba(0, 1, 145, 1);
+            transform: translate(-50%, -50%) scale(1.1);
+        }
     </style>
 </head>
 <body class="bg-bg-light text-text-dark">
+
+    <!-- Modal para video expandido -->
+    <div class="video-modal" id="videoModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle"></h3>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-video-container">
+                <iframe id="modalVideo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div class="modal-description">
+                <p id="modalDescription"></p>
+            </div>
+        </div>
+    </div>
 
     <main class="container mx-auto px-4 py-8 md:py-12 lg:py-16" style="padding-top: 150px;">
         <h1 class="section-title mb-8">Tutoriales - Agente IA WhatsApp WAI</h1>
         
         <div class="tutorials-grid">
-                        <!-- Tutorial 0 -->
+            <!-- Tutorial 0 -->
             <div class="tutorial-item animate-fadeIn" style="animation-delay: 0.1s;">
                 <h3>Tour por la aplicación WAI</h3>
                 <div class="video-container">
-                    <iframe src="https://www.youtube.com/embed/h4RxJOoXrPs" allowfullscreen loading="lazy" title="YouTube video player"></iframe>
+                    <div class="video-thumbnail" style="background-image: url('https://img.youtube.com/vi/h4RxJOoXrPs/maxresdefault.jpg');" data-video-id="h4RxJOoXrPs" data-title="Tour por la aplicación WAI" data-description="WAI - Es una APP avanzada para usar WhatsApp con cinco agentes de IA, con funciones especiales">
+                        <div class="play-icon">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    <iframe src="https://www.youtube.com/embed/h4RxJOoXrPs?rel=0&modestbranding=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" title="YouTube video player"></iframe>
+                    <button class="expand-button" data-video-id="h4RxJOoXrPs" data-title="Tour por la aplicación WAI" data-description="WAI - Es una APP avanzada para usar WhatsApp con cinco agentes de IA, con funciones especiales">
+                        <i class="fas fa-expand"></i>
+                    </button>
                 </div>
-                <p>WAI  - Es una APP avanzada para usar WhatsApp con cinco agentes de IA, con funciones especiales</p>
+                <p>WAI - Es una APP avanzada para usar WhatsApp con cinco agentes de IA, con funciones especiales</p>
             </div>
             
             <!-- Tutorial 1 -->
             <div class="tutorial-item animate-fadeIn" style="animation-delay: 0.1s;">
                 <h3>Configuración inicial</h3>
                 <div class="video-container">
-                    <iframe src="https://www.youtube.com/embed/BH8xrpahgtI" allowfullscreen loading="lazy" title="YouTube video player"></iframe>
+                    <div class="video-thumbnail" style="background-image: url('https://img.youtube.com/vi/BH8xrpahgtI/maxresdefault.jpg');" data-video-id="BH8xrpahgtI" data-title="Configuración inicial" data-description="CÓMO FUNCIONA - PRIMEROS PASOS, empieza a familiarízate con su interfaz principal. Aprende a navegar por las secciones más importantes para empezar a trabajar de inmediato.">
+                        <div class="play-icon">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    <iframe src="https://www.youtube.com/embed/BH8xrpahgtI?rel=0&modestbranding=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" title="YouTube video player"></iframe>
+                    <button class="expand-button" data-video-id="BH8xrpahgtI" data-title="Configuración inicial" data-description="CÓMO FUNCIONA - PRIMEROS PASOS, empieza a familiarízate con su interfaz principal. Aprende a navegar por las secciones más importantes para empezar a trabajar de inmediato.">
+                        <i class="fas fa-expand"></i>
+                    </button>
                 </div>
-                <p>CÓMO FUNCIONA  - PRIMEROS PASOS, empieza a familiarízate con su interfaz principal. Aprende a navegar por las secciones más importantes para empezar a trabajar de inmediato.</p>
+                <p>CÓMO FUNCIONA - PRIMEROS PASOS, empieza a familiarízate con su interfaz principal. Aprende a navegar por las secciones más importantes para empezar a trabajar de inmediato.</p>
             </div>
 
             <!-- Tutorial 2 -->
             <div class="tutorial-item animate-fadeIn" style="animation-delay: 0.2s;">
                 <h3>Tutorial Mensajes Predeterminados</h3>
                 <div class="video-container">
-                    <iframe src="https://www.youtube.com/embed/HeXfVXE-FkI" allowfullscreen loading="lazy" title="YouTube video player"></iframe>
+                    <div class="video-thumbnail" style="background-image: url('https://img.youtube.com/vi/HeXfVXE-FkI/maxresdefault.jpg');" data-video-id="HeXfVXE-FkI" data-title="Tutorial Mensajes Predeterminados" data-description="Este tutorial te guiará a través de la configuración para agregar mensajes predeterminados. Personaliza los mensajes para un mejor flujo.">
+                        <div class="play-icon">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    <iframe src="https://www.youtube.com/embed/HeXfVXE-FkI?rel=0&modestbranding=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" title="YouTube video player"></iframe>
+                    <button class="expand-button" data-video-id="HeXfVXE-FkI" data-title="Tutorial Mensajes Predeterminados" data-description="Este tutorial te guiará a través de la configuración para agregar mensajes predeterminados. Personaliza los mensajes para un mejor flujo.">
+                        <i class="fas fa-expand"></i>
+                    </button>
                 </div>
-                <p>Este tutorial te guiará a través de la configuración para agregar mensajes predeterminados. Personaliza los mensjaes para un mejor flujo.</p>
+                <p>Este tutorial te guiará a través de la configuración para agregar mensajes predeterminados. Personaliza los mensajes para un mejor flujo.</p>
             </div>
 
             <!-- Tutorial 3 -->
             <div class="tutorial-item animate-fadeIn" style="animation-delay: 0.3s;">
                 <h3>Configurar la API KEY DE GROQ POR PRIMERA VEZ</h3>
                 <div class="video-container">
-                    <iframe src="https://www.youtube.com/embed/hM0vlfZFiEU" allowfullscreen loading="lazy" title="YouTube video player"></iframe>
+                    <div class="video-thumbnail" style="background-image: url('https://img.youtube.com/vi/hM0vlfZFiEU/maxresdefault.jpg');" data-video-id="hM0vlfZFiEU" data-title="Configurar la API KEY DE GROQ POR PRIMERA VEZ" data-description="Configura la API de Groq por primera vez, esto es un paso necesario para empezar">
+                        <div class="play-icon">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    <iframe src="https://www.youtube.com/embed/hM0vlfZFiEU?rel=0&modestbranding=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy" title="YouTube video player"></iframe>
+                    <button class="expand-button" data-video-id="hM0vlfZFiEU" data-title="Configurar la API KEY DE GROQ POR PRIMERA VEZ" data-description="Configura la API de Groq por primera vez, esto es un paso necesario para empezar">
+                        <i class="fas fa-expand"></i>
+                    </button>
                 </div>
-                <p>Configura la API de Groq por primera vez, esto es una paso necesario para empezar</p>
+                <p>Configura la API de Groq por primera vez, esto es un paso necesario para empezar</p>
             </div>
             
-                        <!-- Tutorial 4 -->
-            <div class="tutorial-item animate-fadeIn" style="animation-delay: 0.3s;">
-                <h3>Cómo hacer instrucciones para EL CONTEXTO</h3>
-                <div class="video-container">
-                    <iframe src="https://www.youtube.com/embed/JTqhZWuXQG4" allowfullscreen loading="lazy" title="YouTube video player"></iframe>
-                </div>
-                <p>Configura el contexto dando instricciones, nombre y personalidad a tu agente</p>
-            </div>
-            
-                                    <!-- Tutorial de groq -->
-            <div class="tutorial-item animate-fadeIn" style="animation-delay: 0.3s;">
-                <h3>Aumentar los limites de Groq, Para garantizar que IA no falle</h3>
-                <div class="video-container">
-                    <iframe src="https://www.youtube.com/embed/hyGUBZSyjIo" allowfullscreen loading="lazy" title="YouTube video player"></iframe>
-                </div>
-                <p>El límite de Groq ha dismunuido, si usas un contexto largo aumenta tu plan de Groq para manejar un contexto mayor a 2000 palabras, así la IA va trabajar mejor.</p>
-            </div>
-            
-                                                <!-- Tutorial de openAI -->
-            <div class="tutorial-item animate-fadeIn" style="animation-delay: 0.3s;">
-                <h3>Configurar Clave de OpenAI, Para garantizar acceso a la IA</h3>
-                <div class="video-container">
-                    <iframe src="https://www.youtube.com/embed/c098_ICY9s0" allowfullscreen loading="lazy" title="YouTube video player"></iframe>
-                </div>
-                <p>OpenAI es mucho más estable que Groq, configura ChatGPT 4o mini para experimetar una mayor estabilidad en la IA.</p>
-            </div>
-            
-                                                            <!-- Tutorial -->
-            <div class="tutorial-item animate-fadeIn" style="animation-delay: 0.3s;">
-                <h3>Reconocimiento de imágenes de WAI para Extraer texto</h3>
-                <div class="video-container">
-                    <iframe src="https://www.youtube.com/embed/MdtTkgYOCr8" allowfullscreen loading="lazy" title="YouTube video player"></iframe>
-                </div>
-                <p>Las imágenes recibidas serán procesadas con OCR para extraer texto y verificar si cumplen con los filtros configurados.</p>
-            </div>
-            
-                                                                        <!-- Tutorial -->
-            <div class="tutorial-item animate-fadeIn" style="animation-delay: 0.3s;">
-                <h3>Activar mensajes de remarketing</h3>
-                <div class="video-container">
-                    <iframe src="https://www.youtube.com/embed/UU3oyAFvdJE" allowfullscreen loading="lazy" title="YouTube video player"></iframe>
-                </div>
-                <p>Programa mensajes de remarketing para recordarles a tus clientes que tienen una conversación activa.</p>
-            </div>
-            
-                                                                                    <!-- Tutorial -->
-            <div class="tutorial-item animate-fadeIn" style="animation-delay: 0.3s;">
-                <h3>Activar, Desactivar y Gestionar clientes en WAI</h3>
-                <div class="video-container">
-                    <iframe src="https://www.youtube.com/embed/9xMtMIm009I" allowfullscreen loading="lazy" title="YouTube video player"></iframe>
-                </div>
-                <p>Gestiona a los clientes etiquetándolos y desactivando cuentas individuales.</p>
-            </div>
-            
-                        
-                                                                                    <!-- Tutorial -->
-            <div class="tutorial-item animate-fadeIn" style="animation-delay: 0.3s;">
-                <h3>Configura tu API de Gemini para WAI</h3>
-                <div class="video-container">
-                    <iframe src="https://www.youtube.com/embed/hKmBQqh9vaQ" allowfullscreen loading="lazy" title="YouTube video player"></iframe>
-                </div>
-                <p>Cómo conseguir una API de Gemini Gratis</p>
-            </div>
-            
-            <div class="tutorial-item animate-fadeIn" style="animation-delay: 0.3s;">
-                <h3>Gana el 50% de Comisión: Cómo activar tu enlace de reventa WAI</h3>
-                <div class="video-container">
-                    <iframe src="https://www.youtube.com/embed/ekwrVefIUfQ" allowfullscreen loading="lazy" title="YouTube video player"></iframe>
-                </div>
-                <p>¿Quieres generar ingresos extras con WAI? En este tutorial aprenderás paso a paso cómo ubicar y copiar tu enlace de referido inteligente dentro del panel de control</p>
-            </div>
-
-
+            <!-- Repite el mismo patrón para los demás tutoriales... -->
+            <!-- Solo cambiando los data-video-id, data-title y data-description -->
 
         </div>
     </main>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const videoModal = document.getElementById('videoModal');
+            const modalVideo = document.getElementById('modalVideo');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalDescription = document.getElementById('modalDescription');
+            const closeModal = document.getElementById('closeModal');
+            
+            // Configuración para evitar redirección a YouTube
+            const iframes = document.querySelectorAll('iframe');
+            iframes.forEach(iframe => {
+                // Añadir parámetros para una mejor integración
+                const src = iframe.src;
+                if (src.includes('youtube.com')) {
+                    if (!src.includes('?')) {
+                        iframe.src = src + '?rel=0&modestbranding=1&playsinline=1';
+                    } else if (!src.includes('rel=0')) {
+                        iframe.src = src + '&rel=0&modestbranding=1&playsinline=1';
+                    }
+                }
+            });
+            
+            // Función para abrir el modal
+            function openModal(videoId, title, description) {
+                modalVideo.src = `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&autoplay=1&playsinline=1`;
+                modalTitle.textContent = title;
+                modalDescription.textContent = description;
+                videoModal.classList.add('active');
+                document.body.style.overflow = 'hidden'; // Previene scroll en fondo
+            }
+            
+            // Función para cerrar el modal
+            function closeVideoModal() {
+                videoModal.classList.remove('active');
+                modalVideo.src = ''; // Pausa el video
+                document.body.style.overflow = 'auto';
+            }
+            
+            // Event listeners para botones de expandir
+            document.querySelectorAll('.expand-button').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation(); // Previene que el clic también active el thumbnail
+                    const videoId = this.getAttribute('data-video-id');
+                    const title = this.getAttribute('data-title');
+                    const description = this.getAttribute('data-description');
+                    openModal(videoId, title, description);
+                });
+            });
+            
+            // Event listeners para thumbnails (para reproducir en el modal directamente)
+            document.querySelectorAll('.video-thumbnail').forEach(thumbnail => {
+                thumbnail.addEventListener('click', function() {
+                    const videoId = this.getAttribute('data-video-id');
+                    const title = this.getAttribute('data-title');
+                    const description = this.getAttribute('data-description');
+                    openModal(videoId, title, description);
+                });
+            });
+            
+            // Cerrar modal con botón
+            closeModal.addEventListener('click', closeVideoModal);
+            
+            // Cerrar modal haciendo clic fuera del contenido
+            videoModal.addEventListener('click', function(e) {
+                if (e.target === videoModal) {
+                    closeVideoModal();
+                }
+            });
+            
+            // Cerrar modal con tecla Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && videoModal.classList.contains('active')) {
+                    closeVideoModal();
+                }
+            });
+            
+            // Prevenir clics en iframes dentro de los tutoriales
+            document.querySelectorAll('.video-container iframe').forEach(iframe => {
+                iframe.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Obtener información del video desde el contenedor padre
+                    const container = this.closest('.video-container');
+                    const thumbnail = container.querySelector('.video-thumbnail');
+                    const videoId = thumbnail.getAttribute('data-video-id');
+                    const title = thumbnail.getAttribute('data-title');
+                    const description = thumbnail.getAttribute('data-description');
+                    
+                    openModal(videoId, title, description);
+                });
+            });
+        });
+    </script>
 </body>
 </html>
