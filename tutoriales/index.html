@@ -8,9 +8,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
 
     <style>
-        /* Variables de color y tipografía de Artech */
+        /* Variables */
         :root {
             --color-primary: #000191;
             --color-secondary: #0eda91;
@@ -18,15 +21,17 @@
             --color-text-dark: #1a202c;
             --color-text-gray: #4a5568;
             --color-primary-rgb: 0, 1, 145;
+            
+            /* Personalización de Plyr para que coincida con tu marca */
+            --plyr-color-main: #0eda91; 
         }
 
-        /* Clases de utilidad Tailwind personalizadas */
+        /* Utilidades */
         .bg-primary { background-color: var(--color-primary); }
         .text-primary { color: var(--color-primary); }
         .bg-bg-light { background-color: var(--color-bg-light); }
         .text-text-dark { color: var(--color-text-dark); }
 
-        /* Estilos generales */
         body {
             font-family: 'Inter', sans-serif;
             line-height: 1.8;
@@ -43,14 +48,20 @@
             text-align: center;
         }
 
-        /* TUTORIAL ITEMS */
+        /* GRID Y CARDS */
+        .tutorials-grid {
+            display: grid;
+            gap: 2.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
         .tutorial-item {
             background-color: white;
             padding: 2rem;
             border-radius: 1.25rem;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer; /* Indica que es clicable */
+            cursor: pointer;
         }
         .tutorial-item:hover {
             transform: translateY(-5px);
@@ -70,10 +81,10 @@
             text-align: center;
         }
 
-        /* FALSO REPRODUCTOR (PORTADA) */
+        /* MINIATURAS */
         .video-thumbnail-container {
             position: relative;
-            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            padding-bottom: 56.25%;
             height: 0;
             overflow: hidden;
             border-radius: 0.75rem;
@@ -90,11 +101,8 @@
             opacity: 0.8;
             transition: opacity 0.3s;
         }
-        .tutorial-item:hover .video-thumbnail-container img {
-            opacity: 0.6;
-        }
+        .tutorial-item:hover .video-thumbnail-container img { opacity: 0.6; }
         
-        /* BOTÓN DE PLAY PERSONALIZADO */
         .play-button {
             position: absolute;
             top: 50%;
@@ -111,85 +119,73 @@
             transition: transform 0.3s, background-color 0.3s;
             z-index: 10;
         }
-        .play-button i {
-            color: #fff;
-            font-size: 30px;
-            margin-left: 5px; /* Ajuste óptico */
-        }
+        .play-button i { color: #fff; font-size: 30px; margin-left: 5px; }
         .tutorial-item:hover .play-button {
             transform: translate(-50%, -50%) scale(1.1);
             background-color: var(--color-primary);
         }
 
-        /* GRID */
-        .tutorials-grid {
-            display: grid;
-            gap: 2.5rem;
-            grid-template-columns: 1fr;
-        }
-        @media (min-width: 768px) {
-            .tutorials-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (min-width: 1024px) {
-            .tutorials-grid { grid-template-columns: repeat(3, 1fr); }
-        }
-
-        /* MODAL (LIGHTBOX) ESTILOS */
+        /* --- MODAL ESTILO "CINE" --- */
         #videoModal {
-            display: none; /* Oculto por defecto */
+            display: none;
             position: fixed;
             z-index: 9999;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.9);
-            backdrop-filter: blur(5px);
+            background-color: rgba(0,0,0,0.95);
+            backdrop-filter: blur(10px);
             align-items: center;
             justify-content: center;
             opacity: 0;
             transition: opacity 0.3s ease;
         }
-        #videoModal.show {
-            display: flex;
-            opacity: 1;
-        }
+        #videoModal.show { display: flex; opacity: 1; }
+        
         .modal-content {
             position: relative;
             width: 90%;
-            max-width: 1000px;
+            max-width: 1100px;
             background: #000;
-            border-radius: 10px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border-radius: 12px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
             overflow: hidden;
         }
+        
         .close-modal {
             position: absolute;
-            top: -40px;
+            top: -50px;
             right: 0;
             color: white;
-            font-size: 30px;
-            font-weight: bold;
+            font-size: 20px;
+            background: rgba(255,255,255,0.1);
+            padding: 8px 20px;
+            border-radius: 30px;
             cursor: pointer;
-            transition: color 0.3s;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         .close-modal:hover {
-            color: var(--color-secondary);
+            background: var(--color-secondary);
+            color: #000;
         }
-        .modal-video-wrapper {
-            position: relative;
-            padding-bottom: 56.25%; /* 16:9 */
-            height: 0;
+
+        /* --- TRUCO DE MAGIA ANTI-YOUTUBE --- */
+        /* Esto hace que el video de YouTube dentro del reproductor Plyr sea "intocable" */
+        /* El usuario solo puede interactuar con los controles de Plyr, no con el logo de YT */
+        .plyr__video-embed iframe {
+            pointer-events: none; /* Bloquea clics en el iframe de YouTube */
         }
-        .modal-video-wrapper iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
+        /* Aseguramos que los controles de Plyr sigan siendo clicables */
+        .plyr__controls {
+            pointer-events: all;
         }
+        
+        /* Ocultar botones innecesarios */
+        .plyr__menu { display: none !important; }
     </style>
 </head>
 <body class="bg-bg-light text-text-dark">
@@ -199,114 +195,112 @@
         
         <div class="tutorials-grid">
             
-            <div class="tutorial-item animate-fadeIn" onclick="openModal('h4RxJOoXrPs')">
+            <div class="tutorial-item" onclick="openModal('h4RxJOoXrPs')">
                 <h3>Tour por la aplicación WAI</h3>
                 <div class="video-thumbnail-container">
-                    <img src="https://img.youtube.com/vi/h4RxJOoXrPs/maxresdefault.jpg" alt="Tour WAI">
-                    <div class="play-button">
-                        <i class="fas fa-play"></i>
-                    </div>
+                    <img src="https://img.youtube.com/vi/h4RxJOoXrPs/maxresdefault.jpg" loading="lazy">
+                    <div class="play-button"><i class="fas fa-play"></i></div>
                 </div>
-                <p>WAI - Es una APP avanzada para usar WhatsApp con cinco agentes de IA, con funciones especiales</p>
+                <p>WAI - Es una APP avanzada para usar WhatsApp con cinco agentes de IA.</p>
             </div>
             
-            <div class="tutorial-item animate-fadeIn" onclick="openModal('BH8xrpahgtI')">
+            <div class="tutorial-item" onclick="openModal('BH8xrpahgtI')">
                 <h3>Configuración inicial</h3>
                 <div class="video-thumbnail-container">
-                    <img src="https://img.youtube.com/vi/BH8xrpahgtI/maxresdefault.jpg" alt="Configuración">
+                    <img src="https://img.youtube.com/vi/BH8xrpahgtI/maxresdefault.jpg" loading="lazy">
                     <div class="play-button"><i class="fas fa-play"></i></div>
                 </div>
-                <p>CÓMO FUNCIONA - PRIMEROS PASOS, familiarízate con la interfaz y aprende a navegar.</p>
+                <p>CÓMO FUNCIONA - PRIMEROS PASOS y navegación básica.</p>
             </div>
 
-            <div class="tutorial-item animate-fadeIn" onclick="openModal('HeXfVXE-FkI')">
-                <h3>Tutorial Mensajes Predeterminados</h3>
+            <div class="tutorial-item" onclick="openModal('HeXfVXE-FkI')">
+                <h3>Mensajes Predeterminados</h3>
                 <div class="video-thumbnail-container">
-                    <img src="https://img.youtube.com/vi/HeXfVXE-FkI/maxresdefault.jpg" alt="Mensajes Predeterminados">
+                    <img src="https://img.youtube.com/vi/HeXfVXE-FkI/maxresdefault.jpg" loading="lazy">
                     <div class="play-button"><i class="fas fa-play"></i></div>
                 </div>
-                <p>Guía para agregar y personalizar mensajes predeterminados para un mejor flujo.</p>
+                <p>Personaliza los mensajes para un mejor flujo de trabajo.</p>
             </div>
 
-            <div class="tutorial-item animate-fadeIn" onclick="openModal('hM0vlfZFiEU')">
+            <div class="tutorial-item" onclick="openModal('hM0vlfZFiEU')">
                 <h3>Configurar API KEY GROQ</h3>
                 <div class="video-thumbnail-container">
-                    <img src="https://img.youtube.com/vi/hM0vlfZFiEU/maxresdefault.jpg" alt="API Key Groq">
+                    <img src="https://img.youtube.com/vi/hM0vlfZFiEU/maxresdefault.jpg" loading="lazy">
                     <div class="play-button"><i class="fas fa-play"></i></div>
                 </div>
-                <p>Configura la API de Groq por primera vez, paso necesario para empezar.</p>
+                <p>Paso necesario para conectar la inteligencia artificial.</p>
             </div>
-            
-            <div class="tutorial-item animate-fadeIn" onclick="openModal('JTqhZWuXQG4')">
-                <h3>Instrucciones para CONTEXTO</h3>
+
+             <div class="tutorial-item" onclick="openModal('JTqhZWuXQG4')">
+                <h3>Instrucciones de Contexto</h3>
                 <div class="video-thumbnail-container">
-                    <img src="https://img.youtube.com/vi/JTqhZWuXQG4/maxresdefault.jpg" alt="Contexto">
+                    <img src="https://img.youtube.com/vi/JTqhZWuXQG4/maxresdefault.jpg" loading="lazy">
                     <div class="play-button"><i class="fas fa-play"></i></div>
                 </div>
-                <p>Configura el contexto dando instrucciones, nombre y personalidad a tu agente.</p>
+                <p>Configura la personalidad y reglas de tu agente.</p>
             </div>
-            
-            <div class="tutorial-item animate-fadeIn" onclick="openModal('hyGUBZSyjIo')">
+
+             <div class="tutorial-item" onclick="openModal('hyGUBZSyjIo')">
                 <h3>Aumentar limites de Groq</h3>
                 <div class="video-thumbnail-container">
-                    <img src="https://img.youtube.com/vi/hyGUBZSyjIo/maxresdefault.jpg" alt="Limites Groq">
+                    <img src="https://img.youtube.com/vi/hyGUBZSyjIo/maxresdefault.jpg" loading="lazy">
                     <div class="play-button"><i class="fas fa-play"></i></div>
                 </div>
-                <p>Aumenta tu plan de Groq para manejar un contexto mayor y garantizar que la IA no falle.</p>
+                <p>Garantiza que la IA no falle con contextos largos.</p>
             </div>
 
-            <div class="tutorial-item animate-fadeIn" onclick="openModal('c098_ICY9s0')">
-                <h3>Configurar Clave OpenAI</h3>
+             <div class="tutorial-item" onclick="openModal('c098_ICY9s0')">
+                <h3>Configurar OpenAI</h3>
                 <div class="video-thumbnail-container">
-                    <img src="https://img.youtube.com/vi/c098_ICY9s0/maxresdefault.jpg" alt="OpenAI Key">
+                    <img src="https://img.youtube.com/vi/c098_ICY9s0/maxresdefault.jpg" loading="lazy">
                     <div class="play-button"><i class="fas fa-play"></i></div>
                 </div>
-                <p>Configura ChatGPT 4o mini para experimentar una mayor estabilidad en la IA.</p>
+                <p>Mayor estabilidad usando ChatGPT 4o mini.</p>
             </div>
 
-            <div class="tutorial-item animate-fadeIn" onclick="openModal('MdtTkgYOCr8')">
+             <div class="tutorial-item" onclick="openModal('MdtTkgYOCr8')">
                 <h3>Reconocimiento de imágenes</h3>
                 <div class="video-thumbnail-container">
-                    <img src="https://img.youtube.com/vi/MdtTkgYOCr8/maxresdefault.jpg" alt="OCR WAI">
+                    <img src="https://img.youtube.com/vi/MdtTkgYOCr8/maxresdefault.jpg" loading="lazy">
                     <div class="play-button"><i class="fas fa-play"></i></div>
                 </div>
-                <p>Las imágenes serán procesadas con OCR para extraer texto y aplicar filtros.</p>
+                <p>Uso de OCR para extraer texto y aplicar filtros.</p>
             </div>
 
-            <div class="tutorial-item animate-fadeIn" onclick="openModal('UU3oyAFvdJE')">
-                <h3>Mensajes de remarketing</h3>
+             <div class="tutorial-item" onclick="openModal('UU3oyAFvdJE')">
+                <h3>Mensajes de Remarketing</h3>
                 <div class="video-thumbnail-container">
-                    <img src="https://img.youtube.com/vi/UU3oyAFvdJE/maxresdefault.jpg" alt="Remarketing">
+                    <img src="https://img.youtube.com/vi/UU3oyAFvdJE/maxresdefault.jpg" loading="lazy">
                     <div class="play-button"><i class="fas fa-play"></i></div>
                 </div>
-                <p>Programa mensajes para recordar a tus clientes que tienen una conversación activa.</p>
+                <p>Reactiva conversaciones antiguas automáticamente.</p>
             </div>
 
-            <div class="tutorial-item animate-fadeIn" onclick="openModal('9xMtMIm009I')">
-                <h3>Gestionar clientes</h3>
+             <div class="tutorial-item" onclick="openModal('9xMtMIm009I')">
+                <h3>Gestionar Clientes</h3>
                 <div class="video-thumbnail-container">
-                    <img src="https://img.youtube.com/vi/9xMtMIm009I/maxresdefault.jpg" alt="Gestionar Clientes">
+                    <img src="https://img.youtube.com/vi/9xMtMIm009I/maxresdefault.jpg" loading="lazy">
                     <div class="play-button"><i class="fas fa-play"></i></div>
                 </div>
-                <p>Gestiona a los clientes etiquetándolos y desactivando cuentas individuales.</p>
+                <p>Etiquetado y desactivación de cuentas individuales.</p>
             </div>
 
-            <div class="tutorial-item animate-fadeIn" onclick="openModal('hKmBQqh9vaQ')">
-                <h3>API de Gemini Gratis</h3>
+             <div class="tutorial-item" onclick="openModal('hKmBQqh9vaQ')">
+                <h3>API Gemini Gratis</h3>
                 <div class="video-thumbnail-container">
-                    <img src="https://img.youtube.com/vi/hKmBQqh9vaQ/maxresdefault.jpg" alt="API Gemini">
+                    <img src="https://img.youtube.com/vi/hKmBQqh9vaQ/maxresdefault.jpg" loading="lazy">
                     <div class="play-button"><i class="fas fa-play"></i></div>
                 </div>
-                <p>Aprende cómo conseguir una API de Google Gemini Gratis para WAI.</p>
+                <p>Consigue tu API key de Google sin costo.</p>
             </div>
 
-            <div class="tutorial-item animate-fadeIn" onclick="openModal('ekwrVefIUfQ')">
-                <h3>Gana 50% de Comisión</h3>
+             <div class="tutorial-item" onclick="openModal('ekwrVefIUfQ')">
+                <h3>Sistema de Afiliados (50%)</h3>
                 <div class="video-thumbnail-container">
-                    <img src="https://img.youtube.com/vi/ekwrVefIUfQ/maxresdefault.jpg" alt="Afiliados">
+                    <img src="https://img.youtube.com/vi/ekwrVefIUfQ/maxresdefault.jpg" loading="lazy">
                     <div class="play-button"><i class="fas fa-play"></i></div>
                 </div>
-                <p>Aprende cómo ubicar y copiar tu enlace de referido inteligente para generar ingresos.</p>
+                <p>Genera ingresos revendiendo WAI con tu enlace.</p>
             </div>
 
         </div>
@@ -314,43 +308,67 @@
 
     <div id="videoModal" onclick="closeModal()">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <span class="close-modal" onclick="closeModal()">&times; Cerrar</span>
-            <div class="modal-video-wrapper">
-                <iframe id="youtubeFrame" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            <div onclick="closeModal()" class="close-modal">
+                <i class="fas fa-times"></i> Cerrar Video
             </div>
+            
+            <div class="plyr__video-embed" id="player">
+                </div>
         </div>
     </div>
 
     <script>
+        let player = null;
+
         function openModal(videoId) {
             const modal = document.getElementById('videoModal');
-            const iframe = document.getElementById('youtubeFrame');
+            const container = document.getElementById('player');
             
-            // Construimos la URL con parámetros estrictos para ocultar marca de YouTube
-            // modestbranding=1: Reduce el logo
-            // rel=0: No muestra videos recomendados externos al finalizar
-            // autoplay=1: Inicia solo
-            // iv_load_policy=3: Oculta anotaciones
-            // controls=1: Muestra controles (necesario para pausar/volumen)
-            // disablekb=1: Desactiva atajos de teclado
-            
-            const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&modestbranding=1&rel=0&iv_load_policy=3&fs=1&color=white`;
-            
-            iframe.src = embedUrl;
+            // 1. Inyectamos el iframe de YouTube dentro del contenedor Plyr
+            // Usamos parámetros agresivos para limpiar la interfaz
+            container.innerHTML = `
+                <iframe
+                    src="https://www.youtube-nocookie.com/embed/${videoId}?origin=https://plyrio&iv_load_policy=3&modestbranding=1&playsinline=1&showinfo=0&rel=0&enablejsapi=1"
+                    allowfullscreen
+                    allowtransparency
+                    allow="autoplay"
+                ></iframe>
+            `;
+
+            // 2. Inicializamos Plyr sobre ese contenedor
+            // Esto crea la "piel" personalizada encima del video
+            player = new Plyr('#player', {
+                controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+                youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 }
+            });
+
+            // 3. Abrimos el modal y reproducimos
             modal.classList.add('show');
-            document.body.style.overflow = 'hidden'; // Evita scroll de fondo
+            document.body.style.overflow = 'hidden';
+            
+            // Pequeño delay para asegurar que cargó antes de dar play
+            setTimeout(() => {
+                player.play();
+            }, 500);
         }
 
         function closeModal() {
             const modal = document.getElementById('videoModal');
-            const iframe = document.getElementById('youtubeFrame');
             
             modal.classList.remove('show');
-            iframe.src = ''; // Detiene el video al limpiar el src
-            document.body.style.overflow = 'auto'; // Restaura scroll
+            document.body.style.overflow = 'auto';
+
+            // Destruimos el reproductor para que deje de sonar y liberar memoria
+            if (player) {
+                player.destroy();
+                player = null;
+            }
+            
+            // Limpiamos el HTML por si acaso
+            document.getElementById('player').innerHTML = '';
         }
 
-        // Cerrar modal con tecla ESC
+        // Tecla ESC para salir
         document.addEventListener('keydown', function(event) {
             if (event.key === "Escape") {
                 closeModal();
