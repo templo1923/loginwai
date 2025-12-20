@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','GTM-53G72Q3F');</script>
-    <!-- End Google Tag Manager -->
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
@@ -27,7 +24,11 @@
             --color-text-gray: #4a5568;
             --color-benefits-bg: #e7effc;
 
-            /* Versiones RGB para sombras con alfa */
+            /* Colores de Categorías para los Planes */
+            --col-personal: #2563eb; /* Azul Intenso */
+            --col-reseller: #10b981; /* Verde Dinero */
+            --col-vip: #f59e0b;      /* Naranja/Dorado VIP */
+
             --color-primary-rgb: 0, 1, 145;
             --color-secondary-rgb: 14, 218, 145;
         }
@@ -47,8 +48,6 @@
             color: var(--color-text-dark);
             background-color: var(--color-bg-light);
             overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
         .container { max-width: 1100px; }
         .section { padding: 70px 20px; margin-bottom: 4rem; }
@@ -90,56 +89,86 @@
         .text-important-note { background-color: color-mix(in srgb, var(--color-accent1) 30%, white); color: var(--color-primary); padding: 1rem 1.5rem; border-radius: 0.75rem; border-left: 5px solid var(--color-accent1); margin-top: 1.5rem; text-align: center; font-size: 1.1rem; }
         .text-important-note strong { font-weight: 700; }
         
-        /* === ESTILOS PARA LA SECCIÓN DE PRECIOS === */
+        /* === ESTILOS SECCIÓN PRECIOS (TABS Y CARDS) === */
         .planes-suscripcion-container { width: 100%; max-width: 1100px; margin: 2rem auto; text-align: center; }
-        .planes-subtitulo { font-size: 1.25rem; color: var(--color-text-gray); margin-bottom: 3rem; }
-        .planes-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; align-items: stretch; justify-content: center; }
-        .plan-card { background: white; border: 2px solid #e2e8f0; border-radius: 1.25rem; padding: 2.5rem 2rem; text-align: center; transition: all 0.3s ease; box-shadow: 0 8px 16px rgba(0,0,0,0.05); display: flex; flex-direction: column; height: 100%; }
-        .plan-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(var(--color-primary-rgb), 0.1); }
-        .plan-destacado { border-color: var(--color-secondary); transform: scale(1.05); position: relative; }
-        .etiqueta-popular { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); background: var(--color-secondary); color: var(--color-primary); padding: 0.5rem 1.2rem; border-radius: 50px; font-weight: 700; font-size: 0.9rem; box-shadow: 0 4px 10px rgba(var(--color-secondary-rgb), 0.3); }
-        .plan-nombre { font-size: 1.75rem; font-weight: 700; color: var(--color-primary); margin-bottom: 1.5rem; }
-        .plan-precio { display: flex; justify-content: center; align-items: baseline; margin-bottom: 0.5rem; color: var(--color-text-dark); }
-        .simbolo-moneda { font-size: 2rem; font-weight: 600; margin-right: 0.25rem; }
-        .cantidad { font-size: 3.5rem; font-weight: 800; line-height: 1; }
-        .codigo-moneda { font-size: 1.2rem; font-weight: 500; margin-left: 0.5rem; }
-        .precio-mensual-info { font-size: 1rem; color: var(--color-text-gray); margin-bottom: 1.5rem; height: 20px; }
-        .plan-ahorro { background-color: color-mix(in srgb, var(--color-secondary) 20%, transparent); color: var(--color-primary); font-weight: 600; padding: 0.4rem 0.8rem; border-radius: 8px; margin: -0.5rem auto 1.5rem auto; display: inline-block; }
-        .plan-caracteristicas { list-style: none; padding: 0; margin: 0 auto 2rem auto; text-align: left; flex-grow: 1; }
-        .plan-caracteristicas li { margin-bottom: 0.75rem; color: var(--color-text-gray); display: flex; align-items: center; }
-        .plan-caracteristicas li i { color: var(--color-secondary); margin-right: 0.75rem; }
+        .planes-subtitulo { font-size: 1.25rem; color: var(--color-text-gray); margin-bottom: 2rem; }
         
-        .cta-download-button { display: inline-flex; align-items: center; justify-content: center; background: linear-gradient(45deg, var(--color-secondary), color-mix(in srgb, var(--color-secondary) 80%, black)); color: var(--color-primary); font-weight: 800; font-size: 1.5rem; padding: 20px 60px; border-radius: 50px; box-shadow: 0 10px 25px rgba(var(--color-secondary-rgb), 0.4); transition: all 0.3s ease; text-decoration: none; margin-top: 3rem; animation: price-pulse 2s infinite; }
+        /* PESTAÑAS */
+        .tabs-wrapper { display: inline-flex; background: #e2e8f0; padding: 6px; border-radius: 16px; margin-bottom: 3rem; flex-wrap: wrap; justify-content: center; gap: 8px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.06); }
+        .tab-button { padding: 12px 30px; border-radius: 12px; border: none; cursor: pointer; font-weight: 800; color: #64748b; background: transparent; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 1rem; position: relative; overflow: hidden; }
+        .tab-button:hover { color: var(--color-text-dark); background: rgba(255,255,255,0.5); }
+        
+        /* Pestañas Activas */
+        .tab-button.active { box-shadow: 0 4px 12px rgba(0,0,0,0.1); transform: scale(1.02); }
+        .tab-button.active[data-tab="personal"] { background: white; color: var(--col-personal); }
+        .tab-button.active[data-tab="revendedor"] { background: var(--col-reseller); color: white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
+        .tab-button.active[data-tab="vip"] { background: var(--col-vip); color: white; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3); }
+
+        /* Contenido Tabs */
+        .tab-content { display: none; animation: fadeIn 0.6s ease; }
+        .tab-content.active { display: grid; }
+
+        .planes-grid { grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 2rem; width: 100%; align-items: stretch; }
+        
+        .plan-card { 
+            background: white; border-radius: 24px; padding: 2.5rem 2rem; position: relative; 
+            border: 1px solid #e2e8f0; transition: transform 0.3s, box-shadow 0.3s;
+            display: flex; flex-direction: column; height: 100%; box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+        .plan-card:hover { transform: translateY(-12px); box-shadow: 0 25px 50px rgba(0,0,0,0.12); z-index: 2; }
+
+        /* Colores Card */
+        .plan-card.personal { border-top: 6px solid var(--col-personal); }
+        .plan-card.reseller { border-top: 6px solid var(--col-reseller); }
+        .plan-card.vip { border-top: 6px solid var(--col-vip); }
+
+        .plan-destacado { transform: scale(1.05); z-index: 1; border: 2px solid; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .plan-card.personal.plan-destacado { border-color: var(--col-personal); }
+        .plan-card.reseller.plan-destacado { border-color: var(--col-reseller); }
+        .plan-card.vip.plan-destacado { border-color: var(--col-vip); }
+
+        .etiqueta-popular { position: absolute; top: -16px; left: 50%; transform: translateX(-50%); color: white; padding: 0.5rem 1.5rem; border-radius: 50px; font-weight: 800; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2); letter-spacing: 0.5px; }
+        .bg-personal { background: var(--col-personal); }
+        .bg-reseller { background: var(--col-reseller); }
+        .bg-vip { background: var(--col-vip); }
+
+        /* Badge ROI */
+        .roi-badge { display: inline-block; padding: 6px 14px; border-radius: 10px; font-size: 0.8rem; font-weight: 800; margin-bottom: 1.2rem; border: 1px solid; text-transform: uppercase; letter-spacing: 0.5px; }
+        .roi-green { background: #ecfdf5; color: #047857; border-color: #a7f3d0; }
+        .roi-orange { background: #fffbeb; color: #b45309; border-color: #fde68a; }
+
+        .plan-nombre { font-size: 1.4rem; font-weight: 900; color: #334155; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .plan-precio { display: flex; justify-content: center; align-items: flex-start; color: var(--color-text-dark); margin-top: 15px; }
+        .simbolo-moneda { font-size: 1.5rem; font-weight: 700; margin-right: 4px; margin-top: 5px; }
+        .cantidad { font-size: 3.2rem; font-weight: 900; line-height: 1; letter-spacing: -1px; }
+        
+        .precio-info { font-size: 0.95rem; color: #64748b; margin-bottom: 2rem; min-height: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .precio-antes { text-decoration: line-through; opacity: 0.6; font-size: 0.9rem; color: #94a3b8; font-weight: 500; }
+
+        .plan-caracteristicas { list-style: none; padding: 0; margin: 0 0 2rem 0; text-align: left; flex-grow: 1; }
+        .plan-caracteristicas li { margin-bottom: 1rem; color: var(--color-text-gray); display: flex; align-items: start; font-size: 0.95rem; line-height: 1.4; }
+        .plan-caracteristicas li i { margin-right: 12px; margin-top: 4px; font-size: 1.1em; flex-shrink: 0; }
+        
+        .plan-caracteristicas li i.check-personal { color: var(--col-personal); }
+        .plan-caracteristicas li i.check-reseller { color: var(--col-reseller); }
+        .plan-caracteristicas li i.check-vip { color: var(--col-vip); }
+        
+        .plan-cta-button {
+            display: inline-block; width: 100%; padding: 1.2rem; border-radius: 16px; 
+            color: white; font-weight: 800; text-decoration: none; transition: all 0.3s;
+            margin-top: auto; box-shadow: 0 10px 20px rgba(0,0,0,0.1); text-transform: uppercase; font-size: 1rem; letter-spacing: 0.5px;
+        }
+        .plan-cta-button:hover { transform: translateY(-4px); box-shadow: 0 15px 30px rgba(0,0,0,0.15); filter: brightness(110%); }
+        
+        .btn-personal { background: linear-gradient(135deg, var(--col-personal), #1e40af); }
+        .btn-reseller { background: linear-gradient(135deg, var(--col-reseller), #059669); }
+        .btn-vip { background: linear-gradient(135deg, var(--col-vip), #d97706); }
+
+        .cta-download-button { display: inline-flex; align-items: center; justify-content: center; background: linear-gradient(45deg, var(--color-secondary), color-mix(in srgb, var(--color-secondary) 80%, black)); color: var(--color-primary); font-weight: 800; font-size: 1.5rem; padding: 20px 60px; border-radius: 50px; box-shadow: 0 10px 25px rgba(var(--color-secondary-rgb), 0.4); transition: all 0.3s ease; text-decoration: none; margin-top: 4rem; animation: price-pulse 2s infinite; }
         .cta-download-button:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 15px 30px rgba(var(--color-secondary-rgb), 0.55); }
         .cta-download-button i { margin-right: 15px; font-size: 1.8rem; }
         @keyframes price-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
-
-        .plan-cta-button {
-            display: inline-block;
-            background: linear-gradient(45deg, var(--color-primary), color-mix(in srgb, var(--color-primary) 80%, black));
-            color: white;
-            font-weight: 700;
-            font-size: 1.1rem;
-            padding: 1rem 1.5rem;
-            border-radius: 50px;
-            box-shadow: 0 8px 20px rgba(var(--color-primary-rgb), 0.3);
-            transition: all 0.3s ease;
-            text-decoration: none;
-            margin-top: auto; /* Empuja el botón al final de la tarjeta */
-            width: 100%;
-        }
-        .plan-cta-button:hover {
-            transform: translateY(-4px) scale(1.03);
-            box-shadow: 0 12px 25px rgba(var(--color-primary-rgb), 0.4);
-        }
-        .plan-destacado .plan-cta-button {
-            background: linear-gradient(45deg, var(--color-secondary), color-mix(in srgb, var(--color-secondary) 80%, black));
-            color: var(--color-primary);
-            box-shadow: 0 8px 20px rgba(var(--color-secondary-rgb), 0.4);
-        }
-        .plan-destacado .plan-cta-button:hover {
-            box-shadow: 0 12px 25px rgba(var(--color-secondary-rgb), 0.5);
-        }
 
         /* --- BOTÓN DESCARGAR FLOTANTE --- */
         .demo-float-button { position: fixed; right: 20px; top: 50%; transform: translateY(-50%); z-index: 1001; background: linear-gradient(135deg, var(--color-primary), var(--color-secondary)); color: white; padding: 20px 25px; border-radius: 50px; box-shadow: 0 15px 35px rgba(var(--color-primary-rgb), 0.4); font-family: 'Inter', sans-serif; font-weight: 800; font-size: 1.1rem; text-decoration: none; text-align: center; line-height: 1.2; transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); animation: demo-button-pulse 2.5s infinite; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-width: 140px; min-height: 120px; }
@@ -160,63 +189,20 @@
         .whatsapp-agente-ia .text .sub { display: block; font-size: 13px; opacity: 0.9; font-weight: 500; }
         @keyframes pulse { 0% { box-shadow: 0 8px 25px rgba(37, 211, 102, 0.3); } 50% { box-shadow: 0 8px 25px rgba(37, 211, 102, 0.5); } 100% { box-shadow: 0 8px 25px rgba(37, 211, 102, 0.3); } }
         
+        .terms-checkbox-container { margin-top: 2rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.95rem; color: var(--color-text-gray); }
+        .terms-checkbox-container input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--color-secondary); cursor: pointer; }
+        .terms-checkbox-container label { cursor: pointer; user-select: none; }
+        .terms-checkbox-container a { color: var(--color-primary); font-weight: 600; text-decoration: underline; transition: color 0.3s ease; }
+        .terms-checkbox-container a:hover { color: var(--color-secondary); }
         
-        /* === ESTILOS PARA EL CHECKBOX DE TÉRMINOS === */
-        .terms-checkbox-container {
-            margin-top: 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            font-size: 0.95rem;
-            color: var(--color-text-gray);
-            
-        }
-        
-        .terms-checkbox-container input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: var(--color-secondary);
-            cursor: pointer;
-        }
-        
-        .terms-checkbox-container label {
-            cursor: pointer;
-            user-select: none;
-        }
-        
-        .terms-checkbox-container a {
-            color: var(--color-primary);
-            font-weight: 600;
-            text-decoration: underline;
-            transition: color 0.3s ease;
-        }
-        
-        .terms-checkbox-container a:hover {
-            color: var(--color-secondary);
-        }
-        
-        /* --- RESPONSIVE PARA BOTONES FLOTANTES --- */
         @media (max-width: 768px) {
-            /* ===> AJUSTE CLAVE PARA EL BOTÓN DE DESCARGA <=== */
-            .demo-float-button {
-                top: auto; /* Desactivamos el posicionamiento superior */
-                bottom: 110px; /* Lo posicionamos sobre el botón de WhatsApp */
-                transform: none; /* Reseteamos la transformación vertical */
-                right: 20px;
-                padding: 15px 20px;
-                min-width: 120px;
-                min-height: auto;
-                flex-direction: row; /* Hacemos el layout horizontal para que ocupe menos alto */
-                gap: 12px;
-            }
-            .demo-float-button:hover {
-                transform: translateY(-5px) scale(1.05); /* Ajustamos el hover */
-            }
+            .tabs-wrapper { width: 100%; border-radius: 12px; }
+            .tab-button { flex: 1; padding: 12px 10px; font-size: 0.9rem; text-align: center; }
+            .demo-float-button { top: auto; bottom: 110px; transform: none; right: 20px; padding: 15px 20px; min-width: 120px; min-height: auto; flex-direction: row; gap: 12px; }
+            .demo-float-button:hover { transform: translateY(-5px) scale(1.05); }
             .demo-float-button .demo-icon { font-size: 1.8rem; margin-bottom: 0; }
             .demo-float-button .demo-text { font-size: 0.8rem; }
-            .demo-float-button .demo-subtext { display: none; } /* Ocultamos el subtexto para más simplicidad */
-
+            .demo-float-button .demo-subtext { display: none; }
             .whatsapp-agente-ia { bottom: 20px; right: 20px; padding: 12px 16px; font-size: 14px; max-width: 250px; }
             .whatsapp-agente-ia .icon { width: 45px; height: 45px; margin-right: 12px; font-size: 22px; }
             .whatsapp-agente-ia .text .sub { font-size: 12px; }
@@ -228,58 +214,23 @@
             .whatsapp-agente-ia .icon { margin: 0; width: 30px; height: 30px; font-size: 20px; }
         }
 
-        /* ========= INICIO: CÓDIGO AÑADIDO PARA BANDA BLACK FRIDAY ========= */
-        #black-friday-banner {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background-color: #000;
-            color: #fff;
-            text-align: center;
-            padding: 10px 0;
-            z-index: 9999;
-            font-family: 'Inter', sans-serif;
-            font-weight: 700;
-            font-size: 1rem;
-            overflow: hidden; /* Oculta el texto que sale de la banda */
-            white-space: nowrap; /* Evita que el texto se divida en varias líneas */
-        }
-        
-        .marquee-text {
-            display: inline-block;
-            padding-left: 100%; /* Inicia el texto fuera de la pantalla */
-            animation: marquee 20s linear infinite;
-        }
-
-        .marquee-text span {
-            margin: 0 2rem; /* Espacio entre las repeticiones del texto */
-        }
-        
-        @keyframes marquee {
-            0%   { transform: translateX(0); }
-            100% { transform: translateX(-100%); }
-        }
-        /* ========= FIN: CÓDIGO AÑADIDO PARA BANDA BLACK FRIDAY ========= */
-
+        #black-friday-banner { position: fixed; top: 0; left: 0; width: 100%; background-color: #000; color: #fff; text-align: center; padding: 10px 0; z-index: 9999; font-family: 'Inter', sans-serif; font-weight: 700; font-size: 1rem; overflow: hidden; white-space: nowrap; }
+        .marquee-text { display: inline-block; padding-left: 100%; animation: marquee 20s linear infinite; }
+        .marquee-text span { margin: 0 2rem; }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
     </style>
 </head>
 <body class="bg-bg-light">
 
-    <!-- ========= INICIO: HTML DE LA BANDA BLACK FRIDAY ========= -->
     <div id="black-friday-banner">
         <div class="marquee-text">
             <span>🔥 OFERTAS BLACK FRIDAY POR TIEMPO LIMITADO 🔥</span>
-            <span>🔥 OFERTAS BLACK FRIDAY POR TIEMPO LIMITADO 🔥</span>
-            <span>🔥 OFERTAS BLACK FRIDAY POR TIEMPO LIMITADO 🔥</span>
+            <span>🔥 AUTOMATIZA TU WHATSAPP CON IA 🔥</span>
+            <span>🔥 DESCUENTOS ESPECIALES EN PLANES ANUALES 🔥</span>
         </div>
     </div>
-    <!-- ========= FIN: HTML DE LA BANDA BLACK FRIDAY ========= -->
-
     
-    <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-53G72Q3F" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
 
     <header class="bg-primary text-white py-20 md:py-28 text-center rounded-b-[2.5rem] shadow-xl relative overflow-hidden">
         <div class="absolute top-0 left-0 w-full h-full opacity-10 transform scale-150" style="background-image: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px), radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 30px 30px, 15px 15px; background-position: 0 0, 7.5px 7.5px;"></div>
@@ -294,48 +245,37 @@
         <section id="demostracion" class="section bg-white rounded-box shadow-custom animate-fadeIn">
             <h2 class="section-title">WAI - Agente IA en <span class="highlight-primary-text-secondary-bg">Funcionamiento</span></h2>
             <div class="video-container">
-                <iframe 
-                    src="https://www.youtube.com/embed/h4RxJOoXrPs" 
-                    title="YouTube video player" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                    allowfullscreen>
-                </iframe>
+                <iframe src="https://www.youtube.com/embed/h81uFLououM" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
             </div>
         </section>
 
         <section id="introduccion" class="section bg-white rounded-box shadow-custom flex flex-col md:flex-row items-center animate-fadeIn">
             <div class="md:w-1/2 md:pr-10 lg:pr-16 animate-slideInLeft">
                 <h2 class="text-3xl md:text-4xl font-bold text-primary mb-6 leading-tight">¿Qué es WAI?</h2>
-                <p class="mb-5 text-lg text-text-gray"><span class="text-highlight">WAI es una App que instalas desde la Tinda Oficial de Microsoft</span>  y funciona directamente desde tu PC, con una interfaz fácil de usar que le da a tu WhatsApp el poder de la inteligencia artificial. Es perfecto para manejar leads, cerrar ventas, dar soporte y responder rápido a las dudas de tus clientes, como tener un asistente trabajando 24/7 para tu negocio, pero desde tu propio computador.</p>
-                <p class="text-important-note">
-                    <i class="fas fa-info-circle mr-2"></i>Esta aplicación funciona exclusivamente en sistemas operativos <strong class="font-bold">Windows</strong>.
-                </p>
+                <p class="mb-5 text-lg text-text-gray"><span class="text-highlight">WAI es una App que instalas desde la Tinda Oficial de Microsoft</span> y funciona directamente desde tu PC...</p>
+                <p class="text-important-note"><i class="fas fa-info-circle mr-2"></i>Esta aplicación funciona exclusivamente en sistemas operativos <strong class="font-bold">Windows</strong>.</p>
             </div>
             <div class="md:w-1/2 mt-10 md:mt-0 flex justify-center animate-slideInRight">
-                <img src="https://artechclick.com/assets/personaje-DIqgASpr.png" 
-                     alt="[Imagen de Personaje representando Agente IA WhatsApp]" 
-                     class="responsive-img shadow-lg max-w-sm md:max-w-md"
-                     onerror="this.onerror=null;this.src='https://placehold.co/400x400/000191/FFFFFF?text=Agente+IA';">
+                <img src="https://artechclick.com/assets/personaje-DIqgASpr.png" alt="Agente IA WhatsApp" class="responsive-img shadow-lg max-w-sm md:max-w-md" onerror="this.onerror=null;this.src='https://placehold.co/400x400/000191/FFFFFF?text=Agente+IA';">
             </div>
         </section>
 
         <section id="desafio" class="section bg-accent1 rounded-box shadow-custom animate-fadeIn">
             <h2 class="text-3xl md:text-4xl font-bold text-primary mb-6 text-center"> <span class="text-highlight"> Responde al instante</span> porque el mundo va cada vez más rápido</h2>
-            <p class="text-lg text-center max-w-3xl mx-auto text-gray-800">Sabemos que manejar un alto volumen de consultas en WhatsApp puede ser abrumador. Las preguntas frecuentes, la necesidad de respuestas rápidas y la gestión de múltiples conversaciones consumen tiempo y recursos valiosos. WAI - Agente IA está aquí para <span class="text-highlight">liberar tu potencial</span>.</p>
+            <p class="text-lg text-center max-w-3xl mx-auto text-gray-800">Sabemos que manejar un alto volumen de consultas en WhatsApp puede ser abrumador...</p>
         </section>
 
         <section id="capacidades" class="section bg-white rounded-box shadow-custom animate-fadeIn">
             <h2 class="section-title">Capacidades <span class="highlight-primary-text-secondary-bg">Inteligentes</span></h2>
-            <p class="mb-10 text-lg text-center text-text-gray max-w-3xl mx-auto">WAI Agente IA no es solo un bot, es una solución integral diseñada para la eficiencia y la inteligencia conversacional:</p>
             <ul class="list-none space-y-6 text-gray-700 grid md:grid-cols-2 gap-x-10 gap-y-6">
-                <li class="list-item-icon animate-slideInLeft"><i class="fas fa-reply-all"></i> <span><strong>Recepción y Gestión Automatizada:</strong> Monitorea tu WhatsApp y captura mensajes entrantes en tiempo real, 24/7.</span></li>
-                <li class="list-item-icon animate-slideInRight" style="animation-delay: 0.1s;"><i class="fas fa-brain"></i> <span><strong>IA Conversacional (ChatGPT o Groq):</strong> Comprende el lenguaje natural y genera respuestas coherentes, relevantes y personalizadas.</span></li>
-                <li class="list-item-icon animate-slideInLeft" style="animation-delay: 0.2s;"><i class="fas fa-user-clock"></i> <span><strong>Memoria Persistente por Contacto:</strong> Mantiene un historial individual para cada contacto, permitiendo respuestas contextuales y seguimiento de conversaciones.</span></li>
-                <li class="list-item-icon animate-slideInRight" style="animation-delay: 0.3s;"><i class="fas fa-layer-group"></i> <span><strong>Manejo Inteligente de Ráfagas:</strong> Procesa múltiples mensajes rápidos de un usuario como una sola consulta, generando respuestas unificadas y eficientes.</span></li>
-                <li class="list-item-icon animate-slideInLeft" style="animation-delay: 0.4s;"><i class="fas fa-microphone"></i> <span><strong>Escucha audio:</strong> Capacidad de entender audios a gran velocidad y responder con texto. Sabemos que el 30% de tus clientes prefiere enviar mensajes de voz, y con WAI podrás atenderlos de manera eficiente.</span></li>
-                <li class="list-item-icon animate-slideInRight" style="animation-delay: 0.5s;"><i class="fas fa-sliders-h"></i> <span><strong>Contexto y Configuración Personalizable:</strong> Adapta la personalidad del agente y gestiona tu clave de API de forma segura y sencilla.</span></li>
-                <li class="list-item-icon animate-slideInLeft" style="animation-delay: 0.6s;"><i class="fas fa-window-restore"></i> <span><strong>Interfaz de Usuario Intuitiva:</strong> Controla y monitorea el agente fácilmente desde una aplicación de escritorio moderna, con una navegación familiar</span></li>
-                <li class="list-item-icon animate-slideInRight" style="animation-delay: 0.7s;"><i class="fas fa-shield-alt"></i> <span><strong>Almacenamiento Local y Seguro:</strong> Tus datos de conversación permanecen seguros y bajo tu control en tu sistema local.</span></li>
+                <li class="list-item-icon animate-slideInLeft"><i class="fas fa-reply-all"></i> <span><strong>Recepción y Gestión Automatizada:</strong> Monitorea tu WhatsApp 24/7.</span></li>
+                <li class="list-item-icon animate-slideInRight"><i class="fas fa-brain"></i> <span><strong>IA Conversacional:</strong> Comprende el lenguaje natural.</span></li>
+                <li class="list-item-icon animate-slideInLeft"><i class="fas fa-user-clock"></i> <span><strong>Memoria Persistente:</strong> Mantiene un historial individual.</span></li>
+                <li class="list-item-icon animate-slideInRight"><i class="fas fa-layer-group"></i> <span><strong>Manejo de Ráfagas:</strong> Procesa mensajes rápidos.</span></li>
+                <li class="list-item-icon animate-slideInLeft"><i class="fas fa-microphone"></i> <span><strong>Escucha audio:</strong> Entiende audios y responde con texto.</span></li>
+                <li class="list-item-icon animate-slideInRight"><i class="fas fa-sliders-h"></i> <span><strong>Configuración Personalizable:</strong> Adapta la personalidad.</span></li>
+                <li class="list-item-icon animate-slideInLeft"><i class="fas fa-window-restore"></i> <span><strong>Interfaz Intuitiva:</strong> Controla todo fácilmente.</span></li>
+                <li class="list-item-icon animate-slideInRight"><i class="fas fa-shield-alt"></i> <span><strong>Seguridad Local:</strong> Tus datos seguros en tu PC.</span></li>
             </ul>
         </section>
 
@@ -343,324 +283,367 @@
             <div class="md:w-1/2 md:pr-10 lg:pr-16 animate-slideInLeft">
                 <h2 class="text-3xl md:text-4xl font-bold text-primary mb-8 leading-tight">Ventajas Clave para tu <span class="highlight-primary-text-secondary-bg">Negocio</span></h2>
                 <ul class="list-none space-y-5 text-gray-800">
-                    <li class="list-item-icon"><i class="fas fa-bolt"></i> <span><strong>Atención al Cliente Prioritaria:</strong> Ofrecemos respuestas instantáneas a tus consultas frecuentes. Escríbenos a nuestro WhatsApp y te responderemos de inmediato.</span></li>
-                    <li class="list-item-icon" style="animation-delay: 0.1s;"><i class="fas fa-users-cog"></i> <span><strong>Hasta 5 WhatsApps Simultáneos</strong> Podrás conectar hasta 5 cuentas de WhatsApp simultáneamente en un solo equipo, ya sean WhatsApp normal o WhatsApp Business.</span></li>
-
-                    <li class="list-item-icon" style="animation-delay: 0.3s;"><i class="fas fa-tag"></i> <span><strong>El Mejor Precio del Mercado:</strong> Somos el programa con el precio más competitivo del mercado. Otras herramientas cobran hasta 10 veces más y sin IA, nosotros la incluimos en tu pago mensual.</span></li>
-                    <li class="list-item-icon" style="animation-delay: 0.4s;"><i class="fas fa-sync-alt"></i> <span><strong>Actualizaciones Incluidas:</strong> Se vienen actualizaciones, nos mantenemos a la vanguardia, y tú tendrás acceso prioritario a nuevas funciones y actualizaciones. </span></li>
-                    <li class="list-item-icon" style="animation-delay: 0.5s;"><i class="fas fa-user-shield"></i> <span><strong>Control Total y Seguridad de Datos:</strong> Tus datos de conversación permanecen seguros y bajo tu control en tu sistema local.</span></li>
+                    <li class="list-item-icon"><i class="fas fa-bolt"></i> <span><strong>Atención al Cliente Prioritaria</strong></span></li>
+                    <li class="list-item-icon"><i class="fas fa-users-cog"></i> <span><strong>Hasta 5 WhatsApps Simultáneos</strong></span></li>
+                    <li class="list-item-icon"><i class="fas fa-tag"></i> <span><strong>El Mejor Precio del Mercado</strong></span></li>
+                    <li class="list-item-icon"><i class="fas fa-sync-alt"></i> <span><strong>Actualizaciones Incluidas</strong></span></li>
+                    <li class="list-item-icon"><i class="fas fa-user-shield"></i> <span><strong>Control Total y Seguridad</strong></span></li>
                 </ul>
             </div>
             <div class="md:w-1/2 mt-10 md:mt-0 flex justify-center animate-slideInRight">
-                <img src="https://artechclick.com/assets/6-BBSYN4Dm.jpg" 
-                     alt="[Imagen de Hombre sonriendo mientras usa su celular]" 
-                     class="responsive-img shadow-lg max-w-sm md:max-w-md"
-                     onerror="this.onerror=null;this.src='https://placehold.co/400x450/0eda91/000191?text=Beneficios+IA';">
+                <img src="https://artechclick.com/assets/6-BBSYN4Dm.jpg" alt="Beneficios" class="responsive-img shadow-lg max-w-sm md:max-w-md" onerror="this.onerror=null;this.src='https://placehold.co/400x450/0eda91/000191?text=Beneficios+IA';">
             </div>
         </section>
 
-        <!-- ========= INICIO: SECCIÓN DE TESTIMONIOS (AÑADIDA) ========= -->
         <section id="testimonios" class="section bg-white rounded-box shadow-custom animate-fadeIn">
             <h2 class="section-title">Lo que dicen <span class="highlight-primary-text-secondary-bg">nuestros clientes</span></h2>
-             
-            <p class="mb-12 text-lg text-center text-text-gray max-w-3xl mx-auto">Vea cómo WAI está transformando la comunicación para negocios como el suyo.</p>
-             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                <!-- Testimonio 1 -->
-                <div class="animate-slideInLeft">
-                    <img src="https://artechclick.com/assets/test1.jpeg" 
-                         alt="Testimonio de cliente WAI 1" 
-                         class="w-full h-auto rounded-xl shadow-lg transition-transform duration-300 hover:scale-105"
-                         onerror="this.onerror=null;this.src='https://placehold.co/400x300/e7effc/000191?text=Testimonio+1';">
-                </div>
-                
-                <!-- Testimonio 2 -->
-                <div class="animate-slideInRight">
-                    <img src="https://artechclick.com/assets/test2.jpeg" 
-                         alt="Testimonio de cliente WAI 2" 
-                         class="w-full h-auto rounded-xl shadow-lg transition-transform duration-300 hover:scale-105"
-                         onerror="this.onerror=null;this.src='https://placehold.co/400x300/e7effc/000191?text=Testimonio+2';">
-                </div>
-                
-                <!-- Testimonio 3 -->
-                <div class="animate-slideInLeft" style="animation-delay: 0.1s;">
-                    <img src="https://artechclick.com/assets/test3.jpeg" 
-                         alt="Testimonio de cliente WAI 3" 
-                         class="w-full h-auto rounded-xl shadow-lg transition-transform duration-300 hover:scale-105"
-                         onerror="this.onerror=null;this.src='https://placehold.co/400x300/e7effc/000191?text=Testimonio+3';">
-                </div>
-                
-                <!-- Testimonio 4 -->
-                <div class="animate-slideInRight" style="animation-delay: 0.1s;">
-                    <img src="https://artechclick.com/assets/test4.jpeg" 
-                         alt="Testimonio de cliente WAI 4" 
-                         class="w-full h-auto rounded-xl shadow-lg transition-transform duration-300 hover:scale-105"
-                         onerror="this.onerror=null;this.src='https://placehold.co/400x300/e7effc/000191?text=Testimonio+4';">
-                </div>
+                <div class="animate-slideInLeft"><img src="https://artechclick.com/assets/test1.jpeg" class="w-full rounded-xl shadow-lg hover:scale-105 transition"></div>
+                <div class="animate-slideInRight"><img src="https://artechclick.com/assets/test2.jpeg" class="w-full rounded-xl shadow-lg hover:scale-105 transition"></div>
+                <div class="animate-slideInLeft"><img src="https://artechclick.com/assets/test3.jpeg" class="w-full rounded-xl shadow-lg hover:scale-105 transition"></div>
+                <div class="animate-slideInRight"><img src="https://artechclick.com/assets/test4.jpeg" class="w-full rounded-xl shadow-lg hover:scale-105 transition"></div>
             </div>
         </section>
-        <!-- ========= FIN: SECCIÓN DE TESTIMONIOS (AÑADIDA) ========= -->
-
 
         <section id="adquirir" class="section bg-white rounded-box shadow-custom text-center animate-fadeIn">
-            
-            <h2 class="section-title">¡Oferta Especial!</h2>
+            <h2 class="section-title">Elige tu Nivel de Éxito</h2>
             
             <div class="planes-suscripcion-container">
-                <p class="planes-subtitulo" id="planes-subtitulo">Calculando precios para tu ubicación...</p>
+                <p class="planes-subtitulo">Precios especiales para: <strong id="pais-detectado">...</strong></p>
 
-                <div class="planes-grid">
-                    <!-- Plan Mensual -->
-                    <div class="plan-card">
-                        <h3 class="plan-nombre">1 Mes</h3>
-                        <div class="plan-precio">
-                            <span class="simbolo-moneda" id="simbolo-mensual">-</span>
-                            <span class="cantidad" id="cantidad-mensual">-</span>
-                            <span class="codigo-moneda" id="moneda-mensual"></span>
-                        </div>
-                        <div class="precio-mensual-info" id="precio-por-mes-mensual"></div>
-                        <div class="plan-ahorro" id="ahorro-mensual" style="display: none;"></div>
+                <div class="tabs-wrapper">
+                    <button class="tab-button active" onclick="switchTab('personal')" data-tab="personal">👤 Uso Personal</button>
+                    <button class="tab-button" onclick="switchTab('revendedor')" data-tab="revendedor">💼 Revendedor</button>
+                    <button class="tab-button" onclick="switchTab('vip')" data-tab="vip">👑 Socio VIP</button>
+                </div>
+
+                <div id="personal" class="tab-content active planes-grid">
+                    <div class="plan-card personal">
+                        <h3 class="plan-nombre">MENSUAL</h3>
+                        <div class="plan-precio"><span class="simbolo-moneda">$</span><span class="cantidad" id="p_mes_val">-</span></div>
+                        <div class="precio-info"><span class="precio-antes" id="p_mes_ant"></span> <span>Facturación mes a mes</span></div>
                         <ul class="plan-caracteristicas">
-                            <li><i class="fas fa-check-circle"></i>5 WhatsApps en local</li>
-                            
-                            <li><i class="fas fa-check-circle"></i>Soporte de instalación</li>
-                            <li><i class="fas fa-check-circle"></i>Respuestas automáticas</li>
-                            <li><i class="fas fa-check-circle"></i>IA ilimitada</li>
+                            <li><i class="fas fa-check-circle check-personal"></i>1 Licencia de PC (Windows)</li>
+                            <li><i class="fas fa-check-circle check-personal"></i>Conecta 5 WhatsApps</li>
+                            <li><i class="fas fa-check-circle check-personal"></i>IA Ilimitada (ChatGPT/Groq)</li>
+                            <li><i class="fas fa-check-circle check-personal"></i>Transcribe Audios a Texto</li>
+                            <li><i class="fas fa-check-circle check-personal"></i>Soporte Básico x WhatsApp</li>
                         </ul>
-                        <!-- BOTÓN DE COMPRA MENSUAL -->
-                        <a id="link-mensual" href="#" target="_blank" class="plan-cta-button">Adquirir Plan</a>
+                        <a href="#" id="link_p_mes" target="_blank" class="plan-cta-button btn-personal">Comprar Ahora</a>
                     </div>
-                
-                    <!-- Plan Ilimitado -->
-                    <div class="plan-card plan-destacado">
-                        <div class="etiqueta-popular">MÁS POPULAR</div>
-                        <h3 class="plan-nombre">Acceso Ilimitado</h3>
-                        <div class="plan-precio">
-                            <span class="simbolo-moneda" id="simbolo-trimestral">-</span>
-                            <span class="cantidad" id="cantidad-trimestral">-</span>
-                            <span class="codigo-moneda" id="moneda-trimestral"></span>
-                        </div>
-                        <div class="precio-mensual-info" id="precio-por-mes-trimestral"></div>
-                        <div class="plan-ahorro" id="ahorro-trimestral" style="display: none;"></div>
+                    <div class="plan-card personal plan-destacado">
+                        <span class="etiqueta-popular bg-personal">AHORRA 40%</span>
+                        <h3 class="plan-nombre">SEMESTRAL</h3>
+                        <div class="plan-precio"><span class="simbolo-moneda">$</span><span class="cantidad" id="p_sem_val">-</span></div>
+                        <div class="precio-info"><span class="precio-antes" id="p_sem_ant"></span> <span>Facturación cada 6 meses</span></div>
                         <ul class="plan-caracteristicas">
-                            <li><i class="fas fa-check-circle"></i>5 WhatsApps en local</li>
-                            <li><i class="fas fa-check-circle"></i>Opción de reventa</li>
-                            <li><i class="fas fa-check-circle"></i>Soporte de instalación</li>
-                            <li><i class="fas fa-check-circle"></i>Respuestas automáticas</li>
-                            <li><i class="fas fa-check-circle"></i>IA ilimitada</li>
-                            <li><i class="fas fa-star" style="color: #f39c12;"></i>Actualizaciones por 6 meses</li>
+                            <li><i class="fas fa-check-circle check-personal"></i><b>Todo lo del Plan Mensual</b></li>
+                            <li><i class="fas fa-check-circle check-personal"></i>Soporte Técnico Prioritario</li>
+                            <li><i class="fas fa-check-circle check-personal"></i>Acceso a Grupo de Tips</li>
+                            <li><i class="fas fa-check-circle check-personal"></i>Reconocimiento de Imágenes</li>
+                            <li><i class="fas fa-check-circle check-personal"></i>Precio Congelado</li>
                         </ul>
-                        <!-- BOTÓN DE COMPRA ILIMITADO -->
-                        <a id="link-trimestral" href="#" target="_blank" class="plan-cta-button">Adquirir Plan</a>
+                        <a href="#" id="link_p_sem" target="_blank" class="plan-cta-button btn-personal">Comprar Semestral</a>
+                    </div>
+                    <div class="plan-card personal">
+                        <h3 class="plan-nombre">ANUAL</h3>
+                        <div class="plan-precio"><span class="simbolo-moneda">$</span><span class="cantidad" id="p_anual_val">-</span></div>
+                        <div class="precio-info"><span class="precio-antes" id="p_anual_ant"></span> <span>Un solo pago al año</span></div>
+                        <ul class="plan-caracteristicas">
+                            <li><i class="fas fa-check-circle check-personal"></i><b>Todo Incluido x 12 Meses</b></li>
+                            <li><i class="fas fa-check-circle check-personal"></i>Sin mensualidades</li>
+                            <li><i class="fas fa-check-circle check-personal"></i>Actualizaciones BETA</li>
+                            <li><i class="fas fa-check-circle check-personal"></i>Membresía VIP Comunidad</li>
+                            <li><i class="fas fa-check-circle check-personal"></i>Garantía Total</li>
+                        </ul>
+                        <a href="#" id="link_p_anual" target="_blank" class="plan-cta-button btn-personal">Comprar Anual</a>
                     </div>
                 </div>
 
-                <!-- BOTÓN DE DESCARGAR AHORA -->
-                <a href="https://apps.microsoft.com/detail/9PDKF4TXCDZ9?launch=true&mode=mini" target="_blank" class="cta-download-button">
-                            <div >
-                                <img src="https://apps.microsoft.com/assets/icons/logo-256x256.png" 
-                                     alt="Descargar de Microsoft Store" 
-                                     style="width: 35px; height: 35px; vertical-align: middle; margin-left: 10px; display: block;"/>
-                                     
-                            </div>
-                            
-                    <span style="padding-left: 10px;">Descargar (Demo Gratis)</span>
+                <div id="revendedor" class="tab-content planes-grid">
+                    <div class="plan-card reseller">
+                        <div class="roi-badge roi-green">GANA EL DOBLE</div>
+                        <h3 class="plan-nombre">PACK EMPRENDEDOR</h3>
+                        <div class="plan-precio"><span class="simbolo-moneda">$</span><span class="cantidad" id="r_mes_val">-</span></div>
+                        <div class="precio-info">Inversión única</div>
+                        <ul class="plan-caracteristicas">
+                            <li><i class="fas fa-box check-reseller"></i><b>Recibes 5 Licencias</b></li>
+                            <li><i class="fas fa-chart-line check-reseller"></i>Margen de Ganancia: 100%</li>
+                            <li><i class="fas fa-laptop check-reseller"></i>Panel de Control Propio</li>
+                            <li><i class="fas fa-images check-reseller"></i>Material de Marketing</li>
+                            <li><i class="fas fa-file-pdf check-reseller"></i>Guía de Instalación</li>
+                        </ul>
+                        <a href="#" id="link_r_mes" target="_blank" class="plan-cta-button btn-reseller">Iniciar Negocio</a>
+                    </div>
+                    <div class="plan-card reseller plan-destacado">
+                        <span class="etiqueta-popular bg-reseller">MÁS VENDIDO</span>
+                        <div class="roi-badge roi-green">GANA EL TRIPLE</div>
+                        <h3 class="plan-nombre">PACK NEGOCIO</h3>
+                        <div class="plan-precio"><span class="simbolo-moneda">$</span><span class="cantidad" id="r_sem_val">-</span></div>
+                        <div class="precio-info">Inversión única</div>
+                        <ul class="plan-caracteristicas">
+                            <li><i class="fas fa-box check-reseller"></i><b>Recibes 35 Licencias</b></li>
+                            <li><i class="fas fa-coins check-reseller"></i>Costo unitario MUY bajo</li>
+                            <li><i class="fas fa-rocket check-reseller"></i>Retorno de Inversión Masivo</li>
+                            <li><i class="fas fa-headset check-reseller"></i>Soporte Dedicado Revendedor</li>
+                            <li><i class="fas fa-graduation-cap check-reseller"></i>Estrategias de Cierre</li>
+                        </ul>
+                        <a href="#" id="link_r_sem" target="_blank" class="plan-cta-button btn-reseller">Comprar Pack</a>
+                    </div>
+                    <div class="plan-card reseller">
+                        <div class="roi-badge roi-green">GANANCIA TOTAL</div>
+                        <h3 class="plan-nombre">PACK IMPERIO</h3>
+                        <div class="plan-precio"><span class="simbolo-moneda">$</span><span class="cantidad" id="r_anual_val">-</span></div>
+                        <div class="precio-info">Inversión única</div>
+                        <ul class="plan-caracteristicas">
+                            <li><i class="fas fa-box check-reseller"></i><b>Recibes 100 Licencias</b></li>
+                            <li><i class="fas fa-gem check-reseller"></i>Mejor precio del mercado</li>
+                            <li><i class="fas fa-crown check-reseller"></i>Panel de Gestión Avanzado</li>
+                            <li><i class="fas fa-star check-reseller"></i>Prioridad en Soporte Técnico</li>
+                            <li><i class="fas fa-user-tie check-reseller"></i>Contacto directo CEO</li>
+                        </ul>
+                        <a href="#" id="link_r_anual" target="_blank" class="plan-cta-button btn-reseller">Ser Líder</a>
+                    </div>
+                </div>
+
+                <div id="vip" class="tab-content planes-grid">
+                    <div class="plan-card vip">
+                        <div class="roi-badge roi-orange">DISTRIBUIDOR</div>
+                        <h3 class="plan-nombre">JUNIOR</h3>
+                        <div class="plan-precio"><span class="simbolo-moneda">$</span><span class="cantidad" id="v_mes_val">-</span></div>
+                        <div class="precio-info">Para Agencias</div>
+                        <ul class="plan-caracteristicas">
+                            <li><i class="fas fa-layer-group check-vip"></i>Stock: 250 Licencias</li>
+                            <li><i class="fas fa-network-wired check-vip"></i>Crea tu red de vendedores</li>
+                            <li><i class="fas fa-percentage check-vip"></i>Precio Imbatible</li>
+                            <li><i class="fas fa-code check-vip"></i>API de Activación</li>
+                            <li><i class="fas fa-laptop check-vip"></i>Panel VIP (1 Mes)</li>
+                        </ul>
+                        <a href="#" id="link_v_mes" target="_blank" class="plan-cta-button btn-vip">Aplicar Ahora</a>
+                    </div>
+                    <div class="plan-card vip plan-destacado">
+                        <span class="etiqueta-popular bg-vip">PRO</span>
+                        <div class="roi-badge roi-orange">MASTER</div>
+                        <h3 class="plan-nombre">DISTRIBUIDOR PRO</h3>
+                        <div class="plan-precio"><span class="simbolo-moneda">$</span><span class="cantidad" id="v_sem_val">-</span></div>
+                        <div class="precio-info">Para Mayoristas</div>
+                        <ul class="plan-caracteristicas">
+                            <li><i class="fas fa-layer-group check-vip"></i>Stock: 600 Licencias</li>
+                            <li><i class="fas fa-city check-vip"></i>Domina tu Ciudad/País</li>
+                            <li><i class="fas fa-infinity check-vip"></i>Margen Infinito</li>
+                            <li><i class="fas fa-chalkboard-teacher check-vip"></i>Capacitación High-Ticket</li>
+                            <li><i class="fas fa-laptop check-vip"></i>Panel VIP (6 Meses)</li>
+                        </ul>
+                        <a href="#" id="link_v_sem" target="_blank" class="plan-cta-button btn-vip">Aplicar Ahora</a>
+                    </div>
+                    <div class="plan-card vip">
+                        <div class="roi-badge roi-orange">FRANQUICIA</div>
+                        <h3 class="plan-nombre">MASTER</h3>
+                        <div class="plan-precio"><span class="simbolo-moneda">$</span><span class="cantidad" id="v_anual_val">-</span></div>
+                        <div class="precio-info">Dueño del Sistema</div>
+                        <ul class="plan-caracteristicas">
+                            <li><i class="fas fa-layer-group check-vip"></i>Stock: 1.500 Licencias</li>
+                            <li><i class="fas fa-crown check-vip"></i>Negocio Automático</li>
+                            <li><i class="fas fa-globe check-vip"></i>Sin Competencia</li>
+                            <li><i class="fas fa-handshake check-vip"></i>Grupo Socios Elite</li>
+                            <li><i class="fas fa-laptop check-vip"></i>Panel VIP (1 Año)</li>
+                        </ul>
+                        <a href="#" id="link_v_anual" target="_blank" class="plan-cta-button btn-vip">Comprar Franquicia</a>
+                    </div>
+                </div>
+
+                <a href="https://github.com/templo1923/loginwai/releases/download/v5.12.05/WAI.Agente.Setup.5.12.5.exe" target="_blank" class="cta-download-button">
+                    <img src="https://apps.microsoft.com/assets/icons/logo-256x256.png" alt="Microsoft Store" style="width: 35px; height: 35px; margin-right: 10px;"/>
+                    Descargar (Demo Gratis)
                 </a>
-                
-            </div>
-            <!-- CHECKBOX DE TÉRMINOS Y CONDICIONES -->
-            <div class="terms-checkbox-container">
-                <input type="checkbox"  id="terms-checkbox" checked>
-                <label for="terms-checkbox">
-                    Aplican <a href="https://artechclick.com/condiciones/" target="_blank" rel="noopener noreferrer">términos y condiciones</a>
-                </label>
+
+                <div class="terms-checkbox-container">
+                    <input type="checkbox" id="terms-checkbox" checked>
+                    <label for="terms-checkbox">Aplican <a href="https://artechclick.com/condiciones/" target="_blank">términos y condiciones</a></label>
+                </div>
             </div>
         </section>
 
     </main>
 
-    <!-- BOTÓN FLOTANTE DE DESCARGA (CORREGIDO) -->
-    <a href="https://apps.microsoft.com/detail/9PDKF4TXCDZ9?launch=true&mode=mini" target="_blank" class="demo-float-button">
-        <div class="demo-icon">
-            <img src="https://apps.microsoft.com/assets/icons/logo-256x256.png" 
-                 alt="Descargar de Microsoft Store" 
-                 style="width: 60px; height: 60px; vertical-align: middle;">
-        </div>
+    <a href="https://github.com/templo1923/loginwai/releases/download/v5.12.05/WAI.Agente.Setup.5.12.5.exe" target="_blank" class="demo-float-button">
+        <div class="demo-icon"><img src="https://apps.microsoft.com/assets/icons/logo-256x256.png" style="width: 60px; height: 60px;"></div>
         <div class="demo-text">Descargar</div>
         <div class="demo-subtext">(3 Días Gratis)</div>
     </a>
 
-    <!-- BOTÓN FLOTANTE DE WHATSAPP -->
-    <a href="https://wa.link/lbrfp4" target="_blank" class="whatsapp-agente-ia">
-        <div class="icon">
-            <i class="fab fa-whatsapp"></i>
-        </div>
-        <div class="text">
-            <span class="main">Hablar con el</span>
-            <span class="sub">Agente IA WhatsApp</span>
-        </div>
+    <a href="https://api.whatsapp.com/send?phone=573004085041&text=Hola%20SarAI%2C%20quiero%20saber%20m%C3%A1s%20acerca%20del%20Agente%20IA%20WhatsApp%20%F0%9F%AB%B6" target="_blank" class="whatsapp-agente-ia">
+        <div class="icon"><i class="fab fa-whatsapp"></i></div>
+        <div class="text"><span class="main">Hablar Por</span><span class="sub">WhatsApp</span></div>
     </a>
 
     <footer class="bg-primary text-white py-12 text-center mt-16 md:mt-24 rounded-t-[2.5rem] shadow-top-xl">
         <div class="container mx-auto px-4">
-            <img src="favicon.png" alt="Logo Artech Click" class="h-12 mx-auto mb-4" onerror="this.style.display='none'">
-            <p class="text-lg mb-2">© 2025 Artech Click. Todos los derechos reservados.</p>
-            <p class="text-sm opacity-80">Transformando la comunicación, un mensaje a la vez.</p>
+            <p class="text-lg mb-2">© 2025 Kiamber Corp. Todos los derechos reservados.</p>
         </div>
     </footer>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
+    <script>
+    // 1. LÓGICA DE PESTAÑAS (TABS)
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        
+        document.querySelector(`.tab-button[data-tab="${tabId}"]`).classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+    }
 
-    // --- 1. CAPTURAR EL REFERIDO (Soporta ?ref=usuario y /ref/usuario) ---
-    const urlParams = new URLSearchParams(window.location.search);
-    let referralCode = urlParams.get('ref');
+    document.addEventListener('DOMContentLoaded', () => {
 
-    // Respaldo para rutas limpias (ej: /ref/usuario)
-    if (!referralCode) {
-        const path = window.location.pathname;
-        if (path.includes('/ref/') && path.split('/').length > 2) {
-            referralCode = path.split('/').pop();
+        // 2. CAPTURAR EL REFERIDO (Igual que antes)
+        const urlParams = new URLSearchParams(window.location.search);
+        let referralCode = urlParams.get('ref');
+
+        if (!referralCode) {
+            const path = window.location.pathname;
+            if (path.includes('/ref/') && path.split('/').length > 2) {
+                referralCode = path.split('/').pop();
+            }
         }
-    }
 
-    // Persistencia (guardar en navegador por si recarga)
-    if (referralCode) {
-        console.log("✅ Vendedor activo:", referralCode);
-        localStorage.setItem('waibot_ref', referralCode);
-    } else {
-        referralCode = localStorage.getItem('waibot_ref') || "";
-    }
-
-    // --- 2. ENVIAR RASTREO A TU SERVIDOR PROPIO ---
-    if (referralCode) {
-        // ✅ AQUÍ ESTÁ TU URL CONFIGURADA
-        const apiEndpoint = 'https://crm.jhllegalgroup.com/api/rastreo'; 
-        
-        fetch(apiEndpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ enlace: referralCode })
-        })
-        .then(res => {
-            if(res.ok) console.log("📊 Visita registrada en tu servidor");
-        })
-        .catch(e => console.log("Nota: El rastreo requiere que el backend esté activo."));
-    }
-
-    // --- 3. CONFIGURACIÓN DE PAÍSES Y PAGOS ---
-    const configuracionPaises = {
-        'CO': { 
-            nombre: 'Colombia', moneda: 'COP', simbolo: '$', 
-            precios: { mensual: 20000, trimestral: 65000 },
-            links: { 
-                mensual: 'https://checkout.wompi.co/l/nwUVjH', 
-                trimestral: 'https://checkout.wompi.co/l/NmZccW' 
-            } 
-        },
-        'PE': { 
-            nombre: 'Perú', moneda: 'PEN', simbolo: 'S/', 
-            precios: { mensual: 30, trimestral: 99 },
-            links: { 
-                mensual: 'https://pay.hotmart.com/N99712121W?off=fygptixp', 
-                trimestral: 'https://pay.hotmart.com/N99712121W?off=epzshlbg' 
-            } 
-        },
-        'MX': { 
-            nombre: 'México', moneda: '+IVA', simbolo: '$', 
-            precios: { mensual: 155, trimestral: 540 },
-            links: { 
-                mensual: 'https://pay.hotmart.com/N99712121W?off=drvviumb', 
-                trimestral: 'https://pay.hotmart.com/N99712121W?off=3g1jjsqz' 
-            } 
-        },
-        'CL': { 
-            nombre: 'Chile', moneda: '+IVA', simbolo: '$', 
-            precios: { mensual: 7500, trimestral: 30000 },
-            links: { 
-                mensual: 'https://pay.hotmart.com/N99712121W?off=0zxgvbyz', 
-                trimestral: 'https://pay.hotmart.com/N99712121W?off=gz7maaax' 
-            } 
-        },
-        'DEFAULT': { 
-            nombre: 'tu país', moneda: 'USD', simbolo: '$', 
-            precios: { mensual: 8.5, trimestral: 33 },
-            links: { 
-                mensual: 'https://pay.hotmart.com/N99712121W?off=gds67zq0', 
-                trimestral: 'https://pay.hotmart.com/N99712121W?off=f8rg71la' 
-            } 
+        if (referralCode) {
+            console.log("✅ Vendedor activo:", referralCode);
+            localStorage.setItem('waibot_ref', referralCode);
+        } else {
+            referralCode = localStorage.getItem('waibot_ref') || "";
         }
-    };
 
-    // --- 4. INYECTOR DE REFERIDO EN BOTONES DE PAGO ---
-    const agregarRefAlLink = (urlBase, ref) => {
-        if (!urlBase) return "#";
-        if (!ref) return urlBase;
-        
-        // Detectar si el link ya tiene parámetros
-        const separador = urlBase.includes('?') ? '&' : '?';
-        
-        // Enviamos el código a Wompi/Hotmart
-        // reference: Wompi
-        // ref, sck: Hotmart
-        return `${urlBase}${separador}reference=${ref}&sck=${ref}&ref=${ref}`;
-    };
+        // 3. RASTREO (Backend)
+        if (referralCode) {
+            const apiEndpoint = 'https://crm.jhllegalgroup.com/api/rastreo'; 
+            fetch(apiEndpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ enlace: referralCode })
+            }).catch(e => console.log("Rastreo pendiente"));
+        }
 
-    const formatearPrecio = (p) => (p % 1 !== 0) ? p.toFixed(2) : Math.round(p).toLocaleString('es');
-    const calcularAhorro = (conf, plan) => plan === 'trimestral' ? Math.round(((conf.precios.mensual * 3 - conf.precios.trimestral) / (conf.precios.mensual * 3)) * 100) : 0;
+        // 4. CONFIGURACIÓN DE PRECIOS Y LINKS (¡ACTUALIZA ESTO CON TUS LINKS!)
+        const config = {
+            'CO': {
+                nombre: 'Colombia', moneda: 'COP', simbolo: '$',
+                precios: {
+                    // PERSONAL
+                    p_mes: 20000, p_mes_ant: 30000,
+                    p_sem: 70000, p_sem_ant: 120000,
+                    p_anual: 120000, p_anual_ant: 240000,
+                    // REVENDEDOR
+                    r_mes: 50000, r_sem: 250000, r_anual: 500000,
+                    // VIP
+                    v_mes: 800000, v_sem: 1500000, v_anual: 2500000
+                },
+                links: {
+                    // === PEGA AQUÍ LOS LINKS DE WOMPI PARA COLOMBIA ===
+                    p_mes: 'https://checkout.wompi.co/l/TU_LINK_P_MES_CO',
+                    p_sem: 'https://checkout.wompi.co/l/TU_LINK_P_SEM_CO',
+                    p_anual: 'https://checkout.wompi.co/l/TU_LINK_P_ANUAL_CO',
+                    
+                    r_mes: 'https://checkout.wompi.co/l/TU_LINK_R_MES_CO',
+                    r_sem: 'https://checkout.wompi.co/l/TU_LINK_R_SEM_CO',
+                    r_anual: 'https://checkout.wompi.co/l/TU_LINK_R_ANUAL_CO',
 
-    const actualizarUI = (codPais) => {
-        const conf = configuracionPaises[codPais] || configuracionPaises['DEFAULT'];
-        const subtitulo = document.getElementById('planes-subtitulo');
-        if(subtitulo) subtitulo.textContent = `Precios para ${conf.nombre}`;
-
-        ['mensual', 'trimestral'].forEach(plan => {
-            if (document.getElementById(`simbolo-${plan}`)) {
-                document.getElementById(`simbolo-${plan}`).textContent = conf.simbolo;
-                document.getElementById(`cantidad-${plan}`).textContent = formatearPrecio(conf.precios[plan]);
-                document.getElementById(`moneda-${plan}`).textContent = conf.moneda;
-
-                const antes = document.getElementById(`precio-por-mes-${plan}`);
-                if (plan === 'trimestral') {
-                    antes.innerHTML = `<s>Antes: ${conf.simbolo} ${formatearPrecio(conf.precios.mensual * 3)}</s>`;
-                    const ahorroEl = document.getElementById(`ahorro-${plan}`);
-                    if(ahorroEl) {
-                        const ahorro = calcularAhorro(conf, plan);
-                        ahorroEl.textContent = `Ahorra ${ahorro}%`;
-                        ahorroEl.style.display = 'inline-block';
-                    }
+                    v_mes: 'https://checkout.wompi.co/l/TU_LINK_V_MES_CO',
+                    v_sem: 'https://checkout.wompi.co/l/TU_LINK_V_SEM_CO',
+                    v_anual: 'https://checkout.wompi.co/l/TU_LINK_V_ANUAL_CO'
                 }
+            },
+            'DEFAULT': {
+                nombre: 'Resto del Mundo', moneda: 'USD', simbolo: '$',
+                precios: {
+                    // PERSONAL
+                    p_mes: 5, p_mes_ant: 8,
+                    p_sem: 20, p_sem_ant: 30,
+                    p_anual: 35, p_anual_ant: 60,
+                    // REVENDEDOR
+                    r_mes: 20, r_sem: 100, r_anual: 250,
+                    // VIP
+                    v_mes: 50, v_sem: 250, v_anual: 500
+                },
+                links: {
+                    // === PEGA AQUÍ LOS LINKS DE HOTMART/PAYPAL ===
+                    p_mes: 'https://pay.hotmart.com/TU_LINK_P_MES',
+                    p_sem: 'https://pay.hotmart.com/TU_LINK_P_SEM',
+                    p_anual: 'https://pay.hotmart.com/TU_LINK_P_ANUAL',
+                    
+                    r_mes: 'https://pay.hotmart.com/TU_LINK_R_MES',
+                    r_sem: 'https://pay.hotmart.com/TU_LINK_R_SEM',
+                    r_anual: 'https://pay.hotmart.com/TU_LINK_R_ANUAL',
 
-                // INYECCIÓN DEL LINK REAL CON TU REFERIDO
-                const btn = document.getElementById(`link-${plan}`);
-                if (btn && conf.links[plan]) {
-                    btn.href = agregarRefAlLink(conf.links[plan], referralCode);
+                    v_mes: 'https://pay.hotmart.com/TU_LINK_V_MES',
+                    v_sem: 'https://pay.hotmart.com/TU_LINK_V_SEM',
+                    v_anual: 'https://pay.hotmart.com/TU_LINK_V_ANUAL'
                 }
             }
-        });
-    };
+        };
 
-    // --- 5. DETECCIÓN AUTOMÁTICA DE PAÍS ---
-    fetch('https://ipapi.co/json/')
-        .then(r => r.json())
-        .then(d => actualizarUI(d.country_code))
-        .catch(() => {
-            fetch('https://api.country.is/')
-                .then(r => r.json())
-                .then(d => actualizarUI(d.country))
-                .catch(() => actualizarUI('DEFAULT'));
-        });
+        // 5. FUNCIÓN DE ACTUALIZACIÓN
+        const actualizarUI = (codPais) => {
+            const data = config[codPais] || config['DEFAULT'];
+            document.getElementById('pais-detectado').textContent = data.nombre;
+            const cur = data.simbolo;
 
-    // Ajuste Banner Black Friday
-    const banner = document.getElementById('black-friday-banner');
-    if (banner) document.body.style.paddingTop = banner.offsetHeight + 'px';
-});
+            const format = (n) => (n % 1 !== 0) ? n.toFixed(2) : n.toLocaleString('es');
 
-// Checkbox términos
-document.getElementById('terms-checkbox').addEventListener('click', function(e) {
-    e.preventDefault(); this.checked = true;
-});
-</script>
+            // IDs de precios y links a actualizar
+            const keys = [
+                'p_mes', 'p_sem', 'p_anual',
+                'r_mes', 'r_sem', 'r_anual',
+                'v_mes', 'v_sem', 'v_anual'
+            ];
+
+            keys.forEach(key => {
+                // Actualizar Precio
+                const elVal = document.getElementById(key + '_val');
+                if(elVal) elVal.textContent = format(data.precios[key]);
+
+                // Actualizar Precio Anterior (si existe)
+                const elAnt = document.getElementById(key + '_ant');
+                if(elAnt && data.precios[key + '_ant']) {
+                    elAnt.textContent = cur + format(data.precios[key + '_ant']);
+                }
+
+                // Actualizar Link con Referido
+                const elBtn = document.getElementById('link_' + key);
+                if(elBtn && data.links[key]) {
+                    elBtn.href = agregarRefAlLink(data.links[key], referralCode);
+                }
+            });
+            
+            // Actualizar símbolos de moneda globales
+            document.querySelectorAll('.simbolo-moneda').forEach(el => el.textContent = cur);
+        };
+
+        // Función auxiliar para inyectar referido (BLINDADA)
+        const agregarRefAlLink = (urlBase, ref) => {
+            if (!urlBase || urlBase.includes('TU_LINK')) return "#";
+            if (!ref) return urlBase;
+            const separador = urlBase.includes('?') ? '&' : '?';
+            // reference = Wompi
+            // ref, sck, aff = Hotmart y otros
+            return `${urlBase}${separador}reference=${ref}&sck=${ref}&ref=${ref}&aff=${ref}`;
+        };
+
+        // 6. DETECCIÓN DE IP
+        fetch('https://ipapi.co/json/')
+            .then(r => r.json())
+            .then(d => actualizarUI(d.country_code === 'CO' ? 'CO' : 'DEFAULT'))
+            .catch(() => actualizarUI('DEFAULT'));
+
+        // Ajuste Banner
+        const banner = document.getElementById('black-friday-banner');
+        if (banner) document.body.style.paddingTop = banner.offsetHeight + 'px';
+    });
+    
+    // Checkbox siempre activo visualmente
+    document.getElementById('terms-checkbox').addEventListener('click', function(e) {
+        e.preventDefault(); this.checked = true;
+    });
+    </script>
 
 </body>
 </html>
