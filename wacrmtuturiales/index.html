@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tutoriales - Agente IA WhatsApp WAI</title>
+    <title>Tutoriales - WaCRM PRO Agente IA WhatsApp</title>
     <link rel="icon" href="https://artechclick.com/logo.svg" type="image/svg+xml">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -22,7 +22,7 @@
             --color-text-gray: #4a5568;
             --color-primary-rgb: 0, 1, 145;
             
-            /* Personalización de Plyr para que coincida con tu marca */
+            /* Personalización de Plyr */
             --plyr-color-main: #0eda91; 
         }
 
@@ -68,14 +68,15 @@
             box-shadow: 0 15px 40px rgba(var(--color-primary-rgb), 0.15);
         }
         .tutorial-item h3 {
-            font-size: 1.6rem;
+            font-size: 1.4rem; /* Ajustado un poco para títulos largos */
             font-weight: 700;
             color: var(--color-primary);
             margin-bottom: 1rem;
             text-align: center;
+            line-height: 1.3;
         }
         .tutorial-item p {
-            font-size: 1.05rem;
+            font-size: 1rem;
             color: var(--color-text-gray);
             margin-top: 1.5rem;
             text-align: center;
@@ -174,133 +175,200 @@
         }
 
         /* --- TRUCO DE MAGIA ANTI-YOUTUBE --- */
-        /* Esto hace que el video de YouTube dentro del reproductor Plyr sea "intocable" */
-        /* El usuario solo puede interactuar con los controles de Plyr, no con el logo de YT */
         .plyr__video-embed iframe {
-            pointer-events: none; /* Bloquea clics en el iframe de YouTube */
+            pointer-events: none;
         }
-        /* Aseguramos que los controles de Plyr sigan siendo clicables */
         .plyr__controls {
             pointer-events: all;
         }
-        
-        /* Ocultar botones innecesarios */
         .plyr__menu { display: none !important; }
     </style>
 </head>
 <body class="bg-bg-light text-text-dark">
 
     <main class="container mx-auto px-4 py-8 md:py-12 lg:py-16" style="padding-top: 150px;">
-        <h1 class="section-title mb-8">Tutoriales - Agente IA WhatsApp WAI</h1>
+        <h1 class="section-title mb-8">Tutoriales - WAcrm PRO</h1>
         
         <div class="tutorials-grid">
             
-            <div class="tutorial-item" onclick="openModal('h4RxJOoXrPs')">
-                <h3>Tour por la aplicación WAI</h3>
+            <div class="tutorial-item" onclick="openModal('wKhiB8Gd7gM')">
+                <h3>WACRM - 1 Instalacion y activación</h3>
                 <div class="video-thumbnail-container">
-                    <img src="https://img.youtube.com/vi/h4RxJOoXrPs/maxresdefault.jpg" loading="lazy">
+                    <img src="https://img.youtube.com/vi/wKhiB8Gd7gM/maxresdefault.jpg" loading="lazy">
                     <div class="play-button"><i class="fas fa-play"></i></div>
                 </div>
-                <p>WAI - Es una APP avanzada para usar WhatsApp con cinco agentes de IA.</p>
-            </div>
-            
-            <div class="tutorial-item" onclick="openModal('BH8xrpahgtI')">
-                <h3>Configuración inicial</h3>
-                <div class="video-thumbnail-container">
-                    <img src="https://img.youtube.com/vi/BH8xrpahgtI/maxresdefault.jpg" loading="lazy">
-                    <div class="play-button"><i class="fas fa-play"></i></div>
-                </div>
-                <p>CÓMO FUNCIONA - PRIMEROS PASOS y navegación básica.</p>
+                <p>En este Video Tutorial, te mostraremos como debes realizar la instalacion y activacion de tu licencia de WACRM</p>
             </div>
 
-            <div class="tutorial-item" onclick="openModal('HeXfVXE-FkI')">
-                <h3>Mensajes Predeterminados</h3>
+            <div class="tutorial-item" onclick="openModal('YQTkINDlNb8')">
+                <h3>WACRM - 2 Cómo actualizar el Software</h3>
                 <div class="video-thumbnail-container">
-                    <img src="https://img.youtube.com/vi/HeXfVXE-FkI/maxresdefault.jpg" loading="lazy">
+                    <img src="https://img.youtube.com/vi/YQTkINDlNb8/maxresdefault.jpg" loading="lazy">
                     <div class="play-button"><i class="fas fa-play"></i></div>
                 </div>
-                <p>Personaliza los mensajes para un mejor flujo de trabajo.</p>
+                <p>En este corto Video Tutorial te mostraremos el proceso que debes seguir para poder realizar las actualizaciones de la herramienta.</p>
             </div>
 
-            <div class="tutorial-item" onclick="openModal('hM0vlfZFiEU')">
-                <h3>Configurar API KEY GROQ</h3>
+            <div class="tutorial-item" onclick="openModal('8hzmAXgcOZo')">
+                <h3>WACRM - 3 Pre requisitos</h3>
                 <div class="video-thumbnail-container">
-                    <img src="https://img.youtube.com/vi/hM0vlfZFiEU/maxresdefault.jpg" loading="lazy">
+                    <img src="https://img.youtube.com/vi/8hzmAXgcOZo/maxresdefault.jpg" loading="lazy">
                     <div class="play-button"><i class="fas fa-play"></i></div>
                 </div>
-                <p>Paso necesario para conectar la inteligencia artificial.</p>
+                <p>WACRM, requiere de dos aplicaciones adicionales para su correcto funcionamiento, aqui te mostramos cuales son, y podras acceder directamente a las paginas oficiales para su descarga.</p>
             </div>
 
-             <div class="tutorial-item" onclick="openModal('JTqhZWuXQG4')">
-                <h3>Instrucciones de Contexto</h3>
+            <div class="tutorial-item" onclick="openModal('nq1KhPN7Ls4')">
+                <h3>WACRM - 4 Escanear cuenta de WhatsApp</h3>
                 <div class="video-thumbnail-container">
-                    <img src="https://img.youtube.com/vi/JTqhZWuXQG4/maxresdefault.jpg" loading="lazy">
+                    <img src="https://img.youtube.com/vi/nq1KhPN7Ls4/maxresdefault.jpg" loading="lazy">
                     <div class="play-button"><i class="fas fa-play"></i></div>
                 </div>
-                <p>Configura la personalidad y reglas de tu agente.</p>
+                <p>En este video tutorial, te mostraremos una vez hayas instalado WACRM, el proceso que debes seguir para crear una de las 10 cuentas disponibles, y vincules tu whatsapp, ademas de activar la sincronizacion de todos los mensajes.</p>
             </div>
 
-             <div class="tutorial-item" onclick="openModal('hyGUBZSyjIo')">
-                <h3>Aumentar limites de Groq</h3>
+            <div class="tutorial-item" onclick="openModal('xavpV8xl2sA')">
+                <h3>WACRM - 5 Filtros</h3>
                 <div class="video-thumbnail-container">
-                    <img src="https://img.youtube.com/vi/hyGUBZSyjIo/maxresdefault.jpg" loading="lazy">
+                    <img src="https://img.youtube.com/vi/xavpV8xl2sA/maxresdefault.jpg" loading="lazy">
                     <div class="play-button"><i class="fas fa-play"></i></div>
                 </div>
-                <p>Garantiza que la IA no falle con contextos largos.</p>
+                <p>En este video tutorial aprenderás a aplicar como filtrar la información, y los procesos.</p>
             </div>
 
-             <div class="tutorial-item" onclick="openModal('c098_ICY9s0')">
-                <h3>Configurar OpenAI</h3>
+            <div class="tutorial-item" onclick="openModal('mTe_iT_R03s')">
+                <h3>WACRM - 6 Transmitir Enviar mensaje a contactos</h3>
                 <div class="video-thumbnail-container">
-                    <img src="https://img.youtube.com/vi/c098_ICY9s0/maxresdefault.jpg" loading="lazy">
+                    <img src="https://img.youtube.com/vi/mTe_iT_R03s/maxresdefault.jpg" loading="lazy">
                     <div class="play-button"><i class="fas fa-play"></i></div>
                 </div>
-                <p>Mayor estabilidad usando ChatGPT 4o mini.</p>
+                <p>Aprenderas a realizar diferentes formas de transmitir los mensajes, desde tu lista de contacto, desde contactos importados, con tiempos de espera, etc.</p>
             </div>
 
-             <div class="tutorial-item" onclick="openModal('MdtTkgYOCr8')">
-                <h3>Reconocimiento de imágenes</h3>
+            <div class="tutorial-item" onclick="openModal('aIXCUX7-xho')">
+                <h3>WACRM - 7 Enviar mensajes a etiquetas</h3>
                 <div class="video-thumbnail-container">
-                    <img src="https://img.youtube.com/vi/MdtTkgYOCr8/maxresdefault.jpg" loading="lazy">
+                    <img src="https://img.youtube.com/vi/aIXCUX7-xho/maxresdefault.jpg" loading="lazy">
                     <div class="play-button"><i class="fas fa-play"></i></div>
                 </div>
-                <p>Uso de OCR para extraer texto y aplicar filtros.</p>
+                <p>Con WACRM tienes muchas formas de enviar mensajes, entre las que se encuentran las etiquetas con las cuales podras diferenciar tus contactos.</p>
             </div>
 
-             <div class="tutorial-item" onclick="openModal('UU3oyAFvdJE')">
-                <h3>Mensajes de Remarketing</h3>
+            <div class="tutorial-item" onclick="openModal('IVeYTKqdbqY')">
+                <h3>WACRM - 8 Enviando mensajes a grupos</h3>
                 <div class="video-thumbnail-container">
-                    <img src="https://img.youtube.com/vi/UU3oyAFvdJE/maxresdefault.jpg" loading="lazy">
+                    <img src="https://img.youtube.com/vi/IVeYTKqdbqY/maxresdefault.jpg" loading="lazy">
                     <div class="play-button"><i class="fas fa-play"></i></div>
                 </div>
-                <p>Reactiva conversaciones antiguas automáticamente.</p>
+                <p>De la misma forma que puedes enviar mensajes directos a los contactos, también podrás enviar mensajes a los grupos, y tienes varias formas de ejecutar la actividad. Pon atención. te será muy útil.</p>
             </div>
 
-             <div class="tutorial-item" onclick="openModal('9xMtMIm009I')">
-                <h3>Gestionar Clientes</h3>
+            <div class="tutorial-item" onclick="openModal('67AuaKCteX8')">
+                <h3>WACRM - 9 Enviando mensajes a miembros de grupo</h3>
                 <div class="video-thumbnail-container">
-                    <img src="https://img.youtube.com/vi/9xMtMIm009I/maxresdefault.jpg" loading="lazy">
+                    <img src="https://img.youtube.com/vi/67AuaKCteX8/maxresdefault.jpg" loading="lazy">
                     <div class="play-button"><i class="fas fa-play"></i></div>
                 </div>
-                <p>Etiquetado y desactivación de cuentas individuales.</p>
+                <p>Y si, ya no necesitas copiar uno a uno los miembros de un grupo para poder enviarle un mensaje. WACRM lo hace por ti de una forma rapida y automatica.</p>
             </div>
 
-             <div class="tutorial-item" onclick="openModal('hKmBQqh9vaQ')">
-                <h3>API Gemini Gratis</h3>
+            <div class="tutorial-item" onclick="openModal('GkpexK6l3ek')">
+                <h3>WACRM - 10 Enviando mensajes a contactos no guardados</h3>
                 <div class="video-thumbnail-container">
-                    <img src="https://img.youtube.com/vi/hKmBQqh9vaQ/maxresdefault.jpg" loading="lazy">
+                    <img src="https://img.youtube.com/vi/GkpexK6l3ek/maxresdefault.jpg" loading="lazy">
                     <div class="play-button"><i class="fas fa-play"></i></div>
                 </div>
-                <p>Consigue tu API key de Google sin costo.</p>
+                <p>Como en todo proceso de ventas, podrás tener listas de contactos que no tienes guardados, y esta lista será una nueva herramienta para potenciar tus ventas. Presta atención como puedes hacerlo.</p>
             </div>
 
-             <div class="tutorial-item" onclick="openModal('ekwrVefIUfQ')">
-                <h3>Sistema de Afiliados (50%)</h3>
+            <div class="tutorial-item" onclick="openModal('vAub2zViIZ0')">
+                <h3>WACRM - 11 Observación envio de mensajes con botones</h3>
                 <div class="video-thumbnail-container">
-                    <img src="https://img.youtube.com/vi/ekwrVefIUfQ/maxresdefault.jpg" loading="lazy">
+                    <img src="https://img.youtube.com/vi/vAub2zViIZ0/maxresdefault.jpg" loading="lazy">
                     <div class="play-button"><i class="fas fa-play"></i></div>
                 </div>
-                <p>Genera ingresos revendiendo WAI con tu enlace.</p>
+                <p>Whatsapp, continuamente activa y desactiva funcionalidades entre ellas están los botones para hacer mas facil la selección de opciones. aquí te explicamos como funciona y como hacerlo útil.</p>
+            </div>
+
+            <div class="tutorial-item" onclick="openModal('1XLOqpySfQM')">
+                <h3>WACRM - 12 envía mensajes dinamicos personalizados</h3>
+                <div class="video-thumbnail-container">
+                    <img src="https://img.youtube.com/vi/1XLOqpySfQM/maxresdefault.jpg" loading="lazy">
+                    <div class="play-button"><i class="fas fa-play"></i></div>
+                </div>
+                <p>Con WACRM también puedes personalizar tus mensajes, para darle un toque de personalización y realidad. Que el cliente no sienta que es una maquina quien les atiende.</p>
+            </div>
+
+            <div class="tutorial-item" onclick="openModal('49gGMfRa_2Y')">
+                <h3>WACRM - 13 Recordatorios</h3>
+                <div class="video-thumbnail-container">
+                    <img src="https://img.youtube.com/vi/49gGMfRa_2Y/maxresdefault.jpg" loading="lazy">
+                    <div class="play-button"><i class="fas fa-play"></i></div>
+                </div>
+                <p>Ponerte recordatorios asociados a tus contactos te permitirá no olvidarte de escribirle a tus seres queridos.</p>
+            </div>
+
+            <div class="tutorial-item" onclick="openModal('P99yNGqpS7Y')">
+                <h3>WACRM - 14 Creando un Chatbot con menú de opciones</h3>
+                <div class="video-thumbnail-container">
+                    <img src="https://img.youtube.com/vi/P99yNGqpS7Y/maxresdefault.jpg" loading="lazy">
+                    <div class="play-button"><i class="fas fa-play"></i></div>
+                </div>
+                <p>Crea tu propio embudo, que cada pregunta tenga su repuesta, según las palabras tipo que tu cliente escriba. con su respuesta, donde puedes asociar imágenes, videos y audios.</p>
+            </div>
+
+            <div class="tutorial-item" onclick="openModal('PYREYZckFAY')">
+                <h3>WACRM - 15 Configurar el bot de respuesta automática con opciones de lista</h3>
+                <div class="video-thumbnail-container">
+                    <img src="https://img.youtube.com/vi/PYREYZckFAY/maxresdefault.jpg" loading="lazy">
+                    <div class="play-button"><i class="fas fa-play"></i></div>
+                </div>
+                <p>Una tarea que una vez termines, te permitirá que todo fluya con naturalidad y perfeccion.</p>
+            </div>
+
+            <div class="tutorial-item" onclick="openModal('SPLhebirTdQ')">
+                <h3>WACRM 16 - Control de Grupo</h3>
+                <div class="video-thumbnail-container">
+                    <img src="https://img.youtube.com/vi/SPLhebirTdQ/maxresdefault.jpg" loading="lazy">
+                    <div class="play-button"><i class="fas fa-play"></i></div>
+                </div>
+                <p>En este video podrás saber como podrás tener un control de los grupos para evitar que los usuarios envíen información inapropiada o no autorizada</p>
+            </div>
+
+            <div class="tutorial-item" onclick="openModal('OFL8LImbaAc')">
+                <h3>WACRM - 17 Guardia de grupos enfocado a ventas</h3>
+                <div class="video-thumbnail-container">
+                    <img src="https://img.youtube.com/vi/OFL8LImbaAc/maxresdefault.jpg" loading="lazy">
+                    <div class="play-button"><i class="fas fa-play"></i></div>
+                </div>
+                <p>Enfoquemos ahora el guarda grupos a las ventas. Seguro que así no se nos escapara ninguna.</p>
+            </div>
+
+            <div class="tutorial-item" onclick="openModal('FvFLY2Sz_5A')">
+                <h3>WACRM - 18 Programar mensajes</h3>
+                <div class="video-thumbnail-container">
+                    <img src="https://img.youtube.com/vi/FvFLY2Sz_5A/maxresdefault.jpg" loading="lazy">
+                    <div class="play-button"><i class="fas fa-play"></i></div>
+                </div>
+                <p>Y como no, poder contar con un programador de mensajes que lo envié el día y hora especifico y con los intervalos que sea necesario a un numero determinado de nuestros contactos o lista de difusión.</p>
+            </div>
+
+            <div class="tutorial-item" onclick="openModal('ND1WoyLJwiA')">
+                <h3>WACRM - 19 Respuestas rápidas</h3>
+                <div class="video-thumbnail-container">
+                    <img src="https://img.youtube.com/vi/ND1WoyLJwiA/maxresdefault.jpg" loading="lazy">
+                    <div class="play-button"><i class="fas fa-play"></i></div>
+                </div>
+                <p>Y tener a la mano las respuestas rápidas para cuando deseemos tomar el control de la interacción con el cliente, nos permitirá ser mas agiles.</p>
+            </div>
+
+            <div class="tutorial-item" onclick="openModal('4_wpBrZJiFk')">
+                <h3>WACRM - 20 Utilice extractores de datos</h3>
+                <div class="video-thumbnail-container">
+                    <img src="https://img.youtube.com/vi/4_wpBrZJiFk/maxresdefault.jpg" loading="lazy">
+                    <div class="play-button"><i class="fas fa-play"></i></div>
+                </div>
+                <p>Y tus datos siempre estarán bajo tu control, para ellos podrás obtener la información de tus contactos en diferentes formas o agrupaciones.</p>
             </div>
 
         </div>
@@ -325,7 +393,6 @@
             const container = document.getElementById('player');
             
             // 1. Inyectamos el iframe de YouTube dentro del contenedor Plyr
-            // Usamos parámetros agresivos para limpiar la interfaz
             container.innerHTML = `
                 <iframe
                     src="https://www.youtube-nocookie.com/embed/${videoId}?origin=https://plyrio&iv_load_policy=3&modestbranding=1&playsinline=1&showinfo=0&rel=0&enablejsapi=1"
@@ -336,7 +403,6 @@
             `;
 
             // 2. Inicializamos Plyr sobre ese contenedor
-            // Esto crea la "piel" personalizada encima del video
             player = new Plyr('#player', {
                 controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
                 youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 }
